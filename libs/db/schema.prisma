@@ -39,17 +39,44 @@ model LedgerEntry {
   createdAt DateTime @default(now())
 }
 
-model GameProvider { 
-  id String @id @default(uuid())
-  name String
-  apiKey String
+enum GameCategory {
+  LIVE
+  EGAME
+  TABLE
+  OTHER
 }
 
-model Game { 
-  id String @id @default(uuid())
-  providerId String
-  slug String @unique
-  rtp Decimal 
+model GameProvider {
+  id            String   @id @default(uuid())
+  code          String   @unique            // ej. "AG"
+  name          String                      // ej. "Asia Gaming"
+  platformTypes String[]                    // ej. ["AGIN","AGQ","AGNW","SLOT"]
+  apiKey        String?                     // si aplica
+  games         Game[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Game {
+  id             String        @id @default(uuid())
+  slug           String        @unique
+  title          String
+  providerId     String
+  provider       GameProvider  @relation(fields: [providerId], references: [id])
+  category       GameCategory
+  platformType   String        // ej. "AGIN", "AGQ", "SLOT"
+  gameType       String?       // ej. "BAC", "DT", "ROU" (Live); o vacío para lobby
+  providerGameId String?       // ej. "SB49" (EGames), billNo/gid si aplica
+  rtp            Decimal?      @db.Decimal(5,2)
+  devices        String[]      // ["DESKTOP","MOBILE"]
+  tags           String[]      // ["popular","nuevo"]
+  enabled        Boolean       @default(true)
+  order          Int           @default(0)
+  thumbnailUrl   String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([enabled, category, platformType])
 }
 
 model BetTicket { 

@@ -7,6 +7,7 @@ import { HealthController } from './health.controller';
 import { WalletController } from './wallet.controller';
 import { AuthModule } from './auth/auth.module';
 import { DbModule } from 'libs/db/src/db.module';
+import { GamesModule } from './games/games.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { DbModule } from 'libs/db/src/db.module';
     DbModule,
     JwtAuthModule,
     AuthModule,
+    GamesModule,
   ],
   controllers: [HealthController, WalletController],
 })
