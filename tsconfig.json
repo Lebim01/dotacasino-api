@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "module": "CommonJS",
+    "target": "ES2022",
+    "moduleResolution": "Node",
+    "strict": true,
+    "noImplicitOverride": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "baseUrl": ".",
+    "paths": {
+      "@libs/*": ["libs/*/src"],
+      "@common/*": ["libs/common/src/*"],
+      "@db": ["libs/db/src"],
+      "@domain/*": ["libs/domain/src/*"],
+      "@dto/*": ["libs/dto/src/*"],
+      "@queue/*": ["libs/queue/src/*"],
+      "@security/*": ["libs/security/src/*"],
+      "@config": ["libs/config/src"]
+    },
+    "types": ["node"]
+  },
+  "exclude": ["node_modules", "dist"]
+}

@@ -1,0 +1,91 @@
+version: "3.9"
+
+services:
+  toolbox:
+    image: node:20-bullseye
+    working_dir: /usr/src/app
+    volumes:
+      - ./:/usr/src/app
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      - TZ=${TZ:-America/Mexico_City}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    # Para Prisma Studio (puerto 5555)
+    ports:
+      - "5555:5555"
+    restart: unless-stopped
+    networks:
+      - backend
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-casino}
+      TZ: ${TZ:-America/Mexico_City}
+    ports:
+      - "5432:5432"
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+      # monta scripts opcionales para extensiones/seed:
+      # - ./docker/initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 5s
+    restart: unless-stopped
+    networks:
+      - backend
+
+  redis:
+    image: redis:7
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 3s
+    restart: unless-stopped
+    networks:
+      - backend
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.57
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"     # habilita OTLP gRPC y HTTP
+      LOG_LEVEL: "info"
+    ports:
+      - "16686:16686"  # UI
+      - "4317:4317"    # OTLP gRPC
+      - "4318:4318"    # OTLP HTTP (opcional)
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:16686/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - backend
+
+volumes:
+  dbdata:
+  redisdata:
+
+networks:
+  backend:
+    driver: bridge

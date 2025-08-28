@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+  // output = "../node_modules/@prisma/client" // opcional
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id         String   @id @default(uuid())
+  email      String   @unique
+  country    String
+  kycStatus  String   @default("PENDING")
+  wallets    Wallet[]
+  createdAt  DateTime @default(now())
+}
+
+model Wallet {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  currency  String   // "USDT"
+  balance   Decimal  @default(0)
+  ledger    LedgerEntry[]
+}
+
+model LedgerEntry {
+  id        String   @id @default(uuid())
+  walletId  String
+  wallet    Wallet   @relation(fields: [walletId], references: [id])
+  kind      String   // DEPOSIT, WITHDRAWAL, BET_PLACE, BET_WIN, FEE
+  amount    Decimal
+  meta      Json
+  createdAt DateTime @default(now())
+}
+
+model GameProvider { 
+  id String @id @default(uuid())
+  name String
+  apiKey String
+}
+
+model Game { 
+  id String @id @default(uuid())
+  providerId String
+  slug String @unique
+  rtp Decimal 
+}
+
+model BetTicket { 
+  id String @id @default(uuid())
+  userId String
+  gameId String
+  stake Decimal
+  status String
+  payout Decimal?
+  createdAt DateTime @default(now()) 
+}
+
+model Referral { 
+  id String @id @default(uuid())
+  userId String
+  parentId String?
+  level Int 
+}

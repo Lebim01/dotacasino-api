@@ -1,0 +1,44 @@
+{
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "",
+  "monorepo": true,
+  "root": ".",
+  "compilerOptions": {
+    "tsConfigPath": "tsconfig.build.json",
+    "deleteOutDir": true
+  },
+  "projects": {
+    "client-api": {
+      "type": "application",
+      "root": "apps/client-api",
+      "entryFile": "main",
+      "sourceRoot": "apps/client-api/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/client-api/tsconfig.app.json"
+      }
+    },
+    "admin-api": {
+      "type": "application",
+      "root": "apps/admin-api",
+      "entryFile": "main",
+      "sourceRoot": "apps/admin-api/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/admin-api/tsconfig.app.json"
+      }
+    },
+    "workers": {
+      "type": "application",
+      "root": "apps/workers",
+      "entryFile": "main",
+      "sourceRoot": "apps/workers/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/workers/tsconfig.app.json"
+      }
+    },
+    "libs-common": {
+      "type": "library",
+      "root": "libs/common",
+      "sourceRoot": "libs/common/src"
+    }
+  }
+}
