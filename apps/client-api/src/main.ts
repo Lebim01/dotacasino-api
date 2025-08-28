@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { PrismaService } from 'libs/db/src/prisma.service';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -12,8 +12,32 @@ async function bootstrap() {
     credentials: true,
   });
 
-  const prisma = app.get(PrismaService);
-  await prisma.enableShutdownHooks(app);
+  // --- Swagger sólo si está habilitado o no es producción ---
+  const swaggerEnabled =
+    process.env.SWAGGER_ENABLED === 'true' ||
+    process.env.NODE_ENV !== 'production';
+  if (swaggerEnabled) {
+    const config = new DocumentBuilder()
+      .setTitle('Casino Client API')
+      .setDescription(
+        'Endpoints para client-side (auth, profile, games, bets, etc.)',
+      )
+      .setVersion('1.0.0')
+      .addBearerAuth(
+        { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+        'access-token',
+      )
+      .build();
+
+    const document = SwaggerModule.createDocument(app, config, {
+      ignoreGlobalPrefix: false, // respeta /v1
+    });
+
+    // UI en /v1/docs y JSON en /v1/docs-json
+    SwaggerModule.setup('v1/docs', app, document, {
+      swaggerOptions: { persistAuthorization: true },
+    });
+  }
 
   await app.listen(
     process.env.PORT_CLIENT ? Number(process.env.PORT_CLIENT) : 3001,

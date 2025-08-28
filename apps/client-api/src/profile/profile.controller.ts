@@ -12,7 +12,10 @@ import { CurrentUser } from '@security/current-user.decorator';
 import { ProfileService } from './profile.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Profile')
+@ApiBearerAuth('access-token')
 @UseGuards(JwtAuthGuard)
 @Controller('profile')
 export class ProfileController {
