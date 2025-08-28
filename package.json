@@ -11,27 +11,21 @@
     "stack:reset": "docker compose down -v && docker compose up -d db redis jaeger",
     "stack:ps": "docker compose ps",
     "stack:logs": "docker compose logs -f",
-
     "tool:sh": "docker compose run --rm toolbox bash",
     "tool:node": "docker compose run --rm toolbox node -v",
-
     "db:psql": "docker compose exec db psql -U postgres -d casino",
     "db:ping": "docker compose exec db pg_isready -U postgres -d casino",
     "db:reset": "docker compose exec -u postgres db psql -U postgres -d postgres -c \"DROP DATABASE IF EXISTS casino; CREATE DATABASE casino;\" && yarn prisma:deploy",
-
     "redis:cli": "docker compose exec redis redis-cli",
     "redis:ping": "docker compose exec redis redis-cli ping",
-
     "prisma:gen": "docker compose run --rm toolbox bash -lc \"yarn prisma generate --schema=libs/db/schema.prisma\"",
     "prisma:dev": "docker compose run --rm toolbox bash -lc \"yarn prisma migrate dev --schema=libs/db/schema.prisma\"",
     "prisma:deploy": "docker compose run --rm toolbox bash -lc \"yarn prisma migrate deploy --schema=libs/db/schema.prisma\"",
     "prisma:studio": "docker compose run --rm --service-ports toolbox bash -lc \"yarn prisma studio --schema=libs/db/schema.prisma --browser none\"",
-
     "dev:client": "nest start client-api --watch",
     "dev:admin": "nest start admin-api --watch",
     "dev:workers": "nest start workers --watch",
     "dev:all": "concurrently -n client,admin,workers -c blue,green,magenta \"yarn dev:client\" \"yarn dev:admin\" \"yarn dev:workers\"",
-
     "up": "yarn stack:up && yarn prisma:gen && yarn prisma:deploy && yarn dev:all"
   },
   "devDependencies": {
@@ -50,19 +44,23 @@
     "@nestjs/platform-express": "^11.0.0",
     "@nestjs/schedule": "^4.0.0",
     "@opentelemetry/api": "^1.8.0",
-    "@prisma/client": "^5.16.0",
+    "@prisma/client": "^6.15.0",
+    "argon2": "^0.44.0",
     "bullmq": "^5.7.0",
     "class-transformer": "^0.5.1",
-    "class-validator": "^0.14.1",
+    "class-validator": "^0.14.2",
     "eslint-plugin-prettier": "^5.5.4",
     "ioredis": "^5.4.1",
     "passport": "^0.7.0",
     "pg": "^8.12.0",
     "pino": "^9.0.0",
     "pino-pretty": "^11.0.0",
-    "prisma": "^5.16.0",
+    "prisma": "^6.15.0",
     "reflect-metadata": "^0.2.2",
     "typescript-eslint": "^8.41.0",
     "zod": "^4.1.4"
+  },
+  "prisma": {
+    "schema": "libs/db/schema.prisma"
   }
 }

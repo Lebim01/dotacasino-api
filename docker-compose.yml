@@ -8,8 +8,8 @@ services:
       - ./:/usr/src/app
     environment:
       - NODE_ENV=${NODE_ENV:-development}
-      - DATABASE_URL=${DATABASE_URL}
-      - REDIS_URL=${REDIS_URL}
+      - DATABASE_URL=${DATABASE_URL_DOCKER}
+      - REDIS_URL=${REDIS_URL_DOCKER}
       - TZ=${TZ:-America/Mexico_City}
     depends_on:
       db:

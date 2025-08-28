@@ -10,13 +10,15 @@ datasource db {
 
 
 model User {
-  id         String   @id @default(uuid())
-  email      String   @unique
-  country    String
-  kycStatus  String   @default("PENDING")
-  wallets    Wallet[]
-  createdAt  DateTime @default(now())
+  id          String   @id @default(uuid())
+  email       String   @unique
+  country     String
+  kycStatus   String   @default("PENDING")
+  wallets     Wallet[]
+  createdAt   DateTime @default(now())
+  passwordHash String
 }
+
 
 model Wallet {
   id        String   @id @default(uuid())

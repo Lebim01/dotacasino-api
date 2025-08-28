@@ -5,12 +5,15 @@ import { JwtAuthModule } from '@security/jwt.module';
 
 import { HealthController } from './health.controller';
 import { WalletController } from './wallet.controller';
+import { AuthModule } from './auth/auth.module';
+import { DbModule } from 'libs/db/src/db.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [loadConfig] }),
+    DbModule,
     JwtAuthModule,
-    // TODO: AuthModule, GamesModule, BetsModule, ReferralsModule...
+    AuthModule,
   ],
   controllers: [HealthController, WalletController],
 })
