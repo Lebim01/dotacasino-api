@@ -5,8 +5,7 @@ const schema = z.object({
   NODE_ENV: z
     .enum(['development', 'staging', 'production'])
     .default('development'),
-  DATABASE_URL: z.string().url(),
-  REDIS_URL: z.string(),
+  DATABASE_URL: z.string().min(16),
   JWT_ACCESS_SECRET: z.string().min(32),
   JWT_REFRESH_SECRET: z.string().min(32),
   PAYMENT_WEBHOOK_SECRET: z.string().min(16),

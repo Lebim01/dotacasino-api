@@ -9,12 +9,9 @@ services:
     environment:
       - NODE_ENV=${NODE_ENV:-development}
       - DATABASE_URL=${DATABASE_URL_DOCKER}
-      - REDIS_URL=${REDIS_URL_DOCKER}
       - TZ=${TZ:-America/Mexico_City}
     depends_on:
       db:
-        condition: service_healthy
-      redis:
         condition: service_healthy
     # Para Prisma Studio (puerto 5555)
     ports:
@@ -46,23 +43,6 @@ services:
     networks:
       - backend
 
-  redis:
-    image: redis:7
-    command: ["redis-server", "--appendonly", "yes"]
-    ports:
-      - "6379:6379"
-    volumes:
-      - redisdata:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
-      timeout: 3s
-      retries: 20
-      start_period: 3s
-    restart: unless-stopped
-    networks:
-      - backend
-
   jaeger:
     image: jaegertracing/all-in-one:1.57
     environment:
@@ -84,7 +64,6 @@ services:
 
 volumes:
   dbdata:
-  redisdata:
 
 networks:
   backend:

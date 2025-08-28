@@ -1,8 +1,8 @@
 {
   "collection": "@nestjs/schematics",
-  "sourceRoot": "",
   "monorepo": true,
-  "root": ".",
+  "root": "apps",
+  "sourceRoot": "apps",
   "compilerOptions": {
     "tsConfigPath": "tsconfig.build.json",
     "deleteOutDir": true

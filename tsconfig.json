@@ -6,9 +6,11 @@
     "strict": true,
     "noImplicitOverride": true,
     "resolveJsonModule": true,
-    "esModuleInterop": true,
+    "esModuleInterop": true, 
+    "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
       "@libs/*": ["libs/*/src"],
