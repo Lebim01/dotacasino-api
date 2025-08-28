@@ -8,6 +8,7 @@ import { WalletController } from './wallet.controller';
 import { AuthModule } from './auth/auth.module';
 import { DbModule } from 'libs/db/src/db.module';
 import { GamesModule } from './games/games.module';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { GamesModule } from './games/games.module';
     JwtAuthModule,
     AuthModule,
     GamesModule,
+    ProfileModule,
   ],
   controllers: [HealthController, WalletController],
 })
