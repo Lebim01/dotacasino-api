@@ -28,6 +28,7 @@ RUN apk add --no-cache openssl libc6-compat
 # Solo lo necesario para producción
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
+COPY --from=deps /app/libs/db ./libs/db
 
 # Variables de puertos por si las usas en cada app
 ENV PORT_CLIENT=3001 PORT_ADMIN=3002 PORT_WORKERS=3003
@@ -38,7 +39,5 @@ ENV APP=${APP}
 
 # Opcional: HEALTHCHECK (ajusta la ruta)
 # HEALTHCHECK --interval=30s --timeout=3s CMD wget -qO- http://127.0.0.1:${PORT_CLIENT}/health || exit 1
-
-ENTRYPOINT ["npx", "prisma", "migrate", "deploy"]
 
 CMD ["sh","-lc","node dist/apps/${APP}/apps/${APP}/src/main.js"]

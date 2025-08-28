@@ -44,7 +44,7 @@
     "seed:games": "docker compose run --rm toolbox bash -lc \"npx --loader ts-node/esm libs/scripts/seed.games.ts || npx ts-node libs/scripts/seed.games.ts\"",
 
     "// ===== Push Cloud Run =====": "",
-    "push:client-api": "docker build --platform linux/amd64 -t us-central1-docker.pkg.dev/dota-dd5dd/casino/client-api:latest --build-arg APP=client-api . && docker push us-central1-docker.pkg.dev/dota-dd5dd/casino/client-api:latest && gcloud beta run deploy client-api --image us-central1-docker.pkg.dev/dota-dd5dd/casino/client-api:latest --region us-central1 --project dota-dd5dd"
+    "push:client-api": "docker build --no-cache --platform linux/amd64 -t us-central1-docker.pkg.dev/dota-dd5dd/casino/client-api:latest --build-arg APP=client-api . && docker push us-central1-docker.pkg.dev/dota-dd5dd/casino/client-api:latest && gcloud beta run deploy client-api --image us-central1-docker.pkg.dev/dota-dd5dd/casino/client-api:latest --region us-central1 --project dota-dd5dd"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.0",
