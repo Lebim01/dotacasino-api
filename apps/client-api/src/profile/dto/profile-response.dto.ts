@@ -16,6 +16,12 @@ export class ProfileResponseDto {
   @ApiProperty({ example: 'ES' })
   country!: string;
 
+  @ApiProperty({ example: 'es' })
+  language!: string;
+
+  @ApiProperty({ example: "PENDING" })
+  kycStatus!: boolean;
+
   @ApiProperty({ example: '2023-01-01T00:00:00Z' })
   createdAt!: Date;
 }
