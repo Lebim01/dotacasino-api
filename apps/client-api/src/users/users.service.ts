@@ -1,6 +1,7 @@
 import { Injectable, ConflictException } from '@nestjs/common';
 import { PrismaService } from 'libs/db/src/prisma.service';
 import * as argon2 from 'argon2';
+import { Role } from '@security/roles.enum';
 
 @Injectable()
 export class UsersService {
@@ -11,7 +12,7 @@ export class UsersService {
 
     try {
       return await this.prisma.user.create({
-        data: { email, country, passwordHash },
+        data: { email, country, passwordHash, roles: [Role.User] },
         select: { id: true, email: true, country: true, createdAt: true },
       });
     } catch (err: any) {

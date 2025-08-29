@@ -8,6 +8,7 @@ import {
   MinLength,
 } from 'class-validator';
 import { AgService } from './ag.service';
+import { ApiExcludeController } from '@nestjs/swagger';
 
 class CheckCreateBody {
   @IsString()
@@ -36,6 +37,7 @@ class CheckCreateBody {
 }
 
 @Controller('providers/ag')
+@ApiExcludeController()
 export class AgController {
   constructor(private readonly ag: AgService) {}
 

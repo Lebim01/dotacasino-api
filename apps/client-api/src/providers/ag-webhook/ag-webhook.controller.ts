@@ -11,6 +11,7 @@ import { AgWebhookService } from './ag-webhook.service';
 import { XMLParser } from 'fast-xml-parser';
 import type { Response } from 'express';
 import type { PostTransferXml, PostTransferRecord } from './xml.types';
+import { ApiExcludeController } from '@nestjs/swagger';
 
 // Construye la respuesta XML como pide el proveedor :contentReference[oaicite:17]{index=17}
 function buildXmlResponse(code: string, balance: string) {
@@ -19,6 +20,7 @@ function buildXmlResponse(code: string, balance: string) {
 }
 
 @Controller('rest/integration')
+@ApiExcludeController()
 export class AgWebhookController {
   private parser = new XMLParser({ ignoreAttributes: false, trimValues: true });
 
