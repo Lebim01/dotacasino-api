@@ -10,12 +10,16 @@ import { JwtService } from '@nestjs/jwt';
 
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { UsersService } from '../users/users.service';
+import { WalletService } from '@domain/wallet/wallet.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwt: JwtService,
+    private readonly usersService: UsersService,
+    private readonly walletService: WalletService,
   ) {}
 
   private sanitize(user: {
@@ -39,6 +43,7 @@ export class AuthService {
         country: true,
         createdAt: true,
         passwordHash: true,
+        roles: true,
       },
     });
 
@@ -50,7 +55,11 @@ export class AuthService {
     if (!ok) throw new UnauthorizedException('Credenciales inválidas');
 
     // 3) Genera tokens
-    const payload = { sub: user.id, email: user.email };
+    const payload = {
+      sub: user.id,
+      email: user.email,
+      roles: user.roles ?? ['user'],
+    };
 
     const access_token = await this.jwt.signAsync(payload, {
       secret: process.env.JWT_ACCESS_SECRET!,
@@ -77,27 +86,21 @@ export class AuthService {
     }
 
     const email = dto.email.trim().toLowerCase();
-    const passwordHash = await argon2.hash(dto.password);
 
     try {
-      const created = await this.prisma.$transaction(async (tx) => {
-        const user = await tx.user.create({
-          data: { email, country: dto.country, passwordHash },
-          select: { id: true, email: true, country: true, createdAt: true },
-        });
+      const created = await this.prisma.$transaction(async () => {
+        const user = await this.usersService.createUser(
+          email,
+          dto.password,
+          dto.country,
+        );
 
-        await tx.wallet.create({
-          data: { userId: user.id, currency: 'USD', balance: 0 },
-        });
-
+        await this.walletService.createWallet(user.id);
         return user;
       });
 
       return this.sanitize(created);
-    } catch (err: any) {
-      if (err?.code === 'P2002' && err?.meta?.target?.includes('email')) {
-        throw new ConflictException('El email ya está registrado');
-      }
+    } catch (error) {
       throw new InternalServerErrorException(
         'No se pudo completar el registro',
       );

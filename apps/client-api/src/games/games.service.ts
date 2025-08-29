@@ -45,7 +45,9 @@ export class GamesService {
       ];
     }
 
-    const orderBy: Prisma.GameOrderByWithRelationInput | Prisma.GameOrderByWithRelationInput[] =
+    const orderBy:
+      | Prisma.GameOrderByWithRelationInput
+      | Prisma.GameOrderByWithRelationInput[] =
       q.sort === 'alpha'
         ? { title: 'asc' }
         : q.sort === 'recent'
@@ -53,17 +55,16 @@ export class GamesService {
           : [{ order: 'asc' }, { title: 'asc' }];
 
     const skip = (q.page - 1) * q.pageSize;
-    const [items, total] =
-      await this.prisma.$transaction([
-        this.prisma.game.findMany({
-          where,
-          include: { provider: { select: { code: true, name: true } } },
-          orderBy,
-          skip,
-          take: q.pageSize,
-        }),
-        this.prisma.game.count({ where }),
-      ]);
+    const [items, total] = await this.prisma.$transaction([
+      this.prisma.game.findMany({
+        where,
+        include: { provider: { select: { code: true, name: true } } },
+        orderBy,
+        skip,
+        take: q.pageSize,
+      }),
+      this.prisma.game.count({ where }),
+    ]);
 
     // Limpieza (Decimal -> number)
     const mapped = items.map((g) => ({

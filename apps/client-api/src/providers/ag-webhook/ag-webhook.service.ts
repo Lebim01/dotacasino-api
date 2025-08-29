@@ -3,12 +3,16 @@ import { PrismaService } from 'libs/db/src/prisma.service';
 import { PostTransferRecord } from './xml.types';
 import Decimal from 'decimal.js';
 import { CURRENCY } from 'libs/shared/src/currency';
+import { WalletService } from '@domain/wallet/wallet.service';
 
 type TransferResult = { code: string; balance: string };
 
 @Injectable()
 export class AgWebhookService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly wallet: WalletService,
+  ) {}
 
   // Calcula delta a aplicar en wallet (según tipo de transacción)
   // Regla Live Game: payoff = netAmount + validBetAmount (para WIN/LOSE/DRAW) :contentReference[oaicite:11]{index=11}
@@ -108,26 +112,17 @@ export class AgWebhookService {
         : new Decimal(wallet.balance).plus(delta);
 
       if (!delta.isZero()) {
-        await tx.wallet.update({
-          where: { id: wallet.id },
-          data: { balance: newBal },
-        });
-
-        await tx.ledgerEntry.create({
-          data: {
-            walletId: wallet.id,
-            kind: this.mapKind(rec),
-            amount: delta, // positivo = crédito, negativo = débito
-            meta: {
-              provider: 'AG',
-              transactionID: rec.transactionID,
-              billNo: rec.billNo,
-              transactionType: rec.transactionType,
-              ticketStatus: rec.ticketStatus,
-              gametype: rec.gametype,
-              gameCode: rec.gameCode,
-              finish: rec.finish === 'true',
-            },
+        await this.wallet.credit({
+          userId: user.id,
+          amount: delta,
+          reason: 'BET_WIN', // o 'REFUND'
+          idempotencyKey: `AG|${rec.transactionID}|${rec.billNo ?? '-'}`,
+          meta: {
+            provider: 'AG',
+            transactionID: rec.transactionID,
+            billNo: rec.billNo ?? null,
+            gametype: rec.gametype ?? null,
+            finish: rec.finish === 'true',
           },
         });
       }

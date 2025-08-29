@@ -13,13 +13,14 @@ enum Currency {
 }
 
 model User {
-  id          String   @id @default(uuid())
-  email       String   @unique
-  country     String
-  kycStatus   String   @default("PENDING")
-  wallets     Wallet[]
-  createdAt   DateTime @default(now())
-  passwordHash String
+  id            String   @id @default(uuid())
+  email         String   @unique
+  country       String
+  kycStatus     String   @default("PENDING")
+  wallets       Wallet[]
+  createdAt     DateTime @default(now())
+  passwordHash  String
+  roles         String[] @default(["user"])
   // ---- Perfil ----
   displayName   String?
   phone         String?
@@ -44,9 +45,12 @@ model LedgerEntry {
   walletId  String
   wallet    Wallet   @relation(fields: [walletId], references: [id])
   kind      String   // DEPOSIT, WITHDRAWAL, BET_PLACE, BET_WIN, FEE
-  amount    Decimal
+  amount    Decimal  // > 0 en créditos; < 0 en débitos
   meta      Json
   createdAt DateTime @default(now())
+
+  balanceAfter    Decimal? // snapshot de saldo post-movimiento (opcional)
+  idempotencyKey  String?  @unique
 }
 
 enum GameCategory {

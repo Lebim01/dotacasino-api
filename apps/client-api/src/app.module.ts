@@ -11,6 +11,7 @@ import { GamesModule } from './games/games.module';
 import { ProfileModule } from './profile/profile.module';
 import { AgModule } from './providers/ag/ag.module';
 import { AgWebhookModule } from './providers/ag-webhook/ag-webhook.module';
+import { WalletModule } from '@domain/wallet/wallet.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { AgWebhookModule } from './providers/ag-webhook/ag-webhook.module';
     ProfileModule,
     AgModule,
     AgWebhookModule,
+    WalletModule,
   ],
   controllers: [HealthController, WalletController],
 })
