@@ -21,19 +21,20 @@ enum KycStatus {
 }
 
 model User {
-  id           String    @id @default(uuid())
-  email        String    @unique
+  id           String         @id @default(uuid())
+  email        String         @unique
   country      String
-  kycStatus    KycStatus @default(PENDING)
+  kycStatus    KycStatus      @default(PENDING)
   wallets      Wallet[]
-  createdAt    DateTime  @default(now())
+  createdAt    DateTime       @default(now())
   passwordHash String
-  roles        String[]  @default(["user"])
+  roles        String[]       @default(["user"])
   // ---- Perfil ----
   displayName  String?
   phone        String?
   language     String?
   avatarUrl    String?
+  RefreshToken RefreshToken[]
 }
 
 model Wallet {
@@ -134,4 +135,18 @@ model ProviderPostTransfer {
   responseCode    String
   finish          Boolean?
   createdAt       DateTime @default(now())
+}
+
+model RefreshToken {
+  id        String    @id // = jti del JWT (uuid)
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  tokenHash String // hash del RT (argon2)
+  familyId  String // agrupa una cadena de rotaciones
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+  expiresAt DateTime
+
+  @@index([userId])
+  @@index([familyId])
 }
