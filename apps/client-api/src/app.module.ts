@@ -9,6 +9,8 @@ import { AuthModule } from './auth/auth.module';
 import { DbModule } from 'libs/db/src/db.module';
 import { GamesModule } from './games/games.module';
 import { ProfileModule } from './profile/profile.module';
+import { AgModule } from './providers/ag/ag.module';
+import { AgWebhookModule } from './providers/ag-webhook/ag-webhook.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { ProfileModule } from './profile/profile.module';
     AuthModule,
     GamesModule,
     ProfileModule,
+    AgModule,
+    AgWebhookModule,
   ],
   controllers: [HealthController, WalletController],
 })

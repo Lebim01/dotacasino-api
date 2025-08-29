@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "@nestjs/swagger": "^11.2.0",
+    "decimal.js": "^10.6.0",
+    "fast-xml-parser": "^5.2.5",
     "swagger-ui-express": "^5.0.1"
   }
 }

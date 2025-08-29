@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -11,6 +12,9 @@ async function bootstrap() {
     origin: new RegExp(process.env.CORS_REGEX ?? '.*'),
     credentials: true,
   });
+
+
+  app.use(bodyParser.text({ type: ['text/xml', 'application/xml'] }));
 
   // --- Swagger sólo si está habilitado o no es producción ---
   const swaggerEnabled =

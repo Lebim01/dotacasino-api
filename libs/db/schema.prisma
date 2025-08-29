@@ -8,6 +8,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Currency {
+  USD
+}
 
 model User {
   id          String   @id @default(uuid())
@@ -26,12 +29,14 @@ model User {
 
 
 model Wallet {
-  id        String   @id @default(uuid())
+  id        String    @id @default(uuid())
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  currency  String   // "USDT"
-  balance   Decimal  @default(0)
+  user      User      @relation(fields: [userId], references: [id])
+  currency  Currency  @default(USD)
+  balance   Decimal   @default(0)
   ledger    LedgerEntry[]
+
+  @@unique([userId, currency])
 }
 
 model LedgerEntry {
@@ -99,4 +104,23 @@ model Referral {
   userId String
   parentId String?
   level Int 
+}
+
+model ProviderPostTransfer {
+  id               String   @id @default(uuid())
+  provider         String
+  uniqueKey        String   @unique // "AG|<transactionID>|<billNo|->"
+  transactionID    String
+  billNo           String?
+  transactionType  String
+  ticketStatus     String?
+  playname         String
+  currency         String
+  netAmount        Decimal?
+  validBetAmount   Decimal?
+  value            Decimal?
+  balanceAfter     Decimal
+  responseCode     String
+  finish           Boolean?
+  createdAt        DateTime @default(now())
 }

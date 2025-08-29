@@ -87,7 +87,7 @@ export class AuthService {
         });
 
         await tx.wallet.create({
-          data: { userId: user.id, currency: 'USDT', balance: 0 },
+          data: { userId: user.id, currency: 'USD', balance: 0 },
         });
 
         return user;
