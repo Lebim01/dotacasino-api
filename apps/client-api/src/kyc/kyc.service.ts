@@ -42,6 +42,13 @@ export class KycService {
 
   async listDocuments(userId: string) {
     return this.prisma.kycDocument.findMany({
+      select: {
+        id: true,
+        type: true,
+        mimeType: true,
+        createdAt: true,
+        status: true,
+      },
       where: { userId },
       orderBy: { createdAt: 'desc' },
     });
