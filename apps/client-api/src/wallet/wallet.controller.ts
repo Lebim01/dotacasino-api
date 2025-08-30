@@ -7,7 +7,7 @@ import { QueryLedgerDto } from './dto/query-ledger.dto';
 import { BalanceResponseDto } from './dto/balance-response.dto';
 import { LedgerResponseDto } from './dto/ledger-response.dto';
 
-@ApiTags('Wallet')
+@ApiTags('Wallet • User • Balance')
 @ApiBearerAuth('access-token')
 @UseGuards(JwtAuthGuard)
 @Controller('wallet')
