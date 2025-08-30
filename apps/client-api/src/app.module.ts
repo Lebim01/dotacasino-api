@@ -11,6 +11,7 @@ import { AgModule } from './providers/ag/ag.module';
 import { AgWebhookModule } from './providers/ag-webhook/ag-webhook.module';
 import { WalletModule } from '@domain/wallet/wallet.module';
 import { WalletClientModule } from './wallet/wallet.module';
+import { KycModule } from './kyc/kyc.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { WalletClientModule } from './wallet/wallet.module';
     AgWebhookModule,
     WalletModule,
     WalletClientModule,
+    KycModule,
   ],
   controllers: [HealthController],
 })

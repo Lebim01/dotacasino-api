@@ -21,6 +21,9 @@ export class ProfileResponseDto {
   @ApiProperty({ example: 'es' })
   language!: string;
 
+  @ApiProperty({ example: 'AAAAAAAA' })
+  refCode!: string;
+
   @ApiProperty({ example: 'PENDING' })
   @IsEnum(KycStatusEnum)
   kycStatus!: KycStatusEnum;

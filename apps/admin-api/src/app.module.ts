@@ -9,6 +9,7 @@ import { WalletModule } from '@domain/wallet/wallet.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from '@security/jwt.guard';
 import { RolesGuard } from '@security/roles.guard';
+import { KycReviewModule } from './kyc-review/kyc-review.module';
 
 @Module({
   providers: [
@@ -20,6 +21,7 @@ import { RolesGuard } from '@security/roles.guard';
     JwtAuthModule,
     WalletModule,
     WalletAdminModule,
+    KycReviewModule,
   ],
   controllers: [HealthController],
 })

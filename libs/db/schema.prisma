@@ -20,22 +20,38 @@ enum KycStatus {
   SUSPENDED // Cuenta/kyc bloqueado temporalmente
 }
 
+enum KycDocType {
+  PASSPORT
+  ID_CARD
+  DRIVER_LICENSE
+  ADDRESS_PROOF
+  SELFIE
+}
+
+enum KycDocStatus {
+  UPLOADED
+  VERIFIED
+  REJECTED
+}
+
 model User {
-  id           String         @id @default(uuid())
-  email        String         @unique
-  country      String
-  kycStatus    KycStatus      @default(PENDING)
-  wallets      Wallet[]
-  createdAt    DateTime       @default(now())
-  passwordHash String
-  roles        String[]       @default(["user"])
+  id            String          @id @default(uuid())
+  email         String          @unique
+  country       String
+  kycStatus     KycStatus       @default(PENDING)
+  wallets       Wallet[]
+  createdAt     DateTime        @default(now())
+  passwordHash  String
+  roles         String[]        @default(["user"])
   // ---- Perfil ----
-  displayName  String?
-  phone        String?
-  language     String?
-  avatarUrl    String?
-  RefreshToken RefreshToken[]
-  refCode      String?        @unique @db.VarChar(16) // código corto único
+  displayName   String?
+  phone         String?
+  language      String?
+  avatarUrl     String?
+  RefreshToken  RefreshToken[]
+  refCode       String?         @unique @db.VarChar(16) // código corto único
+  KycDocument   KycDocument[]
+  KycSubmission KycSubmission[]
 }
 
 model Wallet {
@@ -117,6 +133,9 @@ model Referral {
   userId   String
   parentId String?
   level    Int
+
+  @@index([parentId], map: "referral_parent_idx")
+  @@index([userId], map: "referral_user_idx")
 }
 
 model ProviderPostTransfer {
@@ -150,4 +169,43 @@ model RefreshToken {
 
   @@index([userId])
   @@index([familyId])
+}
+
+model KycDocument {
+  id          String       @id @default(uuid())
+  userId      String
+  user        User         @relation(fields: [userId], references: [id])
+  type        KycDocType
+  status      KycDocStatus @default(UPLOADED)
+  storageKey  String // ruta/clave en tu storage (S3/GCS)
+  mimeType    String
+  country     String?
+  expiresAt   DateTime?
+  checksum    String?
+  reviewerId  String?
+  reviewNotes String? // breve razón rechazo/verificación
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@index([userId, type])
+}
+
+model KycSubmission {
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  // snapshot de doc ids incluidos en esta sumisión
+  documentIds String[] // guarda IDs al momento de "submit"
+
+  submittedAt  DateTime?
+  decidedAt    DateTime?
+  decidedBy    String?
+  decision     KycStatus? // APPROVED / REJECTED / UNDER_REVIEW
+  decisionNote String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }
