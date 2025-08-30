@@ -14,7 +14,6 @@ import { LedgerResponseDto } from './dto/ledger-response.dto';
 export class WalletController {
   constructor(private readonly wallet: ClientWalletService) {}
 
-  // GET /v1/wallet
   @Get()
   @ApiOkResponse({
     description: 'Get current wallet balance',
@@ -24,7 +23,6 @@ export class WalletController {
     return this.wallet.getBalance(user.userId);
   }
 
-  // GET /v1/wallet/ledger?kind=BET_WIN&page=1&pageSize=25
   @Get('ledger')
   @ApiOkResponse({
     description: 'Get wallet transaction history',
