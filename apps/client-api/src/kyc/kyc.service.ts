@@ -61,6 +61,13 @@ export class KycService {
 
     // Crear documento en BD
     return this.prisma.kycDocument.create({
+      select: {
+        mimeType: true,
+        type: true,
+        id: true,
+        status: true,
+        createdAt: true,
+      },
       data: {
         userId,
         type: dto.type,
