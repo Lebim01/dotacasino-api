@@ -13,7 +13,7 @@ import { LoginDto } from './dto/login.dto';
 import { UsersService } from '../users/users.service';
 import { WalletService } from '@domain/wallet/wallet.service';
 import { JwtPayload } from '@security/jwt.strategy';
-import { randomUUID } from 'crypto'
+import { randomUUID } from 'crypto';
 
 const ACCESS_TTL = process.env.JWT_ACCESS_TTL ?? '15m';
 const REFRESH_TTL = process.env.JWT_REFRESH_TTL ?? '7d';
@@ -71,9 +71,31 @@ export class AuthService {
       expiresIn: '15m',
     });
 
-    const refresh_token = await this.jwt.signAsync(payload, {
-      secret: process.env.JWT_REFRESH_SECRET!,
-      expiresIn: '7d',
+    const jti = randomUUID(); // identificador único del RT
+    const familyId = randomUUID(); // familia nueva para esta sesión
+
+    const refresh_token = await this.jwt.signAsync(
+      { ...payload, typ: 'refresh' },
+      {
+        secret: process.env.JWT_REFRESH_SECRET!,
+        expiresIn: '7d',
+        jwtid: jti,
+      },
+    );
+
+    // Guarda hash y metadatos en DB
+    const tokenHash = await argon2.hash(refresh_token);
+    const { exp } = this.jwt.decode(refresh_token) as { exp: number };
+    const expiresAt = new Date(exp * 1000);
+
+    await this.prisma.refreshToken.create({
+      data: {
+        id: jti, // usamos el jti como PK
+        userId: user.id,
+        tokenHash,
+        familyId,
+        expiresAt,
+      },
     });
 
     // 4) Retorna user sanitizado + tokens
@@ -220,7 +242,7 @@ export class AuthService {
     // Rotar: revocar el actual y emitir uno nuevo en la misma familia
     await this.revokeToken(row.id);
 
-    const payload: JwtPayload = { sub: userId, email: "" }; // puedes añadir email/roles si quieres
+    const payload: JwtPayload = { sub: userId, email: '' }; // puedes añadir email/roles si quieres
     const access_token = await this.issueAccessToken(payload);
     const { token: refresh_token } = await this.issueRefreshToken(
       userId,
