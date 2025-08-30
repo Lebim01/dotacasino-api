@@ -52,6 +52,7 @@ model User {
   refCode       String?         @unique @db.VarChar(16) // código corto único
   KycDocument   KycDocument[]
   KycSubmission KycSubmission[]
+  Topup         Topup[]
 }
 
 model Wallet {
@@ -206,6 +207,21 @@ model KycSubmission {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Topup {
+  id             String   @id @default(uuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id])
+  amount         Decimal
+  currency       Currency @default(USD)
+  status         String   @default("SUCCEEDED") // "PENDING"|"SUCCEEDED"|"FAILED"|"CANCELED"
+  provider       String   @default("DIRECT") // "DIRECT" (dev) / "STRIPE" / "COINBASE"...
+  providerRef    String?
+  idempotencyKey String?  @unique
+  createdAt      DateTime @default(now())
 
   @@index([userId])
 }
