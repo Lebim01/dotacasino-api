@@ -49,6 +49,9 @@ export class AuthService {
         createdAt: true,
         passwordHash: true,
         roles: true,
+        displayName: true,
+        language: true,
+        phone: true,
       },
     });
 
