@@ -43,12 +43,6 @@ async function main() {
           create: games.map((g, index) => ({
             slug: `${providerName}-${g.id}`.toLowerCase().replace(/\s+/g, '-'),
             title: g.name,
-            category: g.categories as any, // asegúrate de que coincida con tu enum GameCategory
-            platformType: code,
-            gameType: g.system_name2
-              ? (g.system_name2.split('/').pop() ?? null)
-              : null,
-            providerGameId: g.id,
             devices: g.device === '2' ? ['DESKTOP', 'MOBILE'] : ['DESKTOP'],
             tags: g.system_name2?.includes('new') ? ['nuevo'] : [],
             thumbnailUrl: g.img,

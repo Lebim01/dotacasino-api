@@ -100,25 +100,22 @@ model GameProvider {
 }
 
 model Game {
-  id                  String       @id @default(uuid())
-  slug                String       @unique
-  title               String
-  providerId          String
-  provider            GameProvider @relation(fields: [providerId], references: [id])
-  category            GameCategory
-  platformType        String // ej. "AGIN", "AGQ", "SLOT"
-  gameType            String? // ej. "BAC", "DT", "ROU" (Live); o vacío para lobby
-  providerGameId      String? // ej. "SB49" (EGames), billNo/gid si aplica
-  rtp                 Decimal?     @db.Decimal(5, 2)
-  devices             String[] // ["DESKTOP","MOBILE"]
-  tags                String[] // ["popular","nuevo"]
-  enabled             Boolean      @default(true)
-  order               Int          @default(0)
-  thumbnailUrl        String?
-  createdAt           DateTime     @default(now())
-  updatedAt           DateTime     @updatedAt
+  id             String        @id @default(uuid())
+  slug           String        @unique
+  title          String
+  gameType       String? // ej. "BAC", "DT", "ROU" (Live); o vacío para lobby
+  rtp            Decimal?      @db.Decimal(5, 2)
+  devices        String[] // ["DESKTOP","MOBILE"]
+  tags           String[] // ["popular","nuevo"]
+  enabled        Boolean       @default(true)
+  order          Int           @default(0)
+  thumbnailUrl   String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  GameProvider   GameProvider? @relation(fields: [gameProviderId], references: [id])
+  gameProviderId String?
 
-  @@index([enabled, category, platformType])
+  @@index([enabled])
 }
 
 model BetTicket {
