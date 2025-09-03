@@ -1,6 +1,4 @@
 # syntax=docker/dockerfile:1.7
-ARG APP=client-api
-
 FROM node:20-alpine AS base
 WORKDIR /app
 RUN corepack enable && apk add --no-cache openssl libc6-compat

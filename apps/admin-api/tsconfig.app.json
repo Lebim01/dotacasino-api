@@ -1,7 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/apps/client-api"
+    "outDir": "../../dist/apps/admin-api"
   },
   "include": ["src/**/*.ts"]
 }
