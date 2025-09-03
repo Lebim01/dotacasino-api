@@ -45,9 +45,9 @@ export class OpenGameDto extends BaseCmdDto {
   @IsString() language!: string;
   @IsString() continent!: string; // eur, usa, asia, australia
   @IsString() login!: string;
-  @IsString() gameId!: string;
+  @IsString() gameId!: number;
   @IsOptional() @IsString() cdnUrl?: string;
-  @IsIn(['0', '1']) demo!: '0' | '1';
+  @IsIn(['0', '1']) demo!: 0 | 1;
 }
 
 export class SessionsLogDto extends BaseCmdDto {

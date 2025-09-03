@@ -10,12 +10,11 @@
 ALTER TABLE "public"."Game" DROP CONSTRAINT "Game_providerId_fkey";
 
 -- DropIndex
-DROP INDEX "public"."Game_enabled_category_platformType_idx";
+DROP INDEX "public"."Game_enabled_platformType_idx";
 
 -- AlterTable
-ALTER TABLE "public"."Game" DROP COLUMN "category",
+ALTER TABLE "public"."Game"
 DROP COLUMN "platformType",
-DROP COLUMN "providerGameId",
 ADD COLUMN     "gameProviderId" TEXT;
 
 -- CreateIndex

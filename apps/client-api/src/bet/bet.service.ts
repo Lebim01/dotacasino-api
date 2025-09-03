@@ -1,23 +1,10 @@
-// src/games-api/games-api.service.ts
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { validateSync, ValidationError } from 'class-validator';
-import { plainToInstance } from 'class-transformer';
-import * as crypto from 'crypto';
-import {
-  CreateHallDto,
-  Fail,
-  GamesListDto,
-  GetBalanceDto,
-  OpenGameDto,
-  SessionsLogDto,
-  Success,
-  WriteBetDto,
-  ChangeHallConfigGetDto,
-  ChangeHallConfigSetDto,
-} from './dto';
+import { Injectable } from '@nestjs/common';
+import { GamesListDto, OpenGameDto, WriteBetDto } from './dto';
 import { HttpService } from '@nestjs/axios';
 import { GamesApiResponse } from './dto/games.response';
 import { firstValueFrom } from 'rxjs';
+import { BalanceApiResponse } from './dto/balance.response';
+import { OpenGameApiResponse } from './dto/opengame.response';
 
 @Injectable()
 export class BetService {
@@ -45,20 +32,31 @@ export class BetService {
     return data;
   }
 
-  async openGame() {
+  async openGame(domain: string, gameId: number) {
+    console.log({
+      ...this.params,
+      cmd: 'openGame',
+      domain,
+      exitUrl: `${domain}/close.php`,
+      language: 'en',
+      continent: 'eur',
+      login: 'TBSArs2716',
+      gameId,
+      cdnUrl: `${domain}/exit`,
+      demo: '1',
+    });
     const { data } = await firstValueFrom(
-      this.api.post('', {
+      this.api.post<OpenGameApiResponse, OpenGameDto>('openGame', {
         ...this.params,
         cmd: 'openGame',
-
-        domain: 'https://domain',
-        exitUrl: 'https://domain/close.php',
+        domain,
+        exitUrl: `${domain}/close.php`,
         language: 'en',
         continent: 'eur',
-        login: 'player_login',
-        gameId: '1',
-        cdnUrl: 'http://domain.com/resources',
-        demo: '0',
+        login: 'TBSArs2716',
+        gameId,
+        cdnUrl: `${domain}/exit`,
+        demo: 1,
       }),
     );
 
@@ -75,5 +73,31 @@ export class BetService {
         page: 'page number(int)',
       }),
     );
+    return data;
+  }
+
+  // (recibir el saldo en balance para el jugador)
+  async getBalance() {
+    const { data } = await firstValueFrom(
+      this.api.post<BalanceApiResponse>('', {
+        ...this.params,
+        cmd: 'getBalance',
+        login: 'test',
+      }),
+    );
+    return data;
+  }
+
+  async writeBet() {
+    const { data } = await firstValueFrom(
+      this.api.post<BalanceApiResponse>('writeBet', {
+        ...this.params,
+        cmd: 'writeBet',
+        login: 'test',
+
+        bet: '',
+      }),
+    );
+    return data;
   }
 }

@@ -82,10 +82,17 @@ model LedgerEntry {
 }
 
 enum GameCategory {
-  LIVE
-  EGAME
-  TABLE
-  OTHER
+  slots
+  live_dealers
+  fast_games
+  crash_games
+  table_games
+  lottery
+  card
+  roulette
+  video_poker
+  arcade
+  sport
 }
 
 model GameProvider {
@@ -109,6 +116,7 @@ model Game {
   tags           String[] // ["popular","nuevo"]
   enabled        Boolean       @default(true)
   order          Int           @default(0)
+  category       GameCategory?
   thumbnailUrl   String?
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt

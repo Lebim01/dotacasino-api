@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { GameCategory, PrismaClient } from '@prisma/client';
 import fs from 'fs';
 
 const prisma = new PrismaClient();
@@ -31,6 +31,10 @@ async function main() {
   for (const [providerName, games] of Object.entries(grouped)) {
     const code = providerName.toUpperCase().replace(/\s+/g, '_');
 
+    const categories = new Set();
+    games.map((g) => categories.add(g.categories));
+    console.log(categories);
+
     // Crear provider
     const provider = await prisma.gameProvider.upsert({
       where: { code },
@@ -47,6 +51,7 @@ async function main() {
             tags: g.system_name2?.includes('new') ? ['nuevo'] : [],
             thumbnailUrl: g.img,
             order: index,
+            category: (g.categories || null) as GameCategory,
           })),
         },
       },
