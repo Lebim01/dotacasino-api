@@ -37,6 +37,8 @@ enum KycDocStatus {
 model User {
   id            String          @id @default(uuid())
   email         String          @unique
+  firstName     String          @default("")
+  lastName      String          @default("")
   country       String
   kycStatus     KycStatus       @default(PENDING)
   wallets       Wallet[]

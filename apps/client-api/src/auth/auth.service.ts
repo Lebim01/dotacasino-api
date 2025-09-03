@@ -52,6 +52,8 @@ export class AuthService {
         displayName: true,
         language: true,
         phone: true,
+        firstName: true,
+        lastName: true,
       },
     });
 
