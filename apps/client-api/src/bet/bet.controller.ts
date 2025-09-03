@@ -1,8 +1,8 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiExcludeController, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { BetService } from './bet.service';
 
-@ApiTags('Casino')
+@ApiExcludeController()
 @Controller('bet')
 export class BetController {
   constructor(private readonly betService: BetService) {}
