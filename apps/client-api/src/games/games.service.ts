@@ -8,18 +8,13 @@ const gameCardSelect = Prisma.validator<Prisma.GameSelect>()({
   id: true,
   slug: true,
   title: true,
-  platformType: true,
-  category: true,
-  gameType: true,
-  providerGameId: true,
+
   rtp: true,
   devices: true,
   tags: true,
   thumbnailUrl: true,
   order: true,
   createdAt: true,
-  // relación incluida y tipada:
-  provider: { select: { code: true, name: true } },
 });
 
 // 2) Deriva el tipo **correcto** del payload (incluye provider)
@@ -58,7 +53,6 @@ export class GamesService {
     const [items, total] = await this.prisma.$transaction([
       this.prisma.game.findMany({
         where,
-        include: { provider: { select: { code: true, name: true } } },
         orderBy,
         skip,
         take: q.pageSize,
@@ -71,12 +65,7 @@ export class GamesService {
       id: g.id,
       slug: g.slug,
       title: g.title,
-      provider: g.provider.code,
-      providerName: g.provider.name,
-      category: g.category,
-      platformType: g.platformType,
       gameType: g.gameType,
-      providerGameId: g.providerGameId,
       rtp: g.rtp ? Number(g.rtp) : null,
       devices: g.devices,
       tags: g.tags,
