@@ -13,6 +13,7 @@ import { WalletModule } from '@domain/wallet/wallet.module';
 import { WalletClientModule } from './wallet/wallet.module';
 import { KycModule } from './kyc/kyc.module';
 import { TopupModule } from './wallet/topup.module';
+import { BetModule } from './bet/bet.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { TopupModule } from './wallet/topup.module';
     WalletClientModule,
     KycModule,
     TopupModule,
+    BetModule
   ],
   controllers: [HealthController],
 })

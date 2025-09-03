@@ -1,67 +1,75 @@
 import { PrismaClient } from '@prisma/client';
+import fs from 'fs';
+
 const prisma = new PrismaClient();
 
+type ResponseJson = {
+  gameList: Array<{
+    id: string;
+    name: string;
+    label: string; // ej: "hacksaw_op"
+    title: string; // ej: "hacksaw"
+    categories: string;
+    device: string; // "2" = desktop+mobile
+    img: string;
+    system_name2?: string;
+  }>;
+  gameTitles: string[];
+};
+
 async function main() {
-  const ag = await prisma.gameProvider.upsert({
-    where: { code: 'AG' },
-    update: {},
-    create: {
-      code: 'AG',
-      name: 'Asia Gaming',
-      platformTypes: ['AGIN', 'AGQ', 'AGNW', 'SLOT'],
-    },
-  });
+  const raw = fs.readFileSync('games.response.json', 'utf-8');
+  const data: ResponseJson = JSON.parse(raw);
 
-  await prisma.game.upsert({
-    where: { slug: 'ag-baccarat-agin' },
-    update: {},
-    create: {
-      slug: 'ag-baccarat-agin',
-      title: 'Baccarat (AGIN)',
-      providerId: ag.id,
-      category: 'LIVE',
-      platformType: 'AGIN',
-      gameType: 'BAC',
-      devices: ['DESKTOP', 'MOBILE'],
-      tags: ['popular'],
-      order: 10,
-      thumbnailUrl: 'https://cdn.example.com/ag/bac-agin.jpg',
-    },
-  });
+  // Agrupar juegos por proveedor (campo title)
+  const grouped: Record<string, typeof data.gameList> = {};
+  for (const game of data.gameList) {
+    if (!grouped[game.title]) grouped[game.title] = [];
+    grouped[game.title].push(game);
+  }
 
-  await prisma.game.upsert({
-    where: { slug: 'ag-dragon-tiger-agq' },
-    update: {},
-    create: {
-      slug: 'ag-dragon-tiger-agq',
-      title: 'Dragon Tiger (AGQ)',
-      providerId: ag.id,
-      category: 'LIVE',
-      platformType: 'AGQ',
-      gameType: 'DT',
-      devices: ['DESKTOP', 'MOBILE'],
-      tags: [],
-      order: 20,
-      thumbnailUrl: 'https://cdn.example.com/ag/dt-agq.jpg',
-    },
-  });
+  for (const [providerName, games] of Object.entries(grouped)) {
+    const code = providerName.toUpperCase().replace(/\s+/g, '_');
 
-  await prisma.game.upsert({
-    where: { slug: 'ag-slot-sb49' },
-    update: {},
-    create: {
-      slug: 'ag-slot-sb49',
-      title: 'Space Odyssey (SB49)',
-      providerId: ag.id,
-      category: 'EGAME',
-      platformType: 'SLOT',
-      providerGameId: 'SB49', // EGames gameId (ver doc)
-      devices: ['DESKTOP', 'MOBILE'],
-      tags: ['slot'],
-      order: 30,
-      thumbnailUrl: 'https://cdn.example.com/ag/slot-sb49.jpg',
-    },
-  });
+    // Crear provider
+    const provider = await prisma.gameProvider.upsert({
+      where: { code },
+      update: {},
+      create: {
+        code,
+        name: providerName,
+        platformTypes: [code], // aquí puedes mapear tipos reales si aplica
+        games: {
+          create: games.map((g, index) => ({
+            slug: `${providerName}-${g.id}`.toLowerCase().replace(/\s+/g, '-'),
+            title: g.name,
+            category: g.categories as any, // asegúrate de que coincida con tu enum GameCategory
+            platformType: code,
+            gameType: g.system_name2
+              ? (g.system_name2.split('/').pop() ?? null)
+              : null,
+            providerGameId: g.id,
+            devices: g.device === '2' ? ['DESKTOP', 'MOBILE'] : ['DESKTOP'],
+            tags: g.system_name2?.includes('new') ? ['nuevo'] : [],
+            thumbnailUrl: g.img,
+            order: index,
+          })),
+        },
+      },
+    });
+
+    console.log(
+      `✔ Seeded provider ${provider.name} con ${games.length} juegos`,
+    );
+  }
 }
 
-main().then(() => prisma.$disconnect());
+main()
+  .then(async () => {
+    await prisma.$disconnect();
+  })
+  .catch(async (e) => {
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
+  });
