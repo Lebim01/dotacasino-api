@@ -32,31 +32,19 @@ export class BetService {
     return data;
   }
 
-  async openGame(domain: string, gameId: number) {
-    console.log({
-      ...this.params,
-      cmd: 'openGame',
-      domain,
-      exitUrl: `${domain}/close.php`,
-      language: 'en',
-      continent: 'eur',
-      login: 'TBSArs2716',
-      gameId,
-      cdnUrl: `${domain}/exit`,
-      demo: '1',
-    });
+  async openGame(domain: string, gameId: string) {
     const { data } = await firstValueFrom(
-      this.api.post<OpenGameApiResponse, OpenGameDto>('openGame', {
+      this.api.post<OpenGameApiResponse, OpenGameDto>('openGame/', {
         ...this.params,
         cmd: 'openGame',
         domain,
         exitUrl: `${domain}/close.php`,
         language: 'en',
         continent: 'eur',
-        login: 'TBSArs2716',
+        login: 'TBSArs2716USD',
         gameId,
         cdnUrl: `${domain}/exit`,
-        demo: 1,
+        demo: '1',
       }),
     );
 

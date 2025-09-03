@@ -24,9 +24,6 @@ export class GamesController {
 
   @Post('openGame/:gameId')
   async openGame(@Headers() headers: any, @Param('gameId') gameId: string) {
-    return this.bet.openGame(
-      headers.origin || 'https://dota.click',
-      Number(gameId),
-    );
+    return this.bet.openGame(headers.origin || 'https://dota.click', gameId);
   }
 }
