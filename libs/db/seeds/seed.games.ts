@@ -42,7 +42,7 @@ async function main() {
       create: {
         code,
         name: providerName,
-        platformTypes: [code], // aquí puedes mapear tipos reales si aplica
+        platformTypes: [code],
         games: {
           create: games.map((g, index) => ({
             slug: `${providerName}-${g.id}`.toLowerCase().replace(/\s+/g, '-'),

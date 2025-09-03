@@ -56,28 +56,25 @@ export class GamesService {
         orderBy,
         skip,
         take: q.pageSize,
+        select: {
+          id: true,
+          slug: true,
+          title: true,
+          category: true,
+          devices: true,
+          thumbnailUrl: true,
+          enabled: true,
+          GameProvider: true,
+        },
       }),
       this.prisma.game.count({ where }),
     ]);
-
-    // Limpieza (Decimal -> number)
-    const mapped = items.map((g) => ({
-      id: g.id,
-      slug: g.slug,
-      title: g.title,
-      gameType: g.gameType,
-      rtp: g.rtp ? Number(g.rtp) : null,
-      devices: g.devices,
-      tags: g.tags,
-      thumbnailUrl: g.thumbnailUrl,
-      order: g.order,
-    }));
 
     return {
       page: q.page,
       pageSize: q.pageSize,
       total,
-      items: mapped,
+      items,
     };
   }
 }
