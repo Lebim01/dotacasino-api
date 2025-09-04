@@ -125,6 +125,7 @@ export class AuthService {
           email,
           dto.password,
           dto.country,
+          dto.referralCode
         );
 
         await this.walletService.createWallet(user.id);

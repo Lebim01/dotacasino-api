@@ -16,6 +16,19 @@ async function main() {
     },
   });
 
+  await prisma.user.create({
+    data: {
+      country: 'MX',
+      email: 'marcoslevagomez@gmail.com',
+      passwordHash: '',
+      displayName: 'MARCOS',
+      firstName: 'MARCOS',
+      lastName: 'LEVA',
+      id: '6760c8a3-c8f1-4710-98b2-3689321d988d',
+      roles: ['admin'],
+    },
+  });
+
   console.log(`✔ Seeded users`);
 }
 

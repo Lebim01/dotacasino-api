@@ -8,7 +8,12 @@ import { makeRefCode } from 'libs/shared/src/refcode';
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createUser(email: string, password: string, country: string) {
+  async createUser(
+    email: string,
+    password: string,
+    country: string,
+    referralCode: string,
+  ) {
     const passwordHash = await argon2.hash(password);
 
     try {
@@ -19,6 +24,7 @@ export class UsersService {
           passwordHash,
           roles: [Role.User],
           refCode: makeRefCode(),
+          referralCode,
         },
         select: { id: true, email: true, country: true, createdAt: true },
       });
