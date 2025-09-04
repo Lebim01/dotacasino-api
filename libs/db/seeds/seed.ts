@@ -1,2 +1,3 @@
-import './seed.games'
-import './seed.users'
+import './seed.games';
+import './seed.users';
+import './seed.servers';

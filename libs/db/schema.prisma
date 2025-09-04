@@ -248,10 +248,12 @@ model Topup {
 }
 
 model Server {
-  id           String   @id @default(uuid())
-  name         String
-  url          String
-  thumbnailUrl String?
-  enabled      Boolean  @default(true)
-  createdAt    DateTime @default(now())
+  id             String   @id @default(uuid())
+  name           String
+  url            String
+  thumbnailUrl   String?
+  primaryColor   String
+  secondaryColor String
+  enabled        Boolean  @default(true)
+  createdAt      DateTime @default(now())
 }
