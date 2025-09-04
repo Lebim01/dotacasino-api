@@ -29,4 +29,8 @@ export class UsersService {
       throw err;
     }
   }
+
+  getReferenceCode(code: string){
+
+  }
 }

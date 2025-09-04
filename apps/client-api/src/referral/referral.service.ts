@@ -108,23 +108,38 @@ export class ReferralService {
   }
 
   async tree(userId: string, maxDepth = 7) {
+    console.log({ userId });
+    /**
+     * UNION ALL
+        SELECT cu.id, r."parentId", t.depth + 1, t.path || cu.id
+        FROM "Referral" r
+        JOIN "User" cu ON cu.id = r."userId"
+        JOIN tree t    ON r."parentId" = t.user_id
+        WHERE t.depth < 7 AND NOT (cu.id = ANY(t.path))
+     */
+
     // CTE recursivo para obtener árbol hasta maxDepth
     const rows = await this.prisma.$queryRawUnsafe<any[]>(
       `
       WITH RECURSIVE tree AS (
-        SELECT u.id AS user_id, NULL::uuid AS parent_id, 0 AS depth, ARRAY[u.id] AS path, u.email, u."displayName"
-        FROM "User" u WHERE u.id = $1::uuid
+        SELECT
+          u.id::uuid          AS user_id,
+          NULL::uuid          AS parent_id,
+          0                   AS depth,
+          ARRAY[u.id::uuid]         AS path
+        FROM "User" u
+        WHERE u.id::uuid = $1::uuid
+
         UNION ALL
-        SELECT cu.id, r."parentId", t.depth + 1, t.path || cu.id, cu.email, cu."displayName"
+
+        SELECT cu.id::uuid, r."parentId"::uuid, t.depth + 1, t.path || ARRAY[cu.id::uuid]
         FROM "Referral" r
-        JOIN "User" cu ON cu.id = r."userId"
-        JOIN tree t    ON r."parentId" = t.user_id
-        WHERE t.depth < $2 AND NOT (cu.id = ANY(t.path))
+        JOIN "User" cu ON cu.id::uuid = r."userId"::uuid
+        JOIN tree t    ON r."parentId"::uuid = t.user_id::uuid
+        WHERE t.depth < 7 
       )
-      SELECT user_id, parent_id, depth, email, "displayName"
-      FROM tree
-      WHERE depth > 0
-      ORDER BY depth, user_id;
+      SELECT * FROM tree WHERE depth > 0;
+
     `,
       userId,
       Math.max(1, Math.min(maxDepth, 7)),

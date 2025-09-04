@@ -153,9 +153,9 @@ model BetTicket {
 
 model Referral {
   id       String  @id @default(uuid())
-  userId   String
+  userId   String  @db.Uuid
   user     User    @relation(fields: [userId], references: [id])
-  parentId String?
+  parentId String? @db.Uuid
   level    Int
 
   @@index([parentId], map: "referral_parent_idx")
