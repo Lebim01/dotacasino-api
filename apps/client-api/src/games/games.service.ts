@@ -104,5 +104,7 @@ export class GamesService {
         userId,
       },
     });
+
+    return response;
   }
 }
