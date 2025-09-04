@@ -1,9 +1,19 @@
-import { Controller, Get, Headers, Param, Post, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Headers,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { GamesService } from './games.service';
 import { ListGamesDto } from './dto/list-games.dto';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { ListGamesResponseDto } from './dto/list-games-response.dto';
 import { BetService } from '../bet/bet.service';
+import { CurrentUser } from '@security/current-user.decorator';
+import { JwtAuthGuard } from '@security/jwt.guard';
 
 @ApiTags('Games')
 @Controller('games')
@@ -23,7 +33,17 @@ export class GamesController {
   }
 
   @Post('openGame/:gameId')
-  async openGame(@Headers() headers: any, @Param('gameId') gameId: string) {
-    return this.bet.openGame(headers.origin || 'https://dota.click', gameId);
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  async openGame(
+    @Headers() headers: any,
+    @Param('gameId') gameId: string,
+    @CurrentUser() u: { userId: string },
+  ) {
+    return this.bet.openGame(
+      headers.origin || 'https://dota.click',
+      gameId,
+      u.userId,
+    );
   }
 }

@@ -5,6 +5,7 @@ import { GamesApiResponse } from './dto/games.response';
 import { firstValueFrom } from 'rxjs';
 import { BalanceApiResponse } from './dto/balance.response';
 import { OpenGameApiResponse } from './dto/opengame.response';
+import { WriteBetApiResponse } from './dto/writebet.response';
 
 @Injectable()
 export class BetService {
@@ -32,7 +33,7 @@ export class BetService {
     return data;
   }
 
-  async openGame(domain: string, gameId: string) {
+  async openGame(domain: string, gameId: string, userId: string) {
     const { data } = await firstValueFrom(
       this.api.post<OpenGameApiResponse, OpenGameDto>('openGame/', {
         ...this.params,
@@ -41,7 +42,7 @@ export class BetService {
         exitUrl: `${domain}/close.php`,
         language: 'en',
         continent: 'eur',
-        login: 'TBSArs2716USD',
+        login: userId,
         gameId,
         cdnUrl: `${domain}/exit`,
         demo: '1',
@@ -51,14 +52,14 @@ export class BetService {
     return data;
   }
 
-  async getHistoryGames() {
+  async getHistoryGames(sessionId: string, page = 1, limit = 10) {
     const { data } = await firstValueFrom(
       this.api.post('', {
         ...this.params,
         cmd: 'gameSessionsLog',
-        sessionsId: 'session id(string)',
-        count: ' row count in page(int)',
-        page: 'page number(int)',
+        sessionsId: sessionId,
+        count: limit,
+        page: page,
       }),
     );
     return data;
@@ -76,16 +77,20 @@ export class BetService {
     return data;
   }
 
-  async writeBet() {
+  async writeBet(userId: string, sessionId: string, gameId: string) {
     const { data } = await firstValueFrom(
-      this.api.post<BalanceApiResponse>('writeBet', {
+      this.api.post<WriteBetApiResponse, WriteBetDto>('writeBet', {
         ...this.params,
         cmd: 'writeBet',
-        login: 'test',
-
-        bet: '',
+        login: userId,
+        sessionId,
+        gameId,
+        bet: '100',
+        win: '0',
+        betInfo: 'bet',
+        tradeId: '9999',
       }),
     );
-    return data;
+    return data.status == 'success';
   }
 }
