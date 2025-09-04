@@ -6,7 +6,7 @@ export default defineConfig({
   schema: path.join('libs', 'db', 'schema.prisma'),
   migrations: {
     path: path.join('libs', 'db', 'migrations'),
-    seed: 'ts-node libs/db/seeds/seed.games.ts',
+    seed: 'ts-node libs/db/seeds/seed.ts',
   },
   views: {
     path: path.join('libs', 'db', 'views'),

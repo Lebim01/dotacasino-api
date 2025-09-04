@@ -11,9 +11,8 @@ import { PrismaService } from 'libs/db/src/prisma.service';
       headers: { 'Content-Type': 'application/json' },
       timeout: 10000,
     }),
-    PrismaService,
   ],
-  providers: [BetService],
+  providers: [BetService, PrismaService],
   controllers: [BetController],
 })
 export class BetModule {}

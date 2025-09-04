@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { ListGamesDto } from './dto/list-games.dto';
 import { PrismaService } from 'libs/db/src/prisma.service';
 import { Prisma } from '@prisma/client';
+import { BetService } from '../bet/bet.service';
 
 // 1) Define el SELECT de forma tipada y reutilizable
 const gameCardSelect = Prisma.validator<Prisma.GameSelect>()({
@@ -22,7 +23,10 @@ type GameCard = Prisma.GameGetPayload<{ select: typeof gameCardSelect }>;
 
 @Injectable()
 export class GamesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly bet: BetService,
+  ) {}
 
   async list(q: ListGamesDto) {
     const where: any = { enabled: true };
@@ -76,5 +80,29 @@ export class GamesService {
       total,
       items,
     };
+  }
+
+  async openGame(gameSlug: string, domain: string, userId: string) {
+    const game = await this.prisma.game.findFirst({
+      where: {
+        slug: {
+          equals: gameSlug,
+        },
+      },
+    });
+
+    if (!game) {
+      throw new HttpException('Not found', 401);
+    }
+
+    const response = await this.bet.openGame(domain, game.betId, userId);
+
+    await this.prisma.betSession.create({
+      data: {
+        sessionId: response.content.gameRes.sessionId,
+        gameId: game.id,
+        userId,
+      },
+    });
   }
 }

@@ -32,18 +32,25 @@ export class GamesController {
     return this.games.list(q);
   }
 
-  @Post('openGame/:gameId')
+  @Post('openGame/:gameSlug')
   //@ApiBearerAuth('access-token')
   //@UseGuards(JwtAuthGuard)
   async openGame(
     @Headers() headers: any,
-    @Param('gameId') gameId: string,
+    @Param('gameSlug') gameSlug: string,
     @CurrentUser() u: { userId: string },
   ) {
-    return this.bet.openGame(
+    return this.games.openGame(
       headers.origin || 'https://dota.click',
-      gameId,
-      u?.userId || 'victor@admin.com',
+      gameSlug,
+      u?.userId || '6760c8a3-c8f1-4710-98b2-3689321d988f',
     );
+  }
+
+  @Post('refresh/:sessionId')
+  //@ApiBearerAuth('access-token')
+  //@UseGuards(JwtAuthGuard)
+  async refreshdb(@Param('sessionId') sessionId: string) {
+    return this.bet.getHistoryGames(sessionId);
   }
 }

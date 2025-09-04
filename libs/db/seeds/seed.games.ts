@@ -33,7 +33,7 @@ async function main() {
 
     const categories = new Set();
     games.map((g) => categories.add(g.categories));
-    console.log(categories);
+    //console.log(categories);
 
     // Crear provider
     const provider = await prisma.gameProvider.upsert({
@@ -52,6 +52,7 @@ async function main() {
             thumbnailUrl: g.img,
             order: index,
             category: (g.categories || null) as GameCategory,
+            betId: g.id,
           })),
         },
       },
