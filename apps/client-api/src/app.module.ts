@@ -15,6 +15,7 @@ import { KycModule } from './kyc/kyc.module';
 import { TopupModule } from './wallet/topup.module';
 import { BetModule } from './bet/bet.module';
 import { ServersModule } from './servers/servers.module';
+import { ReferralModule } from './referral/referral.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { ServersModule } from './servers/servers.module';
     TopupModule,
     BetModule,
     ServersModule,
+    ReferralModule,
   ],
   controllers: [HealthController],
 })

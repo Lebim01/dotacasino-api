@@ -56,6 +56,7 @@ model User {
   KycSubmission KycSubmission[]
   Topup         Topup[]
   gameSessions  BetSession[]
+  Referral      Referral[]
 }
 
 model Wallet {
@@ -153,6 +154,7 @@ model BetTicket {
 model Referral {
   id       String  @id @default(uuid())
   userId   String
+  user     User    @relation(fields: [userId], references: [id])
   parentId String?
   level    Int
 

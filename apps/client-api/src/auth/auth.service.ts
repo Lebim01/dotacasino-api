@@ -14,6 +14,7 @@ import { UsersService } from '../users/users.service';
 import { WalletService } from '@domain/wallet/wallet.service';
 import { JwtPayload } from '@security/jwt.strategy';
 import { randomUUID } from 'crypto';
+import { ReferralService } from '../referral/referral.service';
 
 const ACCESS_TTL = process.env.JWT_ACCESS_TTL ?? '15m';
 const REFRESH_TTL = process.env.JWT_REFRESH_TTL ?? '7d';
@@ -25,6 +26,7 @@ export class AuthService {
     private readonly jwt: JwtService,
     private readonly usersService: UsersService,
     private readonly walletService: WalletService,
+    private readonly referralService: ReferralService,
   ) {}
 
   private sanitize(user: {
@@ -125,9 +127,11 @@ export class AuthService {
           email,
           dto.password,
           dto.country,
-          dto.referralCode
         );
 
+        if (dto.referralCode) {
+          await this.referralService.attachByCode(user.id, dto.referralCode);
+        }
         await this.walletService.createWallet(user.id);
         return user;
       });

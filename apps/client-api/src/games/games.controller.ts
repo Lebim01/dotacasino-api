@@ -9,7 +9,12 @@ import {
 } from '@nestjs/common';
 import { GamesService } from './games.service';
 import { ListGamesDto } from './dto/list-games.dto';
-import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { ListGamesResponseDto } from './dto/list-games-response.dto';
 import { BetService } from '../bet/bet.service';
 import { CurrentUser } from '@security/current-user.decorator';

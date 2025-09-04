@@ -13,24 +13,6 @@ export class ListGamesDto {
   search?: string;
 
   @ApiProperty({
-    description: 'Game provider code',
-    required: false,
-    example: 'AG'
-  })
-  @IsOptional()
-  @IsString()
-  provider?: string;
-
-  @ApiProperty({
-    description: 'Platform type code',
-    required: false,
-    example: 'AGIN'
-  })
-  @IsOptional()
-  @IsString()
-  platformType?: string;
-
-  @ApiProperty({
     description: 'Game category',
     required: false,
     enum: ['LIVE', 'EGAME', 'TABLE', 'OTHER']
