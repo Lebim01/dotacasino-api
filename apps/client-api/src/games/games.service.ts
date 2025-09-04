@@ -31,8 +31,6 @@ export class GamesService {
   async list(q: ListGamesDto) {
     const where: any = { enabled: true };
 
-    if (q.provider) where.provider = { code: q.provider };
-    if (q.platformType) where.platformType = q.platformType;
     if (q.category) where.category = q.category;
     if (q.device) where.devices = { has: q.device };
     if (q.search) {
