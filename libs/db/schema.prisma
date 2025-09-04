@@ -55,6 +55,7 @@ model User {
   KycDocument   KycDocument[]
   KycSubmission KycSubmission[]
   Topup         Topup[]
+  gameSessions  BetSession[]
 }
 
 model Wallet {
@@ -122,8 +123,19 @@ model Game {
   updatedAt      DateTime      @updatedAt
   GameProvider   GameProvider? @relation(fields: [gameProviderId], references: [id])
   gameProviderId String?
+  sessions       BetSession[]
 
   @@index([enabled])
+}
+
+model BetSession {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  gameId    String
+  game      Game     @relation(fields: [gameId], references: [id])
+  sessionId String
+  createdAt DateTime @default(now())
 }
 
 model BetTicket {

@@ -6,6 +6,7 @@ import { firstValueFrom } from 'rxjs';
 import { BalanceApiResponse } from './dto/balance.response';
 import { OpenGameApiResponse } from './dto/opengame.response';
 import { WriteBetApiResponse } from './dto/writebet.response';
+import { PrismaService } from 'libs/db/src/prisma.service';
 
 @Injectable()
 export class BetService {
@@ -14,7 +15,10 @@ export class BetService {
     key: string;
   };
 
-  constructor(private readonly api: HttpService) {
+  constructor(
+    private readonly api: HttpService,
+    private readonly prisma: PrismaService,
+  ) {
     this.params = {
       hall: process.env.BET_HALL_ID as string,
       key: process.env.BET_HALL_KEY as string,
