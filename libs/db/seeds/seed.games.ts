@@ -13,6 +13,7 @@ type ResponseJson = {
     device: string; // "2" = desktop+mobile
     img: string;
     system_name2?: string;
+    demo: "0" | "1";
   }>;
   gameTitles: string[];
 };
@@ -53,6 +54,7 @@ async function main() {
             order: index,
             category: (g.categories || null) as GameCategory,
             betId: g.id,
+            allowDemo: g.demo == '1',
           })),
         },
       },

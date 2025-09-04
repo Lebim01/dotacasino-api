@@ -7,6 +7,7 @@ import { BalanceApiResponse } from './dto/balance.response';
 import { OpenGameApiResponse } from './dto/opengame.response';
 import { WriteBetApiResponse } from './dto/writebet.response';
 import { PrismaService } from 'libs/db/src/prisma.service';
+import { HistoryApiResponse } from './dto/history.response';
 
 @Injectable()
 export class BetService {
@@ -37,7 +38,7 @@ export class BetService {
     return data;
   }
 
-  async openGame(domain: string, gameId: string, userId: string) {
+  async openGame(gameId: string, domain: string, userId: string) {
     const { data } = await firstValueFrom(
       this.api.post<OpenGameApiResponse, OpenGameDto>('openGame/', {
         ...this.params,
@@ -52,13 +53,12 @@ export class BetService {
         demo: '1',
       }),
     );
-
     return data;
   }
 
   async getHistoryGames(sessionId: string, page = 1, limit = 10) {
     const { data } = await firstValueFrom(
-      this.api.post('', {
+      this.api.post<HistoryApiResponse>('', {
         ...this.params,
         cmd: 'gameSessionsLog',
         sessionsId: sessionId,

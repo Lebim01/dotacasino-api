@@ -125,6 +125,7 @@ model Game {
   GameProvider   GameProvider? @relation(fields: [gameProviderId], references: [id])
   gameProviderId String?
   sessions       BetSession[]
+  allowDemo      Boolean       @default(false)
 
   @@index([enabled])
 }
@@ -132,9 +133,9 @@ model Game {
 model BetSession {
   id        String   @id @default(uuid())
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  user      User?    @relation(fields: [userId], references: [id])
   gameId    String
-  game      Game     @relation(fields: [gameId], references: [id])
+  game      Game?    @relation(fields: [gameId], references: [id])
   sessionId String
   createdAt DateTime @default(now())
 }
@@ -244,4 +245,13 @@ model Topup {
   createdAt      DateTime @default(now())
 
   @@index([userId])
+}
+
+model Server {
+  id           String   @id @default(uuid())
+  name         String
+  url          String
+  thumbnailUrl String?
+  enabled      Boolean  @default(true)
+  createdAt    DateTime @default(now())
 }

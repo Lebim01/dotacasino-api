@@ -95,16 +95,27 @@ export class GamesService {
       throw new HttpException('Not found', 401);
     }
 
-    const response = await this.bet.openGame(domain, game.betId, userId);
+    const response = await this.bet.openGame(game.betId, domain, userId);
 
-    await this.prisma.betSession.create({
-      data: {
+    if (response.status == 'success') {
+      console.log({
         sessionId: response.content.gameRes.sessionId,
         gameId: game.id,
         userId,
-      },
-    });
+      });
 
-    return response;
+      await this.prisma.betSession.create({
+        data: {
+          sessionId: response.content.gameRes.sessionId,
+          gameId: game.id,
+          userId,
+        },
+      });
+
+      return response;
+    } else {
+      console.log(response);
+      return response;
+    }
   }
 }

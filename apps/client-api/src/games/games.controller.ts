@@ -41,8 +41,8 @@ export class GamesController {
     @CurrentUser() u: { userId: string },
   ) {
     return this.games.openGame(
-      headers.origin || 'https://dota.click',
       gameSlug,
+      headers.origin || 'https://dota.click',
       u?.userId || '6760c8a3-c8f1-4710-98b2-3689321d988f',
     );
   }
