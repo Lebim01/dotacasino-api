@@ -14,6 +14,7 @@ import { WalletClientModule } from './wallet/wallet.module';
 import { KycModule } from './kyc/kyc.module';
 import { TopupModule } from './wallet/topup.module';
 import { BetModule } from './bet/bet.module';
+import { ServersModule } from './servers/servers.module';
 
 @Module({
   imports: [
@@ -29,7 +30,8 @@ import { BetModule } from './bet/bet.module';
     WalletClientModule,
     KycModule,
     TopupModule,
-    BetModule
+    BetModule,
+    ServersModule,
   ],
   controllers: [HealthController],
 })
