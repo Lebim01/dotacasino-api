@@ -4,6 +4,24 @@ import * as argon2 from 'argon2';
 import { Role } from '@security/roles.enum';
 import { makeRefCode } from 'libs/shared/src/refcode';
 
+import {
+  uniqueNamesGenerator,
+  adjectives,
+  colors,
+  animals,
+} from 'unique-names-generator';
+
+export function generateDisplayName() {
+  return (
+    uniqueNamesGenerator({
+      dictionaries: [adjectives, colors, animals],
+      separator: '',
+      style: 'capital',
+      length: 2,
+    }) + Math.floor(Math.random() * 1000)
+  );
+}
+
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
@@ -19,6 +37,7 @@ export class UsersService {
           passwordHash,
           roles: [Role.User],
           refCode: makeRefCode(),
+          displayName: generateDisplayName(),
         },
         select: { id: true, email: true, country: true, createdAt: true },
       });
@@ -30,7 +49,5 @@ export class UsersService {
     }
   }
 
-  getReferenceCode(code: string){
-
-  }
+  getReferenceCode(code: string) {}
 }
