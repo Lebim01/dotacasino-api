@@ -57,6 +57,7 @@ model User {
   Topup         Topup[]
   gameSessions  BetSession[]
   Referral      Referral[]
+  PasswordReset PasswordReset[]
 }
 
 model Wallet {
@@ -153,9 +154,9 @@ model BetTicket {
 
 model Referral {
   id       String  @id @default(uuid())
-  userId   String  @db.Uuid
+  userId   String
   user     User    @relation(fields: [userId], references: [id])
-  parentId String? @db.Uuid
+  parentId String?
   level    Int
 
   @@index([parentId], map: "referral_parent_idx")
@@ -258,4 +259,18 @@ model Server {
   secondaryColor String
   enabled        Boolean  @default(true)
   createdAt      DateTime @default(now())
+}
+
+model PasswordReset {
+  id        String    @id @default(uuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  tokenHash String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+  ip        String?
+  userAgent String?
+
+  @@index([userId])
 }
