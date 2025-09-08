@@ -141,4 +141,23 @@ export class ReferralService {
 
     return { items: rows, stats };
   }
+
+  async getByCode(code: string) {
+    return this.prisma.user.findFirst({
+      where: {
+        OR: [
+          {
+            refCodeL: code,
+          },
+          {
+            refCodeR: code,
+          },
+        ],
+      },
+      select: {
+        id: true,
+        displayName: true,
+      },
+    });
+  }
 }
