@@ -23,11 +23,15 @@ import {
   LogoutResponseDto,
   RefreshTokenResponseDto,
 } from './dto/auth-responses.dto';
+import { HttpService } from '@nestjs/axios';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly auth: AuthService) {}
+  constructor(
+    private readonly auth: AuthService,
+    private readonly http: HttpService,
+  ) {}
 
   @Post('register')
   @HttpCode(HttpStatus.CREATED)

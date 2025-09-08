@@ -59,11 +59,13 @@ async function main() {
           roles: ['user'],
           displayName: `Level ${level} - User ${i}`,
           kycStatus: $Enums.KycStatus.PENDING,
-          refCode,
+          refCodeL: refCode + 'L',
+          refCodeR: refCode + 'R',
         },
         update: {
           displayName: `Level ${level} - User ${i}`,
-          refCode,
+          refCodeL: refCode + 'L',
+          refCodeR: refCode + 'R',
         },
         select: { id: true },
       });

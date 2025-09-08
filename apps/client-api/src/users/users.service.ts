@@ -10,6 +10,8 @@ import {
   colors,
   animals,
 } from 'unique-names-generator';
+import { HttpService } from '@nestjs/axios';
+import { RegisterAuthDto } from './dto/registeracademy.dto';
 
 export function generateDisplayName() {
   return (
@@ -24,20 +26,62 @@ export function generateDisplayName() {
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly http: HttpService,
+  ) {}
 
-  async createUser(email: string, password: string, country: string) {
+  async registerAcademy(dto: RegisterAuthDto) {
+    const response = await this.http.axiosRef.post(
+      `${process.env.API_URL_ACADEMY}/auth/register`,
+      dto,
+    );
+
+    return response.data.id;
+  }
+
+  async createUser(
+    email: string,
+    password: string,
+    country: string,
+    sponsor_id: string,
+  ) {
     const passwordHash = await argon2.hash(password);
 
     try {
+      const displayName = generateDisplayName();
+      const refCodeL = makeRefCode();
+      const refCodeR = makeRefCode();
+
+      const sponsor = await this.prisma.user.findFirst({
+        where: {
+          id: sponsor_id,
+        },
+      });
+
+      const firebaseId = await this.registerAcademy({
+        country,
+        email,
+        password,
+        name: displayName,
+        phone: '',
+        refCodeL,
+        refCodeR,
+        side: '',
+        sponsor_id: sponsor!.firebaseId,
+        username: displayName,
+      });
+
       return await this.prisma.user.create({
         data: {
           email,
           country,
           passwordHash,
           roles: [Role.User],
-          refCode: makeRefCode(),
-          displayName: generateDisplayName(),
+          refCodeL,
+          refCodeR,
+          firebaseId,
+          displayName,
         },
         select: { id: true, email: true, country: true, createdAt: true },
       });
@@ -49,5 +93,21 @@ export class UsersService {
     }
   }
 
-  getReferenceCode(code: string) {}
+  getReferenceCode(code: string) {
+    return this.prisma.user.findFirst({
+      where: {
+        OR: [
+          {
+            refCodeL: code,
+          },
+          {
+            refCodeR: code,
+          },
+        ],
+      },
+      select: {
+        displayName: true,
+      },
+    });
+  }
 }

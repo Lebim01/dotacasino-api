@@ -35,23 +35,26 @@ enum KycDocStatus {
 }
 
 model User {
-  id            String          @id @default(uuid())
-  email         String          @unique
-  firstName     String          @default("")
-  lastName      String          @default("")
-  country       String
-  kycStatus     KycStatus       @default(PENDING)
-  wallets       Wallet[]
-  createdAt     DateTime        @default(now())
-  passwordHash  String
-  roles         String[]        @default(["user"])
+  id           String         @id @default(uuid())
+  email        String         @unique
+  firstName    String         @default("")
+  lastName     String         @default("")
+  country      String
+  kycStatus    KycStatus      @default(PENDING)
+  wallets      Wallet[]
+  createdAt    DateTime       @default(now())
+  passwordHash String
+  roles        String[]       @default(["user"])
+  firebaseId   String         @default("")
+  refCodeL     String?        @unique @db.VarChar(16)
+  refCodeR     String?        @unique @db.VarChar(16)
   // ---- Perfil ----
-  displayName   String?
-  phone         String?
-  language      String?
-  avatarUrl     String?
-  RefreshToken  RefreshToken[]
-  refCode       String?         @unique @db.VarChar(16) // código corto único
+  displayName  String?
+  phone        String?
+  language     String?
+  avatarUrl    String?
+
+  RefreshToken RefreshToken[]
   KycDocument   KycDocument[]
   KycSubmission KycSubmission[]
   Topup         Topup[]

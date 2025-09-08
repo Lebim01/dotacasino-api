@@ -7,6 +7,7 @@ import bodyParser from 'body-parser';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('v1');
+  app.use(bodyParser.json({ limit: '50mb' }));
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.enableCors({
     origin: new RegExp(process.env.CORS_REGEX ?? '.*'),

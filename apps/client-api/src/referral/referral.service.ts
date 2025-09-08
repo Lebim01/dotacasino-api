@@ -18,8 +18,8 @@ export class ReferralService {
    */
   async attachByCode(userId: string, refCode: string) {
     // 1) Buscar padre por refCode
-    const parent = await this.prisma.user.findUnique({
-      where: { refCode: refCode.toUpperCase() },
+    const parent = await this.prisma.user.findFirst({
+      where: { OR: [{ refCodeL: refCode }, { refCodeR: refCode }] },
       select: { id: true },
     });
     if (!parent) throw new NotFoundException('Código de referido inválido');
@@ -140,15 +140,5 @@ export class ReferralService {
     for (const r of rows) stats[r.depth] = (stats[r.depth] ?? 0) + 1;
 
     return { items: rows, stats };
-  }
-
-  async myCode(userId: string) {
-    const u = await this.prisma.user.findUnique({
-      where: { id: userId },
-      select: { refCode: true },
-    });
-    if (!u?.refCode) throw new NotFoundException('No hay código de referido');
-    const base = process.env.PUBLIC_BASE_URL ?? 'http://localhost:3000';
-    return { refCode: u.refCode, link: `${base}/r/${u.refCode}` };
   }
 }

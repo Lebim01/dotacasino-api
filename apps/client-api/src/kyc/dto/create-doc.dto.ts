@@ -20,7 +20,7 @@ export class CreateKycDocumentDto {
   @IsString()
   file!: string;
 
-  @IsOptional() @IsString() country?: string; // "MX", "US", etc.
+  @IsOptional() @IsString() country?: string;
   @IsOptional() @IsDateString() expiresAt?: string;
-  @IsOptional() @IsString() checksum?: string; // sha256 opcional
+  @IsOptional() @IsString() checksum?: string;
 }

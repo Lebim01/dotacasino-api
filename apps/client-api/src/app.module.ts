@@ -17,6 +17,7 @@ import { BetModule } from './bet/bet.module';
 import { ServersModule } from './servers/servers.module';
 import { ReferralModule } from './referral/referral.module';
 import { RecoveryModule } from './auth/recovery/recovery.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { RecoveryModule } from './auth/recovery/recovery.module';
     ServersModule,
     ReferralModule,
     RecoveryModule,
+    UsersModule,
   ],
   controllers: [HealthController],
 })

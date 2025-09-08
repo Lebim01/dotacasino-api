@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiExcludeEndpoint, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@security/jwt.guard';
 import { CurrentUser } from '@security/current-user.decorator';
 import { ReferralService } from './referral.service';
@@ -15,6 +15,7 @@ export class ReferralController {
 
   // POST /v1/referrals/attach  { refCode }
   @Post('attach')
+  @ApiExcludeEndpoint()
   attach(@CurrentUser() u: { userId: string }, @Body() dto: AttachReferralDto) {
     return this.svc.attachByCode(u.userId, dto.refCode.trim());
   }
@@ -29,11 +30,5 @@ export class ReferralController {
   @Get('tree')
   tree(@CurrentUser() u: { userId: string }, @Query() q: QueryReferralsDto) {
     return this.svc.tree(u.userId, q.maxDepth);
-  }
-
-  // GET /v1/referrals/code
-  @Get('code')
-  myCode(@CurrentUser() u: { userId: string }) {
-    return this.svc.myCode(u.userId);
   }
 }
