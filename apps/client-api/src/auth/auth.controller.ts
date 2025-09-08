@@ -28,10 +28,7 @@ import { HttpService } from '@nestjs/axios';
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private readonly auth: AuthService,
-    private readonly http: HttpService,
-  ) {}
+  constructor(private readonly auth: AuthService) {}
 
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
