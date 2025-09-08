@@ -116,4 +116,19 @@ export class GamesService {
       return response;
     }
   }
+
+  async categories() {
+    return [
+      'fast_games',
+      'arcade',
+      'crash_games',
+      'roulette',
+      'sport',
+      'live_dealers',
+      'slots',
+      'lottery',
+      'video_poker',
+      'card',
+    ];
+  }
 }

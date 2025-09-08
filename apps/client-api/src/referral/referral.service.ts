@@ -130,7 +130,6 @@ export class ReferralService {
         WHERE t.depth < 7 
       )
       SELECT * FROM tree;
-
     `,
       userId,
       Math.max(1, Math.min(maxDepth, 7)),

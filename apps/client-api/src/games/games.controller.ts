@@ -58,4 +58,9 @@ export class GamesController {
   async refreshdb(@Param('sessionId') sessionId: string) {
     return this.bet.getHistoryGames(sessionId);
   }
+
+  @Get('categories')
+  async categories() {
+    return this.games.categories();
+  }
 }
