@@ -157,6 +157,8 @@ export class ReferralService {
       select: {
         id: true,
         displayName: true,
+        refCodeL: true,
+        refCodeR: true,
       },
     });
   }

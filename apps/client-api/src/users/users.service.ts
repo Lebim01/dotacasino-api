@@ -45,6 +45,7 @@ export class UsersService {
     password: string,
     country: string,
     sponsor_id: string,
+    side: 'left' | 'right',
   ) {
     const passwordHash = await argon2.hash(password);
 
@@ -67,7 +68,7 @@ export class UsersService {
         phone: '',
         refCodeL,
         refCodeR,
-        side: '',
+        side,
         sponsor_id: sponsor!.firebaseId,
         username: displayName,
       });

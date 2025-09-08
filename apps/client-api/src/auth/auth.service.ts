@@ -122,19 +122,17 @@ export class AuthService {
     const email = dto.email.trim().toLowerCase();
 
     try {
-      const sponsor = await this.referralService.getByCode(dto.referralCode!);
-
+      const sponsor = await this.referralService.getByCode(dto.referralCode);
       const created = await this.prisma.$transaction(async () => {
         const user = await this.usersService.createUser(
           email,
           dto.password,
           dto.country,
           sponsor!.id,
+          sponsor!.refCodeL == dto.referralCode ? 'left' : 'right',
         );
 
-        if (dto.referralCode) {
-          await this.referralService.attachByCode(user.id, dto.referralCode);
-        }
+        await this.referralService.attachByCode(user.id, dto.referralCode);
         await this.walletService.createWallet(user.id);
         return user;
       });
