@@ -126,7 +126,7 @@ export class KycService {
     const hasAddress = docs.some(
       (d) => d.type === $Enums.KycDocType.ADDRESS_PROOF,
     );
-    if (!hasPrimary || !hasAddress) {
+    if (!hasPrimary) {
       throw new BadRequestException(
         'Faltan documentos requeridos: (PASSPORT/ID_CARD/DRIVER_LICENSE) + ADDRESS_PROOF',
       );
