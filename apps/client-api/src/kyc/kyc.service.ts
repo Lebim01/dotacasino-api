@@ -135,7 +135,7 @@ export class KycService {
     if (!hasSelfie) throw new BadRequestException('Se requiere SELFIE');
 
     // 2) Reglas por tipo (mínimas)
-    const now = new Date();
+    /*const now = new Date();
     for (const d of docs) {
       // Identidad: no vencido; pasaporte con 30 días de vigencia mínima
       if (
@@ -173,7 +173,7 @@ export class KycService {
             'Utility bill debe ser de los últimos 90 días',
           );
       }
-    }
+    }*/
 
     // Crea Submission y marca estado del usuario
     const sub = await this.prisma.$transaction(async (tx) => {
