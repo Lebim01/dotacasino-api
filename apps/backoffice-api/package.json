@@ -1,0 +1,11 @@
+{
+  "name": "backoffice-api",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "@google-cloud/tasks": "^6.2.0",
+    "@nestjs-modules/mailer": "^2.0.2",
+    "@nestjs/swagger": "^11.2.0",
+    "firebase-admin": "^13.5.0"
+  }
+}

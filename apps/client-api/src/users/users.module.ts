@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { HttpModule } from '@nestjs/axios';
+import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
 
 @Module({
   controllers: [UsersController],
-  providers: [UsersService],
-  imports: [HttpModule],
+  providers: [UsersService, AuthAcademyService],
+  imports: [],
 })
 export class UsersModule {}

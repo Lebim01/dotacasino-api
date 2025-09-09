@@ -10,8 +10,7 @@ import {
   colors,
   animals,
 } from 'unique-names-generator';
-import { HttpService } from '@nestjs/axios';
-import { RegisterAuthDto } from './dto/registeracademy.dto';
+import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
 
 export function generateDisplayName() {
   return (
@@ -28,17 +27,8 @@ export function generateDisplayName() {
 export class UsersService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly http: HttpService,
+    private readonly authAcademy: AuthAcademyService,
   ) {}
-
-  async registerAcademy(dto: RegisterAuthDto) {
-    const response = await this.http.axiosRef.post(
-      `${process.env.API_URL_ACADEMY}/auth/register`,
-      dto,
-    );
-
-    return response.data.id;
-  }
 
   async createUser(
     email: string,
@@ -60,7 +50,7 @@ export class UsersService {
         },
       });
 
-      const firebaseId = await this.registerAcademy({
+      const { id: firebaseId } = await this.authAcademy.registerUser({
         country,
         email,
         password,

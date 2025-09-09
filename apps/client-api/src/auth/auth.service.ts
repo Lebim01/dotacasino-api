@@ -56,6 +56,7 @@ export class AuthService {
         phone: true,
         firstName: true,
         lastName: true,
+        firebaseId: true,
       },
     });
 
@@ -71,6 +72,7 @@ export class AuthService {
       sub: user.id,
       email: user.email,
       roles: user.roles ?? ['user'],
+      firebaseId: user.firebaseId,
     };
 
     const access_token = await this.jwt.signAsync(payload, {
@@ -196,11 +198,13 @@ export class AuthService {
     id: string;
     email: string;
     roles?: string[];
+    firebaseId: string;
   }) {
     const payload: JwtPayload = {
       sub: user.id,
       email: user.email,
       roles: user.roles ?? ['user'],
+      firebaseId: user.firebaseId,
     };
     const access_token = await this.issueAccessToken(payload);
     const { token: refresh_token, familyId } = await this.issueRefreshToken(
@@ -253,7 +257,17 @@ export class AuthService {
     // Rotar: revocar el actual y emitir uno nuevo en la misma familia
     await this.revokeToken(row.id);
 
-    const payload: JwtPayload = { sub: userId, email: '' }; // puedes añadir email/roles si quieres
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    const payload: JwtPayload = {
+      sub: userId,
+      email: user!.email,
+      firebaseId: user!.firebaseId,
+    }; // puedes añadir email/roles si quieres
     const access_token = await this.issueAccessToken(payload);
     const { token: refresh_token } = await this.issueRefreshToken(
       userId,

@@ -26,6 +26,15 @@
         "tsConfigPath": "apps/admin-api/tsconfig.app.json"
       }
     },
+    "backoffice-api": {
+      "type": "application",
+      "root": "apps/backoffice-api",
+      "entryFile": "main",
+      "sourceRoot": "apps/backoffice-api/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/backoffice-api/tsconfig.app.json"
+      }
+    },
     "workers": {
       "type": "application",
       "root": "apps/workers",
