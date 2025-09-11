@@ -38,7 +38,6 @@ export class GamesService {
         { title: { contains: q.search, mode: 'insensitive' } },
         { slug: { contains: q.search, mode: 'insensitive' } },
         { gameType: { contains: q.search, mode: 'insensitive' } },
-        { providerGameId: { contains: q.search, mode: 'insensitive' } },
       ];
     }
 
