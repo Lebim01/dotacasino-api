@@ -1,3 +1,5 @@
+import { Memberships } from './types';
+
 export const ADMIN_USER = 'L6eYPuVkOhYwRaITWcuq';
 
 export const EMAIL_SENDER = 'soporte@giborcommunity.com';
@@ -16,9 +18,6 @@ export const memberships_object: Record<Memberships, any> = {
   'p-100': {
     display: 'P100',
   },
-  'p-300': {
-    display: 'P300',
-  },
   'p-500': {
     display: 'P500',
   },
@@ -29,14 +28,12 @@ export const memberships_object: Record<Memberships, any> = {
 
 export const MEMBERSHIP_PRICES: Record<Memberships, number> = {
   'p-100': 100,
-  'p-300': 300,
   'p-500': 500,
   'p-1000': 1000,
 };
 
 export const PACK_POINTS: Record<Memberships, number> = {
   'p-100': 100,
-  'p-300': 300,
   'p-500': 500,
   'p-1000': 1000,
 };

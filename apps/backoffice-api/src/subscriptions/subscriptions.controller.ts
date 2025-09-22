@@ -23,6 +23,7 @@ import { RolesGuard } from '../auth/roles/roles.guard';
 import { HttpGoogleTaskInterceptor } from '../auth/interceptors/google-task';
 import { MEMBERSHIP_PRICES } from '../constants';
 import { sleep } from '../utils/firebase';
+import { Memberships } from '../types';
 
 @Controller('subscriptions')
 export class SubscriptionsController {

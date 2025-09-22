@@ -1,5 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { memberships_object } from '../constants';
+import { Memberships } from '../types';
 
 @Controller('memberships')
 export class MembershipsController {

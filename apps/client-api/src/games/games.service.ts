@@ -1,7 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { ListGamesDto } from './dto/list-games.dto';
 import { PrismaService } from 'libs/db/src/prisma.service';
-import { Prisma } from '@prisma/client';
+import { GameCategory, Prisma } from '@prisma/client';
 import { BetService } from '../bet/bet.service';
 
 // 1) Define el SELECT de forma tipada y reutilizable
@@ -29,9 +29,9 @@ export class GamesService {
   ) {}
 
   async list(q: ListGamesDto) {
-    const where: any = { enabled: true };
+    const where: Prisma.GameWhereInput = { enabled: true };
 
-    if (q.category) where.category = q.category;
+    if (q.category) where.category = q.category as GameCategory;
     if (q.device) where.devices = { has: q.device };
     if (q.search) {
       where.OR = [

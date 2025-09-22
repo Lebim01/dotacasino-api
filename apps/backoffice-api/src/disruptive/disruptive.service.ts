@@ -7,6 +7,7 @@ import * as googleTaskService from '../googletask/utils';
 import { CasinoService } from '../casino/casino.service';
 import { firestore } from 'firebase-admin';
 import { dateToString } from '../utils/firebase';
+import { Memberships } from '../types';
 
 export const disruptiveUrl = axios.create({
   baseURL: 'https://my.disruptivepayments.io',

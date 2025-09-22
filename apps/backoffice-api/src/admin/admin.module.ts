@@ -5,10 +5,11 @@ import { BondsService } from '../bonds/bonds.service';
 import { UsersService } from '../users/users.service';
 import { MailerService } from '../mailer/mailer.service';
 import { CoinpaymentsService } from '../coinpayments/coinpayments.service';
-import { AuthService } from '../auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { DisruptiveService } from '../disruptive/disruptive.service';
 import { CasinoService } from '../casino/casino.service';
+import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
+import { AuthService } from '../auth/auth.service';
 
 @Module({
   providers: [
@@ -17,10 +18,11 @@ import { CasinoService } from '../casino/casino.service';
     UsersService,
     MailerService,
     CoinpaymentsService,
-    AuthService,
+    AuthAcademyService,
     JwtService,
     DisruptiveService,
     CasinoService,
+    AuthService,
   ],
   controllers: [AdminController],
 })

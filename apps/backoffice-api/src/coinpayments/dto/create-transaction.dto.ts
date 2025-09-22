@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { Coins, Memberships } from '../../types';
 
 export class CreateTransactionDto {
   @ApiProperty()

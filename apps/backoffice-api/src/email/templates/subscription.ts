@@ -1,4 +1,5 @@
 import { memberships_object } from '../../constants';
+import { Memberships } from '../../types';
 import { dateToString } from '../../utils/firebase';
 
 export function Subscription(user: any): string {

@@ -1,4 +1,4 @@
-export type Memberships = 'p-100' | 'p-300' | 'p-500' | 'p-1000';
+export type Memberships = 'p-100' | 'p-500' | 'p-1000';
 
 export type Coins = 'USDT';
 

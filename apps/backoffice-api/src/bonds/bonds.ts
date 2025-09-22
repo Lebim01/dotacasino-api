@@ -10,7 +10,6 @@ export enum Bonds {
 
 export const withdraw_percent_fee: Record<Memberships, number> = {
   'p-100': 0.1,
-  'p-300': 0.08,
   'p-500': 0.07,
   'p-1000': 0.05,
 };

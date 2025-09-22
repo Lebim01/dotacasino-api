@@ -7,13 +7,14 @@ import { CoinpaymentsService } from '../coinpayments/coinpayments.service';
 import { ADMIN_USER } from '../constants';
 import { db } from '../firebase/admin';
 import { dateToString } from '../utils/firebase';
+import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
 
 @Injectable()
 export class AdminService {
   constructor(
     private readonly bondsService: BondsService,
     private readonly coinPaymentsService: CoinpaymentsService,
-    private readonly authService: AuthService,
+    private readonly authAcademyService: AuthAcademyService,
   ) {}
 
   async activationsWithVolumen() {
@@ -577,7 +578,7 @@ export class AdminService {
     });
 
     await user.docs[0].ref.update({
-      password: await this.authService.getPassword(password),
+      password: await this.authAcademyService.getPassword(password),
     });
   }
 }

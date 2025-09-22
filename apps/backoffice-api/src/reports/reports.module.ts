@@ -10,6 +10,7 @@ import { AuthService } from '../auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { DisruptiveService } from '../disruptive/disruptive.service';
 import { CasinoService } from '../casino/casino.service';
+import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
 
 @Module({
   providers: [
@@ -23,6 +24,7 @@ import { CasinoService } from '../casino/casino.service';
     JwtService,
     DisruptiveService,
     CasinoService,
+    AuthAcademyService,
   ],
   controllers: [ReportsController],
 })

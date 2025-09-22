@@ -6,6 +6,7 @@ import { db } from '../firebase/admin';
 import { CreateTransactionResponse } from './types';
 import { google } from '@google-cloud/tasks/build/protos/protos';
 import * as googleTaskService from '../googletask/utils';
+import { Memberships } from '../types';
 
 interface CreateDBTransaction extends CreateTransactionResponse {
   user_id: string;

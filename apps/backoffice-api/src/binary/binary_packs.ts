@@ -1,11 +1,11 @@
 import { Ranks } from '../ranks/ranks_object';
+import { Memberships } from '../types';
 
 /**
  * Puntos que ganas al inscribir un paquete
  */
 export const pack_points: Record<Memberships, number> = {
   'p-100': 100,
-  'p-300': 300,
   'p-500': 500,
   'p-1000': 1000,
 };

@@ -10,6 +10,7 @@ import * as googleTaskService from '../googletask/utils';
 import { BondsService } from '../bonds/bonds.service';
 import { getLimitDeposit, getLimitMembership } from '../utils/deposits';
 import { MEMBERSHIP_PRICES, memberships_object } from '../constants';
+import { Memberships } from '../types';
 
 @Injectable()
 export class SubscriptionsService {

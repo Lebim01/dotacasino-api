@@ -12,12 +12,15 @@ import { firestore } from 'firebase-admin';
 import { dateToString } from '../utils/firebase';
 import { AuthService } from '../auth/auth.service';
 import { DisruptiveService } from '../disruptive/disruptive.service';
+import { Memberships } from '../types';
+import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly mailerService: MailerService,
     private readonly authService: AuthService,
+    private readonly authAcademyService: AuthAcademyService,
     private readonly disruptiveService: DisruptiveService,
   ) {}
 
@@ -458,14 +461,14 @@ export class UsersService {
 
     const user = await db.collection('users').doc(id_user).get();
 
-    const hash = await this.authService.getPassword(previous_password);
+    const hash = await this.authAcademyService.getPassword(previous_password);
 
     if (hash != user.get('password')) {
       throw new HttpException('Password wrong', 401);
     }
 
     await user.ref.update({
-      password: await this.authService.getPassword(new_password),
+      password: await this.authAcademyService.getPassword(new_password),
     });
   }
 

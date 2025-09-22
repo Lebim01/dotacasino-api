@@ -1,9 +1,9 @@
 import { db } from '../firebase/admin';
+import { Memberships } from '../types';
 
 export const getLimitDeposit = (type: Memberships) => {
   const max = 10;
   if (type == 'p-100') return 100 * max;
-  if (type == 'p-300') return 300 * max;
   if (type == 'p-500') return 500 * max;
   if (type == 'p-1000') return 1000 * max;
   return 0;
@@ -12,7 +12,6 @@ export const getLimitDeposit = (type: Memberships) => {
 export const getLimitMembership = (type: Memberships) => {
   const max = 10;
   if (type == 'p-100') return 100 * max;
-  if (type == 'p-300') return 300 * max;
   if (type == 'p-500') return 500 * max;
   if (type == 'p-1000') return 1000 * max;
   return 0;

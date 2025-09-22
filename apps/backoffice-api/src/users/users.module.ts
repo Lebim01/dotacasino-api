@@ -8,6 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 import { JWTStrategy } from '../auth/jwt/jwt.strategy';
 import { DisruptiveService } from '../disruptive/disruptive.service';
 import { CasinoService } from '../casino/casino.service';
+import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { CasinoService } from '../casino/casino.service';
     JWTStrategy,
     DisruptiveService,
     CasinoService,
+    AuthAcademyService,
   ],
 })
 export class UsersModule {}
