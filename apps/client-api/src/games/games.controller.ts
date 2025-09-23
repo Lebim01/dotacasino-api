@@ -38,8 +38,8 @@ export class GamesController {
   }
 
   @Post('openGame/:gameSlug')
-  //@ApiBearerAuth('access-token')
-  //@UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
   async openGame(
     @Headers() headers: any,
     @Param('gameSlug') gameSlug: string,
@@ -53,8 +53,8 @@ export class GamesController {
   }
 
   @Post('refresh/:sessionId')
-  //@ApiBearerAuth('access-token')
-  //@UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
   async refreshdb(@Param('sessionId') sessionId: string) {
     return this.bet.getHistoryGames(sessionId);
   }

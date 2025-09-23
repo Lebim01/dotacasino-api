@@ -10,11 +10,11 @@ import { JwtService } from '@nestjs/jwt';
 
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
-import { UsersService } from '../users/users.service';
 import { WalletService } from '@domain/wallet/wallet.service';
 import { JwtPayload } from '@security/jwt.strategy';
 import { randomUUID } from 'crypto';
 import { ReferralService } from '../referral/referral.service';
+import { UserCommonService } from '@domain/users/users.service';
 
 const ACCESS_TTL = process.env.JWT_ACCESS_TTL ?? '15m';
 const REFRESH_TTL = process.env.JWT_REFRESH_TTL ?? '7d';
@@ -24,7 +24,7 @@ export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwt: JwtService,
-    private readonly usersService: UsersService,
+    private readonly usersService: UserCommonService,
     private readonly walletService: WalletService,
     private readonly referralService: ReferralService,
   ) {}

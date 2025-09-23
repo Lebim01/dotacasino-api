@@ -21,16 +21,23 @@ function makeid(length: number) {
 @Injectable()
 export class AuthAcademyService {
   async registerUser(userObject: RegisterAuthDto) {
-    const sponsor = await db
-      .collection('users')
-      .doc(userObject.sponsor_id)
-      .get();
+    let sponsor_name = null;
+    let position = null;
+
+    if (userObject.sponsor_id) {
+      const sponsor = await db
+        .collection('users')
+        .doc(userObject.sponsor_id)
+        .get();
+      position = sponsor.get('left') == userObject.side ? 'left' : 'right';
+      sponsor_name = sponsor.get('name');
+    }
+
     const formattedUser = await this.formatNewUser(userObject);
-    const position = sponsor.get('left') == userObject.side ? 'left' : 'right';
 
     const user = await db
       .collection('users')
-      .add({ ...formattedUser, position, sponsor_name: sponsor.get('name') });
+      .add({ ...formattedUser, position, sponsor_name });
 
     await user.update({
       nft: {

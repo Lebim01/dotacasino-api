@@ -40,17 +40,20 @@ export class AuthController {
       throw new HttpException('USER_ALREADY_EXISTS', 403);
     }
 
-    const sponsor = await db
-      .collection('users')
-      .doc(userObject.sponsor_id)
-      .get();
-    if (!sponsor.exists) throw new HttpException('USER_INVALID', 403);
+    let sponsor;
+    if (userObject.sponsor_id) {
+      const sponsor = await db
+        .collection('users')
+        .doc(userObject.sponsor_id)
+        .get();
+      if (!sponsor.exists) throw new HttpException('USER_INVALID', 403);
 
-    if (
-      sponsor.get('left') != userObject.side &&
-      sponsor.get('right') != userObject.side
-    )
-      throw new HttpException('POSITION_INVALID', 403);
+      if (
+        sponsor.get('left') != userObject.side &&
+        sponsor.get('right') != userObject.side
+      )
+        throw new HttpException('POSITION_INVALID', 403);
+    }
 
     if (userObject.username) {
       if (!(await this.authService.verifyUsername(userObject.username))) {

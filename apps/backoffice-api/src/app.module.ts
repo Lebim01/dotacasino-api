@@ -23,6 +23,9 @@ import { DisruptiveService } from './disruptive/disruptive.service';
 import { DisruptiveModule } from './disruptive/disruptive.module';
 import { CasinoModule } from './casino/casino.module';
 import { CasinoService } from './casino/casino.service';
+import { FirebaseAdminModule } from './firebase/firebase-admin.module';
+import { FirestoreWipeModule } from './firestore-wipe/firestore-wipe.module';
+import { SeedModule } from './seed/seed.module';
 
 @Module({
   imports: [
@@ -30,13 +33,15 @@ import { CasinoService } from './casino/casino.service';
       isGlobal: true,
       envFilePath: '.env',
     }),
+    FirebaseAdminModule,
+    FirestoreWipeModule,
+    SeedModule,
     BinaryModule,
     AuthModule,
     MailerModule,
     UsersModule,
     SubscriptionsModule,
     EmailModule,
-    DepositsModule,
     CoinpaymentsModule,
     MembershipsModule,
     RanksModule,

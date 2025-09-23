@@ -1,8 +1,5 @@
 import { Injectable, ConflictException } from '@nestjs/common';
 import { PrismaService } from 'libs/db/src/prisma.service';
-import * as argon2 from 'argon2';
-import { Role } from '@security/roles.enum';
-import { makeRefCode } from 'libs/shared/src/refcode';
 
 import {
   uniqueNamesGenerator,
@@ -11,6 +8,7 @@ import {
   animals,
 } from 'unique-names-generator';
 import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
+import { UserCommonService } from '@domain/users/users.service';
 
 export function generateDisplayName() {
   return (
@@ -27,61 +25,16 @@ export function generateDisplayName() {
 export class UsersService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly authAcademy: AuthAcademyService,
+    private readonly userService: UserCommonService,
   ) {}
 
-  async createUser(
-    email: string,
-    password: string,
-    country: string,
-    sponsor_id: string,
-    side: 'left' | 'right',
-  ) {
-    const passwordHash = await argon2.hash(password);
-
-    try {
-      const displayName = generateDisplayName();
-      const refCodeL = makeRefCode();
-      const refCodeR = makeRefCode();
-
-      const sponsor = await this.prisma.user.findFirst({
-        where: {
-          id: sponsor_id,
-        },
-      });
-
-      const { id: firebaseId } = await this.authAcademy.registerUser({
-        country,
-        email,
-        password,
-        name: displayName,
-        phone: '',
-        refCodeL,
-        refCodeR,
-        side,
-        sponsor_id: sponsor!.firebaseId,
-        username: displayName,
-      });
-
-      return await this.prisma.user.create({
-        data: {
-          email,
-          country,
-          passwordHash,
-          roles: [Role.User],
-          refCodeL,
-          refCodeR,
-          firebaseId,
-          displayName,
-        },
-        select: { id: true, email: true, country: true, createdAt: true },
-      });
-    } catch (err: any) {
-      if (err?.code === 'P2002' && err?.meta?.target?.includes('email')) {
-        throw new ConflictException('El email ya está registrado');
-      }
-      throw err;
-    }
+  async getUserById(id: string) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id,
+      },
+    });
+    return user;
   }
 
   getReferenceCode(code: string) {

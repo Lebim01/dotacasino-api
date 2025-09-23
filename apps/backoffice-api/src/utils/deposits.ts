@@ -26,8 +26,8 @@ export const getCapCurrentDeposits = (
     : membership_cap_current;
 };
 
-export const currentMultiplier = async (user_id: string) => {
-  const user = await db.collection('users').doc(user_id).get();
+export const currentMultiplier = async (firebase_user_id: string) => {
+  const user = await db.collection('users').doc(firebase_user_id).get();
   const limit = getLimitMembership(user.get('membership'));
   const deposit_limit = user.get('deposit_cap_limit');
 

@@ -6,10 +6,17 @@ import { UsersService } from '../users/users.service';
 import { ReferralService } from '../referral/referral.service';
 import { HttpModule } from '@nestjs/axios';
 import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
+import { UserCommonService } from '@domain/users/users.service';
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, UsersService, ReferralService, AuthAcademyService],
+  providers: [
+    AuthService,
+    UsersService,
+    ReferralService,
+    AuthAcademyService,
+    UserCommonService,
+  ],
   exports: [],
   imports: [JwtAuthModule, HttpModule],
 })

@@ -16,7 +16,7 @@ export class RegisterAuthDto extends LoginAuthDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  sponsor_id!: string;
+  sponsor_id!: string | null;
 
   @ApiProperty()
   @IsOptional()
