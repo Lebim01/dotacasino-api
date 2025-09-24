@@ -11,6 +11,7 @@ export const getLimitDeposit = (type: Memberships) => {
 
 export const getLimitMembership = (type: Memberships) => {
   const max = 10;
+  if (type == 'free') return 1000;
   if (type == 'p-100') return 100 * max;
   if (type == 'p-500') return 500 * max;
   if (type == 'p-1000') return 1000 * max;

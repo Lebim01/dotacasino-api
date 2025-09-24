@@ -5,6 +5,7 @@ import { Memberships } from '../types';
  * Puntos que ganas al inscribir un paquete
  */
 export const pack_points: Record<Memberships, number> = {
+  'free': 0,
   'p-100': 100,
   'p-500': 500,
   'p-1000': 1000,

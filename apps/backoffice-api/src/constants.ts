@@ -15,6 +15,9 @@ export const emailTransporter = {
 };
 
 export const memberships_object: Record<Memberships, any> = {
+  "free" : {
+    display: "Free",
+  },
   'p-100': {
     display: 'P100',
   },
@@ -27,12 +30,14 @@ export const memberships_object: Record<Memberships, any> = {
 };
 
 export const MEMBERSHIP_PRICES: Record<Memberships, number> = {
+  free: 0,
   'p-100': 100,
   'p-500': 500,
   'p-1000': 1000,
 };
 
 export const PACK_POINTS: Record<Memberships, number> = {
+  free: 0,
   'p-100': 100,
   'p-500': 500,
   'p-1000': 1000,

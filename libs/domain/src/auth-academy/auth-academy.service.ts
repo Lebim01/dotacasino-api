@@ -3,6 +3,7 @@ import { USER_ROLES } from 'apps/backoffice-api/src/auth/auth.constants';
 import { RegisterAuthDto } from 'apps/backoffice-api/src/auth/dto/register-auth.dto';
 import { Bonds } from 'apps/backoffice-api/src/bonds/bonds';
 import { db } from 'apps/backoffice-api/src/firebase/admin';
+import { getLimitMembership } from 'apps/backoffice-api/src/utils/deposits';
 import { hash } from 'bcryptjs';
 
 function makeid(length: number) {
@@ -88,9 +89,11 @@ export class AuthAcademyService {
       whatsapp: userObject.phone,
       username: userObject.username,
 
-      membership: null,
-      membership_started_at: null,
+      membership: 'free',
+      membership_started_at: new Date(),
       membership_expires_at: null,
+      membership_cap_limit: getLimitMembership('free'),
+      membership_cap_current: 0,
 
       // CONTADORES
       count_direct_people: 0,
