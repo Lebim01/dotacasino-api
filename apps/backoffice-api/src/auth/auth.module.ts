@@ -1,8 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { JwtModule } from '@nestjs/jwt';
-import { ConfigModule } from '@nestjs/config';
 import { MailerModule } from '../mailer/mailer.module';
 import { SubscriptionsService } from '../subscriptions/subscriptions.service';
 import { BinaryService } from '../binary/binary.service';
@@ -13,17 +11,17 @@ import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
 import { DisruptiveService } from '@domain/disruptive/disruptive.service';
 import { CasinoService } from '@domain/casino/casino.service';
 import { JwtStrategy } from '@security/jwt.strategy';
+import { AuthCommonService } from '@domain/auth/auth.service';
+import { PrismaService } from 'libs/db/src/prisma.service';
+import { UserCommonService } from '@domain/users/users.service';
+import { WalletService } from '@domain/wallet/wallet.service';
+import { ReferralService } from 'apps/client-api/src/referral/referral.service';
+import { JwtAuthModule } from '@security/jwt.module';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({ envFilePath: '.env' }),
-    JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: process.env.JWT_EXPIRES_IN || '30d' },
-    }),
-    MailerModule,
-  ],
+  imports: [JwtAuthModule, MailerModule],
   providers: [
+    PrismaService,
     AuthService,
     JwtStrategy,
     SubscriptionsService,
@@ -34,6 +32,10 @@ import { JwtStrategy } from '@security/jwt.strategy';
     DisruptiveService,
     CasinoService,
     AuthAcademyService,
+    AuthCommonService,
+    UserCommonService,
+    WalletService,
+    ReferralService,
   ],
   controllers: [AuthController],
 })

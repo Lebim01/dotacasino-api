@@ -10,7 +10,7 @@ import { JwtAuthGuard } from './jwt.guard';
     JwtModule.registerAsync({
       useFactory: () => ({
         secret: process.env.JWT_ACCESS_SECRET!,
-        signOptions: { expiresIn: '15m' },
+        signOptions: { expiresIn: '2d' },
       }),
     }),
   ],

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { HttpException, Injectable } from '@nestjs/common';
-import { compare, hash } from 'bcryptjs';
+import { compare } from 'bcryptjs';
 import { USER_ROLES } from './auth.constants';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { JwtService } from '@nestjs/jwt';
@@ -60,12 +60,19 @@ export class AuthService {
 
       if (!user.uid) throw new HttpException('INVALID_USER', 400);
 
-      return this.jwtService.sign({
-        id: user.uid,
-        roles: user.roles,
-        name: user.name,
+      // 3) Genera tokens
+      const payload = {
+        sub: user.uid,
         email: user.email,
+        roles: user.roles ?? ['user'],
+      };
+
+      const access_token = await this.jwtService.signAsync(payload, {
+        secret: process.env.JWT_ACCESS_SECRET!,
+        expiresIn: '15m',
       });
+
+      return access_token;
     } else {
       throw new HttpException('USER_BROKEN', 400);
     }

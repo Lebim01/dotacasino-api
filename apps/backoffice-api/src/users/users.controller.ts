@@ -86,8 +86,8 @@ export class UsersController {
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get the logged user info' })
-  async getMe(@CurrentUser() { userId }: { userId: string }) {
-    const user = await this.usersService.getUserById(userId, true);
+  async getMe(@CurrentUser() _user: { userId: string }) {
+    const user = await this.usersService.getUserById(_user.userId, true);
     return user;
   }
 

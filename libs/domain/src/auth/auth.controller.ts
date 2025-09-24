@@ -6,22 +6,23 @@ import {
   Post,
   UnauthorizedException,
 } from '@nestjs/common';
+import { AuthCommonService } from './auth.service';
+
+import { RegisterDto } from './dto/register.dto';
+import { LoginDto } from './dto/login.dto';
 import {
   ApiTags,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { AuthCommonService } from '@domain/auth/auth.service';
+import { RefreshDto } from './dto/refresh.dto';
 import {
+  RegisterResponseDto,
   AuthTokensResponseDto,
   LogoutResponseDto,
   RefreshTokenResponseDto,
-  RegisterResponseDto,
-} from '@domain/auth/dto/auth-responses.dto';
-import { RegisterDto } from '@domain/auth/dto/register.dto';
-import { LoginDto } from '@domain/auth/dto/login.dto';
-import { RefreshDto } from '@domain/auth/dto/refresh.dto';
+} from './dto/auth-responses.dto';
 
 @ApiTags('Auth')
 @Controller('auth')

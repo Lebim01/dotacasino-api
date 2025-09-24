@@ -7,20 +7,19 @@ import {
 import * as argon2 from 'argon2';
 import { PrismaService } from 'libs/db/src/prisma.service';
 import { JwtService } from '@nestjs/jwt';
-
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { WalletService } from '@domain/wallet/wallet.service';
 import { JwtPayload } from '@security/jwt.strategy';
 import { randomUUID } from 'crypto';
-import { ReferralService } from '../referral/referral.service';
 import { UserCommonService } from '@domain/users/users.service';
+import { ReferralService } from 'apps/client-api/src/referral/referral.service';
 
 const ACCESS_TTL = process.env.JWT_ACCESS_TTL ?? '15m';
 const REFRESH_TTL = process.env.JWT_REFRESH_TTL ?? '7d';
 
 @Injectable()
-export class AuthService {
+export class AuthCommonService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwt: JwtService,
@@ -72,12 +71,11 @@ export class AuthService {
       sub: user.id,
       email: user.email,
       roles: user.roles ?? ['user'],
-      firebaseId: user.firebaseId,
     };
 
     const access_token = await this.jwt.signAsync(payload, {
       secret: process.env.JWT_ACCESS_SECRET!,
-      expiresIn: '15m',
+      expiresIn: '2d',
     });
 
     const jti = randomUUID(); // identificador único del RT

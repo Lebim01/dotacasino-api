@@ -1,14 +1,11 @@
 import {
   Body,
   Controller,
-  HttpException,
   Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { RegisterAuthDto } from './dto/register-auth.dto';
-import { LoginAuthDto } from './dto/login-auth.dto';
 import {
   ApiBearerAuth,
   ApiExcludeEndpoint,
@@ -17,60 +14,30 @@ import {
 } from '@nestjs/swagger';
 import { OpsAuthDTO } from './dto/ops-auth.dto';
 import { USER_ROLES } from './auth.constants';
-import { db } from '../firebase/admin';
-import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
 import { JwtAuthGuard } from '@security/jwt.guard';
 import { Roles } from '@security/roles.decorator';
+import { AuthCommonService } from '@domain/auth/auth.service';
+import { RegisterDto } from '@domain/auth/dto/register.dto';
+import { LoginDto } from '@domain/auth/dto/login.dto';
 
 @ApiTags('Authentication & Authorization')
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private readonly authAcademyService: AuthAcademyService,
+    private readonly authCommonService: AuthCommonService,
   ) {}
 
   @Post('register')
   @ApiOperation({ summary: 'Register a new user' })
-  async registerUser(@Body() userObject: RegisterAuthDto) {
-    const { email } = userObject;
-    const isExistingUser = await this.authService.isExistingUser(email);
-    if (isExistingUser) {
-      throw new HttpException('USER_ALREADY_EXISTS', 403);
-    }
-
-    let sponsor;
-    if (userObject.sponsor_id) {
-      const sponsor = await db
-        .collection('users')
-        .doc(userObject.sponsor_id)
-        .get();
-      if (!sponsor.exists) throw new HttpException('USER_INVALID', 403);
-
-      if (
-        sponsor.get('left') != userObject.side &&
-        sponsor.get('right') != userObject.side
-      )
-        throw new HttpException('POSITION_INVALID', 403);
-    }
-
-    if (userObject.username) {
-      if (!(await this.authService.verifyUsername(userObject.username))) {
-        throw new HttpException('Username invalid', 401);
-      }
-    }
-
-    const userNode = await this.authAcademyService.registerUser(userObject);
-
-    const { name, roles, id } = userNode;
-
-    return { name, email, roles, id };
+  async registerUser(@Body() dto: RegisterDto) {
+    return this.authCommonService.register(dto);
   }
 
   @Post('login')
   @ApiOperation({ summary: 'Login a user' })
-  loginUser(@Body() userObjectLogin: LoginAuthDto) {
-    return this.authService.loginUser(userObjectLogin);
+  loginUser(@Body() dto: LoginDto) {
+    return this.authCommonService.login(dto);
   }
 
   @ApiExcludeEndpoint()

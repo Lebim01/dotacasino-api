@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'libs/db/src/prisma.service';
 import * as argon2 from 'argon2';
-import { Role } from '@security/roles.enum';
 import { makeRefCode } from 'libs/shared/src/refcode';
 
 import {
@@ -42,7 +41,7 @@ export class UserCommonService {
   ) {}
 
   async getUserById(id: string) {
-    const user = await this.prisma.user.findUnique({
+    const user = await this.prisma.user.findFirst({
       where: {
         id,
       },
