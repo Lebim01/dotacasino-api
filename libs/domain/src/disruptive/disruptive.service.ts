@@ -2,12 +2,12 @@
 import { google } from '@google-cloud/tasks/build/protos/protos';
 import { HttpException, Injectable } from '@nestjs/common';
 import axios from 'axios';
-import { db } from '../firebase/admin';
-import * as googleTaskService from '../googletask/utils';
 import { CasinoService } from '../casino/casino.service';
 import { firestore } from 'firebase-admin';
-import { dateToString } from '../utils/firebase';
-import { Memberships } from '../types';
+import { Memberships } from 'apps/backoffice-api/src/types';
+import { db } from 'apps/backoffice-api/src/firebase/admin';
+import { dateToString } from 'apps/backoffice-api/src/utils/firebase';
+import * as googleTaskService from 'apps/backoffice-api/src/googletask/utils';
 
 export const disruptiveUrl = axios.create({
   baseURL: 'https://my.disruptivepayments.io',
@@ -92,7 +92,7 @@ export class DisruptiveService {
       .where('address', '==', address)
       .where('status', '==', 'pending')
       .get()
-      .then((r) => (r.empty ? null : r.docs[0]));
+      .then((r: any) => (r.empty ? null : r.docs[0]));
 
     if (res) {
       await this.sendActiveMembership(res.id);
@@ -142,7 +142,7 @@ export class DisruptiveService {
       .where('address', '==', address)
       .where('status', '==', 'pending')
       .get()
-      .then((r) => (r.empty ? null : r.docs[0]));
+      .then((r: any) => (r.empty ? null : r.docs[0]));
 
     if (res) {
       await this.sendActiveDeposit(res.id);
@@ -295,7 +295,7 @@ export class DisruptiveService {
       .where('address', '==', address)
       .where('status', '==', 'pending')
       .get()
-      .then((r) => (r.empty ? null : r.docs[0]));
+      .then((r: any) => (r.empty ? null : r.docs[0]));
 
     if (res) {
       await res.ref.update({
@@ -359,7 +359,7 @@ export class DisruptiveService {
       .where('type', '==', 'withdraw')
       .where('status', '==', 'pending')
       .get()
-      .then((r) => (r.empty ? null : r.docs[0]));
+      .then((r: any) => (r.empty ? null : r.docs[0]));
 
     if (doc) {
       await doc.ref.update({
@@ -386,7 +386,7 @@ export class DisruptiveService {
       .where('type', '==', 'withdraw')
       .where('status', '==', 'pending')
       .get()
-      .then((r) => (r.empty ? null : r.docs[0]));
+      .then((r: any) => (r.empty ? null : r.docs[0]));
     return !doc ? 0 : doc.get('amount');
   }
 
@@ -398,7 +398,7 @@ export class DisruptiveService {
       .where('type', '==', 'withdraw')
       .where('status', '==', 'pending')
       .get()
-      .then((r) => (r.empty ? null : r.docs[0]));
+      .then((r: any) => (r.empty ? null : r.docs[0]));
 
     if (doc) {
       await doc.ref.update({
@@ -414,7 +414,7 @@ export class DisruptiveService {
       .where('status', '==', 'pending')
       .get();
 
-    return docs.docs.map((r) => ({
+    return docs.docs.map((r: any) => ({
       id: r.id,
       address: r.get('address'),
       amount: r.get('amount'),
@@ -429,7 +429,7 @@ export class DisruptiveService {
       .where('address', '==', address)
       .where('status', '==', 'pending')
       .get()
-      .then((r) => (r.empty ? null : r.docs[0]));
+      .then((r: any) => (r.empty ? null : r.docs[0]));
     return transaction;
   }
 }

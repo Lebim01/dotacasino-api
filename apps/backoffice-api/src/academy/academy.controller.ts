@@ -1,36 +1,36 @@
 import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { AcademyService } from './academy.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { JWTAuthGuard } from '../auth/jwt/jwt-auth.guard';
+import { JwtAuthGuard } from '@security/jwt.guard';
 
 @Controller('academy')
 export class AcademyController {
   constructor(private readonly academyService: AcademyService) {}
 
   @Get('courses')
-  @ApiBearerAuth('JWT-auth')
-  @UseGuards(JWTAuthGuard)
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
   courses() {
     return this.academyService.getCourses();
   }
 
   @Get('courses/:idCourse')
-  @ApiBearerAuth('JWT-auth')
-  @UseGuards(JWTAuthGuard)
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
   coursesbyid(@Param('idCourse') idCourse: string) {
     return this.academyService.getCourse(idCourse);
   }
 
   @Get('courses/:idCourse/sections')
-  @ApiBearerAuth('JWT-auth')
-  @UseGuards(JWTAuthGuard)
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
   sectionscourse(@Param('idCourse') idCourse: string) {
     return this.academyService.getSections(idCourse);
   }
 
   @Get('courses/:idCourse/sections/:idSection')
-  @ApiBearerAuth('JWT-auth')
-  @UseGuards(JWTAuthGuard)
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
   sectionbyid(
     @Param('idCourse') idCourse: string,
     @Param('idSection') idSection: string,
@@ -39,8 +39,8 @@ export class AcademyController {
   }
 
   @Get('courses/:idCourse/sections/:idSection/lessons')
-  @ApiBearerAuth('JWT-auth')
-  @UseGuards(JWTAuthGuard)
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
   lessonsectioncourse(
     @Param('idCourse') idCourse: string,
     @Param('idSection') idSection: string,
@@ -49,8 +49,8 @@ export class AcademyController {
   }
 
   @Get('courses/:idCourse/sections/:idSection/lessons/:idLesson')
-  @ApiBearerAuth('JWT-auth')
-  @UseGuards(JWTAuthGuard)
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
   lessonbyid(
     @Param('idCourse') idCourse: string,
     @Param('idSection') idSection: string,

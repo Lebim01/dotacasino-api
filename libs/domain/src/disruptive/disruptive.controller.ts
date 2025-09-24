@@ -17,15 +17,18 @@ import {
   UserTokenDTO,
 } from './dto/transaction.dto';
 import { CasinoService } from '../casino/casino.service';
-import { db } from '../firebase/admin';
-import { JWTAuthGuard } from '../auth/jwt/jwt-auth.guard';
-import { ApiBearerAuth } from '@nestjs/swagger';
-import { RequestWithUser } from '../types/jwt';
-import { HasRoles } from '../auth/roles/roles.decorator';
-import { USER_ROLES } from '../auth/auth.constants';
-import { RolesGuard } from '../auth/roles/roles.guard';
-import { addToQueue, getPathQueue } from '../googletask/utils';
 import { google } from '@google-cloud/tasks/build/protos/protos';
+import { db } from 'apps/backoffice-api/src/firebase/admin';
+import {
+  addToQueue,
+  getPathQueue,
+} from 'apps/backoffice-api/src/googletask/utils';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { JwtAuthGuard } from '@security/jwt.guard';
+import { RolesGuard } from '@security/roles.guard';
+import { Roles } from '@security/roles.decorator';
+import { USER_ROLES } from 'apps/backoffice-api/src/auth/auth.constants';
+import { CurrentUser } from '@security/current-user.decorator';
 
 @Controller('disruptive')
 export class DisruptiveController {
@@ -35,14 +38,13 @@ export class DisruptiveController {
   ) {}
 
   @Post('create-transaction-deposit')
-  @ApiBearerAuth('JWT-auth')
-  @UseGuards(JWTAuthGuard)
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
   async createtransactionacademy(
-    @Request() req: RequestWithUser,
+    @CurrentUser() { userId }: { userId: string },
     @Body() body: CreateDepositDto,
   ) {
-    const { id } = req.user;
-    return this.disruptiveService.createDeposit(id, body.amount);
+    return this.disruptiveService.createDeposit(userId, body.amount);
   }
 
   @Post('completed-transaction-deposit')
@@ -113,9 +115,9 @@ export class DisruptiveController {
   }
 
   @Post('create-withdraw-qr')
-  @ApiBearerAuth('JWT-auth')
-  @HasRoles(USER_ROLES.ADMIN)
-  @UseGuards(JWTAuthGuard, RolesGuard)
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(USER_ROLES.ADMIN)
   async createwithdrawqr(@Body() body: ApproveWithdraw) {
     const transactions = [];
     for (const id of body.ids) {
@@ -138,9 +140,9 @@ export class DisruptiveController {
   }
 
   @Post('approve-withdraw-casino')
-  @ApiBearerAuth('JWT-auth')
-  @HasRoles(USER_ROLES.ADMIN)
-  @UseGuards(JWTAuthGuard, RolesGuard)
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(USER_ROLES.ADMIN)
   async approvedwithdraw(@Body() body: ApproveWithdraw) {
     for (const id of body.ids) {
       const transaction = await db
@@ -232,9 +234,9 @@ export class DisruptiveController {
   }
 
   @Get('get-withdraw-casino')
-  @ApiBearerAuth('JWT-auth')
-  @HasRoles(USER_ROLES.ADMIN)
-  @UseGuards(JWTAuthGuard, RolesGuard)
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(USER_ROLES.ADMIN)
   async getwithdrawcasino() {
     return this.disruptiveService.getWithdrawList();
   }

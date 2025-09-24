@@ -18,14 +18,14 @@ import { ReportsModule } from './reports/reports.module';
 import { CountriesModule } from './countries/countries.module';
 import { AcademyModule } from './academy/academy.module';
 import { SignalsModule } from './signals/signals.module';
-import { DisruptiveController } from './disruptive/disruptive.controller';
-import { DisruptiveService } from './disruptive/disruptive.service';
-import { DisruptiveModule } from './disruptive/disruptive.module';
-import { CasinoModule } from './casino/casino.module';
-import { CasinoService } from './casino/casino.service';
 import { FirebaseAdminModule } from './firebase/firebase-admin.module';
 import { FirestoreWipeModule } from './firestore-wipe/firestore-wipe.module';
 import { SeedModule } from './seed/seed.module';
+import { DisruptiveModule } from '@domain/disruptive/disruptive.module';
+import { CasinoModule } from '@domain/casino/casino.module';
+import { DisruptiveController } from '@domain/disruptive/disruptive.controller';
+import { DisruptiveService } from '@domain/disruptive/disruptive.service';
+import { CasinoService } from '@domain/casino/casino.service';
 
 @Module({
   imports: [

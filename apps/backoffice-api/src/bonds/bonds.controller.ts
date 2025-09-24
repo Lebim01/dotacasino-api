@@ -1,19 +1,18 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { BondsService } from './bonds.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { HasRoles } from '../auth/roles/roles.decorator';
 import { USER_ROLES } from '../auth/auth.constants';
-import { JWTAuthGuard } from '../auth/jwt/jwt-auth.guard';
-import { RolesGuard } from '../auth/roles/roles.guard';
+import { JwtAuthGuard } from '@security/jwt.guard';
+import { Roles } from '@security/roles.decorator';
 
 @Controller('bonds')
 export class BondsController {
   constructor(private readonly bondsService: BondsService) {}
 
   @Post('pay-direct-sale')
-  @ApiBearerAuth('JWT-auth')
-  @HasRoles(USER_ROLES.ADMIN)
-  @UseGuards(JWTAuthGuard, RolesGuard)
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  @Roles(USER_ROLES.ADMIN)
   async payDirectSale(@Body() body: any) {
     return this.bondsService.execUserDirectBond(
       body.registerUserId,

@@ -14,12 +14,11 @@ import {
   ApiOperation,
 } from '@nestjs/swagger';
 import { USER_ROLES } from '../auth/auth.constants';
-import { JWTAuthGuard } from '../auth/jwt/jwt-auth.guard';
-import { HasRoles } from '../auth/roles/roles.decorator';
-import { RolesGuard } from '../auth/roles/roles.guard';
 import { BinaryService } from '../binary/binary.service';
 import { db } from '../firebase/admin';
-import { RequestWithUser } from '../types/jwt';
+import { JwtAuthGuard } from '@security/jwt.guard';
+import { Roles } from '@security/roles.decorator';
+import { CurrentUser } from '@security/current-user.decorator';
 
 @Controller('binary')
 export class BinaryController {
@@ -46,9 +45,9 @@ export class BinaryController {
 
   @ApiExcludeEndpoint()
   @Post('/match-points')
-  @ApiBearerAuth('JWT-auth')
-  @HasRoles(USER_ROLES.ADMIN)
-  @UseGuards(JWTAuthGuard, RolesGuard)
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  @Roles(USER_ROLES.ADMIN)
   @ApiOperation({ summary: '[ADMIN]' })
   async matchPoints(@Body() body: { userId: string }) {
     await this.binaryService.matchBinaryPoints(body.userId);
@@ -57,9 +56,9 @@ export class BinaryController {
 
   @ApiExcludeEndpoint()
   @Post('/pay')
-  @ApiBearerAuth('JWT-auth')
-  @HasRoles(USER_ROLES.ADMIN)
-  @UseGuards(JWTAuthGuard, RolesGuard)
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  @Roles(USER_ROLES.ADMIN)
   @ApiOperation({ summary: '[ADMIN]' })
   async payBinary(@Body() body: { registerUserId: string; points: number }) {
     if (!body.registerUserId) throw new Error('registerUserId required');
@@ -71,15 +70,14 @@ export class BinaryController {
   }
 
   @Get('get-tree/:userid')
-  @ApiBearerAuth('JWT-auth')
-  @UseGuards(JWTAuthGuard)
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get user binary tree' })
   gettree(
-    @Request() request: RequestWithUser,
+    @CurrentUser() user: { userId: string },
     @Param('userid') userid: string,
   ) {
-    const { id } = request.user;
-    return this.binaryService.getBinaryUsers(id, userid, 3, 1, {});
+    return this.binaryService.getBinaryUsers(user.userId, userid, 3, 1, {});
   }
 
   @Delete('delete-points')

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { db } from 'apps/backoffice-api/src/firebase/admin';
+import { dateToString } from 'apps/backoffice-api/src/utils/firebase';
 import axios from 'axios';
-import { db } from '../firebase/admin';
-import { dateToString } from '../utils/firebase';
 
 const DOMAIN = `https://admin.dota.click`;
 const CURRENCY = 'USD';

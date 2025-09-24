@@ -16,14 +16,13 @@ import {
   ApiExcludeEndpoint,
   ApiOperation,
 } from '@nestjs/swagger';
-import { JWTAuthGuard } from '../auth/jwt/jwt-auth.guard';
-import { HasRoles } from '../auth/roles/roles.decorator';
 import { USER_ROLES } from '../auth/auth.constants';
-import { RolesGuard } from '../auth/roles/roles.guard';
 import { HttpGoogleTaskInterceptor } from '../auth/interceptors/google-task';
 import { MEMBERSHIP_PRICES } from '../constants';
 import { sleep } from '../utils/firebase';
 import { Memberships } from '../types';
+import { Roles } from '@security/roles.decorator';
+import { JwtAuthGuard } from '@security/jwt.guard';
 
 @Controller('subscriptions')
 export class SubscriptionsController {
@@ -31,9 +30,9 @@ export class SubscriptionsController {
 
   @ApiExcludeEndpoint()
   @Get('isActiveUser')
-  @ApiBearerAuth('JWT-auth')
-  @HasRoles(USER_ROLES.ADMIN)
-  @UseGuards(JWTAuthGuard, RolesGuard)
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  @Roles(USER_ROLES.ADMIN)
   @ApiOperation({ summary: 'Check user status [SYSTEM]' })
   isActiveUser(@Query('idUser') idUser: string) {
     return this.subscriptionService.isActiveUser(idUser);
@@ -41,9 +40,9 @@ export class SubscriptionsController {
 
   @ApiExcludeEndpoint()
   @Post('activeWithoutVolumen')
-  @ApiBearerAuth('JWT-auth')
-  @HasRoles(USER_ROLES.ADMIN)
-  @UseGuards(JWTAuthGuard, RolesGuard)
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  @Roles(USER_ROLES.ADMIN)
   @ApiOperation({ summary: 'Active without volumen [ADMIN]' })
   async activeWithoutVolumen(@Body() body: any) {
     if (!body.email) throw new Error('email required');
@@ -102,9 +101,9 @@ export class SubscriptionsController {
 
   @ApiExcludeEndpoint()
   @Post('activeWithVolumen')
-  @ApiBearerAuth('JWT-auth')
-  @HasRoles(USER_ROLES.ADMIN)
-  @UseGuards(JWTAuthGuard, RolesGuard)
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  @Roles(USER_ROLES.ADMIN)
   @ApiOperation({ summary: 'Active with volumen [ADMIN]' })
   async activeWithVolumen(@Body() body: any) {
     if (!body.email) throw new Error('email required');
@@ -140,9 +139,9 @@ export class SubscriptionsController {
 
   @ApiExcludeEndpoint()
   @Post('inactiveUser')
-  @ApiBearerAuth('JWT-auth')
-  @HasRoles(USER_ROLES.ADMIN)
-  @UseGuards(JWTAuthGuard, RolesGuard)
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  @Roles(USER_ROLES.ADMIN)
   @ApiOperation({ summary: 'Inactive an user [ADMIN]' })
   async inactiveUser(@Body() body: any) {
     if (!body.user_id) throw new Error('user_id required');

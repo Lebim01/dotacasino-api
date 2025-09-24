@@ -8,9 +8,9 @@ import { CoinpaymentsService } from '../coinpayments/coinpayments.service';
 import { AuthService } from '../auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { MailerService } from '../mailer/mailer.service';
-import { DisruptiveService } from '../disruptive/disruptive.service';
-import { CasinoService } from '../casino/casino.service';
 import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
+import { DisruptiveService } from '@domain/disruptive/disruptive.service';
+import { CasinoService } from '@domain/casino/casino.service';
 
 @Module({
   providers: [

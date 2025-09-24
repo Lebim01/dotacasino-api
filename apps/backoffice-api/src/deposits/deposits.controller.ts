@@ -9,8 +9,8 @@ import {
 import { DepositsService } from './deposits.service';
 import { db } from '../firebase/admin';
 import { ApiBearerAuth, ApiExcludeEndpoint } from '@nestjs/swagger';
-import { RequestWithUser } from '../types/jwt';
-import { JWTAuthGuard } from '../auth/jwt/jwt-auth.guard';
+import { JwtAuthGuard } from '@security/jwt.guard';
+import { CurrentUser } from '@security/current-user.decorator';
 
 @Controller('deposits')
 export class DepositsController {
@@ -48,19 +48,19 @@ export class DepositsController {
   }
 
   @Post('active-compound-interest')
-  @ApiBearerAuth('JWT-auth')
-  @UseGuards(JWTAuthGuard)
-  activeCompoundInterest(@Request() request: RequestWithUser) {
-    const { id } = request.user;
-    return this.depositsService.activeCompoundInterest(id);
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  activeCompoundInterest(@CurrentUser() user: { userId: string }) {
+    return this.depositsService.activeCompoundInterest(user.userId);
   }
 
   @Get('active-compound-interest')
-  @ApiBearerAuth('JWT-auth')
-  @UseGuards(JWTAuthGuard)
-  async isactiveCompoundInterest(@Request() request: RequestWithUser) {
-    const { id } = request.user;
-    const user = await db.collection('users').doc(id).get();
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  async isactiveCompoundInterest(
+    @CurrentUser() { userId }: { userId: string },
+  ) {
+    const user = await db.collection('users').doc(userId).get();
     const deposits = await user.ref.collection('deposits').get();
     return {
       is_active: user.get('compound_interest') || false,

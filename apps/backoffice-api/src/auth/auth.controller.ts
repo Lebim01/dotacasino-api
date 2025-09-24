@@ -16,12 +16,11 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { OpsAuthDTO } from './dto/ops-auth.dto';
-import { JWTAuthGuard } from './jwt/jwt-auth.guard';
-import { RolesGuard } from './roles/roles.guard';
-import { HasRoles } from './roles/roles.decorator';
 import { USER_ROLES } from './auth.constants';
 import { db } from '../firebase/admin';
 import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
+import { JwtAuthGuard } from '@security/jwt.guard';
+import { Roles } from '@security/roles.decorator';
 
 @ApiTags('Authentication & Authorization')
 @Controller('auth')
@@ -76,9 +75,9 @@ export class AuthController {
 
   @ApiExcludeEndpoint()
   @Patch('give/admin')
-  @ApiBearerAuth('JWT-auth')
-  @HasRoles(USER_ROLES.ADMIN)
-  @UseGuards(JWTAuthGuard, RolesGuard)
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  @Roles(USER_ROLES.ADMIN)
   @ApiOperation({ summary: 'Give admin role to user [ADMIN]' })
   async giveAdminRole(@Body() body: OpsAuthDTO) {
     const { email } = body;
@@ -88,9 +87,9 @@ export class AuthController {
 
   @ApiExcludeEndpoint()
   @Patch('remove/admin')
-  @ApiBearerAuth('JWT-auth')
-  @HasRoles(USER_ROLES.ADMIN)
-  @UseGuards(JWTAuthGuard, RolesGuard)
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  @Roles(USER_ROLES.ADMIN)
   @ApiOperation({ summary: 'Remove admin role from user [ADMIN]' })
   async removeAdminRole(@Body() body: OpsAuthDTO) {
     const { email } = body;

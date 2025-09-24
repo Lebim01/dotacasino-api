@@ -5,10 +5,12 @@ import { AuthService } from '../auth/auth.service';
 import { MailerModule } from '../mailer/mailer.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
-import { JWTStrategy } from '../auth/jwt/jwt.strategy';
-import { DisruptiveService } from '../disruptive/disruptive.service';
-import { CasinoService } from '../casino/casino.service';
 import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
+import { DisruptiveService } from '@domain/disruptive/disruptive.service';
+import { CasinoService } from '@domain/casino/casino.service';
+import { JwtStrategy } from '@security/jwt.strategy';
+import { UserCommonService } from '@domain/users/users.service';
+import { PrismaService } from 'libs/db/src/prisma.service';
 
 @Module({
   imports: [
@@ -21,10 +23,12 @@ import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
   ],
   controllers: [UsersController],
   providers: [
+    PrismaService,
     UsersService,
     AuthService,
-    JWTStrategy,
+    JwtStrategy,
     DisruptiveService,
+    UserCommonService,
     CasinoService,
     AuthAcademyService,
   ],

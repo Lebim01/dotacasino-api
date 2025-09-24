@@ -7,12 +7,9 @@ import { db } from '../firebase/admin';
 import { getDirectTree as _getDirectTree, parseUserData } from './utils';
 import { ChangeProfileDTO } from './dto/recover-pass.dto';
 import { currentMultiplier as _currentMultiplier } from '../utils/deposits';
-import { MEMBERSHIP_PRICES } from '../constants';
 import { firestore } from 'firebase-admin';
 import { dateToString } from '../utils/firebase';
 import { AuthService } from '../auth/auth.service';
-import { DisruptiveService } from '../disruptive/disruptive.service';
-import { Memberships } from '../types';
 import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
 
 @Injectable()
@@ -21,7 +18,6 @@ export class UsersService {
     private readonly mailerService: MailerService,
     private readonly authService: AuthService,
     private readonly authAcademyService: AuthAcademyService,
-    private readonly disruptiveService: DisruptiveService,
   ) {}
 
   async getUsers(page: number, limit: number) {
@@ -165,54 +161,6 @@ export class UsersService {
       .collection('users')
       .doc(id_user)
       .update(body as any);
-  }
-
-  async getQRMembership(id_user: string) {
-    const user = await db.collection('users').doc(id_user).get();
-    const txn_id = user.get('membership_link_disruptive');
-
-    if (txn_id) {
-      const txn = await db.collection('disruptive-academy').doc(txn_id).get();
-      return {
-        address: txn.get('address'),
-        amount: txn.get('amount'),
-        membership_type: txn.get('membership_type'),
-        status: txn.get('payment_status'),
-        expires_at: txn.get('expires_at'),
-        qrcode_url: txn.get('qrcode_url'),
-        status_text: null,
-      };
-    }
-
-    return null;
-  }
-
-  async createMembershipQR(id_user: string, membership_type: Memberships) {
-    const amount = MEMBERSHIP_PRICES[membership_type];
-    if (!amount) throw new HttpException('INVALID_MEMBERSHIP_TYPE', 403);
-
-    const user = await db.collection('users').doc(id_user).get();
-
-    if (user.get('membership')) {
-      // UPGRADE
-      const diff =
-        MEMBERSHIP_PRICES[membership_type] -
-        MEMBERSHIP_PRICES[user.get('membership') as Memberships];
-
-      await this.disruptiveService.createMembership(
-        id_user,
-        membership_type,
-        diff,
-        true,
-      );
-    } else {
-      await this.disruptiveService.createMembership(
-        id_user,
-        membership_type,
-        amount,
-        true,
-      );
-    }
   }
 
   async getQRDeposit(id_user: string) {

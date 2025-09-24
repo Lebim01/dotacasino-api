@@ -7,7 +7,6 @@ import {
   colors,
   animals,
 } from 'unique-names-generator';
-import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
 import { UserCommonService } from '@domain/users/users.service';
 
 export function generateDisplayName() {
@@ -23,10 +22,7 @@ export function generateDisplayName() {
 
 @Injectable()
 export class UsersService {
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly userService: UserCommonService,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async getUserById(id: string) {
     const user = await this.prisma.user.findUnique({
