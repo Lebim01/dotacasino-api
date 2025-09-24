@@ -5,6 +5,7 @@ import {
   HttpStatus,
   Post,
   Req,
+  Headers
 } from '@nestjs/common';
 import {
   ApiBody,
@@ -28,11 +29,11 @@ export class RecoveryController {
   @ApiBody({ type: InitRecoveryDto })
   @ApiOperation({ summary: 'Init recovery password' })
   @ApiCreatedResponse({ type: ResponseOK })
-  async init(@Body() dto: InitRecoveryDto, @Req() req: Request) {
+  async init(@Body() dto: InitRecoveryDto, @Req() req: Request, @Headers('host') host: string,) {
     const ip =
       (req.headers['x-forwarded-for'] as string)?.split(',')[0] ?? req.ip;
     const ua = req.headers['user-agent'] as string | undefined;
-    return this.svc.init(dto.email, ip, ua);
+    return this.svc.init(dto.email, host, ip, ua);
   }
 
   @Post('verify')
@@ -49,7 +50,9 @@ export class RecoveryController {
   @ApiBody({ type: CompleteRecoveryDto })
   @ApiOperation({ summary: 'Change password' })
   @ApiCreatedResponse({ type: ResponseOK })
-  async complete(@Body() dto: CompleteRecoveryDto) {
+  async complete(
+    @Body() dto: CompleteRecoveryDto,
+  ) {
     return this.svc.complete(dto.rid, dto.rt, dto.newPassword);
   }
 }
