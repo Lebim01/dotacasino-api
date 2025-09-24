@@ -50,6 +50,7 @@ export class UsersController {
   @Post('create-qr-membership')
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Create QR payment' })
   async createqrmembership(
     @CurrentUser() user: { userId: string },
     @Body() body: any,
@@ -59,9 +60,7 @@ export class UsersController {
   }
 
   @Get('/:code')
-  @ApiOkResponse({
-    description: 'Get user reference',
-  })
+  @ApiOperation({ summary: 'Get user data from referalCode' })
   async reference(@Param('code') code: string) {
     return this.users.getReferenceCode(code);
   }
