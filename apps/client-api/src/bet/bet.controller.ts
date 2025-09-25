@@ -14,4 +14,19 @@ export class BetController {
   async gameList() {
     return this.betService.gameList({});
   }
+
+  @Get('balance')
+  getbalance(){
+    return this.betService.getBalance("1owWHC0jL7Jls4p8EAya");
+  }
+
+  @Get('hall')
+  hall(){
+    return this.betService.createHall("1owWHC0jL7Jls4p8EAya");
+  }
+
+  @Get('sessionlog')
+  sessionlog(){
+    return this.betService.sessionLogs("290664467");
+  }
 }

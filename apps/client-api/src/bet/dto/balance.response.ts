@@ -5,3 +5,4 @@ export interface BalanceApiResponse {
   balance: string;
   currency: string;
 }
+

@@ -29,7 +29,7 @@ export class GamesService {
   ) {}
 
   async list(q: ListGamesDto) {
-    const where: Prisma.GameWhereInput = { enabled: true };
+    const where: Prisma.GameWhereInput = { enabled: true, allowDemo: true };
 
     if (q.category) where.category = q.category as GameCategory;
     if (q.device) where.devices = { has: q.device };

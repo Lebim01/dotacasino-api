@@ -8,6 +8,7 @@ import {
   IsNumberString,
   Length,
   Min,
+  IsNumber,
 } from 'class-validator';
 
 export class BaseCmdDto {
@@ -79,3 +80,10 @@ export type Success<T extends object = {}> = {
   error: '';
 } & T;
 export type Fail = { status: 'fail'; error: string };
+
+
+export class GameSessionLogDto extends BaseCmdDto {
+  @IsString() sessionsId!: string;
+  @IsNumber() count!: number;
+  @IsNumber() page!: number;
+}

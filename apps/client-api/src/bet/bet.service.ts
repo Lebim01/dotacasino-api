@@ -1,5 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { GamesListDto, OpenGameDto, WriteBetDto } from './dto';
+import {
+  CreateHallDto,
+  GameSessionLogDto,
+  GamesListDto,
+  GetBalanceDto,
+  OpenGameDto,
+  WriteBetDto,
+} from './dto';
 import { HttpService } from '@nestjs/axios';
 import { GamesApiResponse } from './dto/games.response';
 import { firstValueFrom } from 'rxjs';
@@ -43,7 +50,7 @@ export class BetService {
       this.api.post<OpenGameApiResponse, OpenGameDto>('openGame/', {
         ...this.params,
         cmd: 'openGame',
-        domain,
+        domain: 'https://admin-api-1039762081728.us-central1.run.app',
         exitUrl: `${domain}/close.php`,
         language: 'en',
         continent: 'eur',
@@ -70,12 +77,12 @@ export class BetService {
   }
 
   // (recibir el saldo en balance para el jugador)
-  async getBalance() {
+  async getBalance(login: string) {
     const { data } = await firstValueFrom(
-      this.api.post<BalanceApiResponse>('', {
+      this.api.post<BalanceApiResponse, GetBalanceDto>('', {
         ...this.params,
         cmd: 'getBalance',
-        login: 'test',
+        login,
       }),
     );
     return data;
@@ -96,5 +103,33 @@ export class BetService {
       }),
     );
     return data.status == 'success';
+  }
+
+  async createHall(login: string) {
+    const { data } = await firstValueFrom(
+      this.api.post<any, CreateHallDto>('', {
+        ...this.params,
+        cmd: 'createHall',
+        api_key: '',
+        agent: '',
+        currency: 'USD',
+        host: 'https://admin-api-1039762081728.us-central1.run.app',
+        login,
+      }),
+    );
+    return data;
+  }
+
+  async sessionLogs(sessionsId: string) {
+    const { data } = await firstValueFrom(
+      this.api.post<any, GameSessionLogDto>('', {
+        ...this.params,
+        cmd: 'gameSessionsLog',
+        sessionsId,
+        count: 10,
+        page: 0,
+      }),
+    );
+    return data;
   }
 }
