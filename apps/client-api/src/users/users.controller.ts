@@ -1,16 +1,12 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiOkResponse,
-  ApiOperation,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { currentMultiplier } from 'apps/backoffice-api/src/utils/deposits';
 import { JwtAuthGuard } from '@security/jwt.guard';
 import { CurrentUser } from '@security/current-user.decorator';
 import { db } from 'apps/backoffice-api/src/firebase/admin';
 import { UserCommonService } from '@domain/users/users.service';
+import { CreateQRDto } from './dto/registeracademy.dto';
 
 @ApiTags('Users')
 @Controller('users')
@@ -50,10 +46,11 @@ export class UsersController {
   @Post('create-qr-membership')
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
+  @ApiBody({ type: CreateQRDto })
   @ApiOperation({ summary: 'Create QR payment' })
   async createqrmembership(
     @CurrentUser() user: { userId: string },
-    @Body() body: any,
+    @Body() body: CreateQRDto,
   ) {
     await this.userCommon.createMembershipQR(user.userId, body.membership_type);
     return this.userCommon.getQRMembership(user.userId);

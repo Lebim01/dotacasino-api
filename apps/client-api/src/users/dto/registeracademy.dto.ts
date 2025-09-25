@@ -1,5 +1,13 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Memberships } from 'apps/backoffice-api/src/types';
 
 export class RegisterAuthDto {
   @ApiProperty()
@@ -58,4 +66,10 @@ export class RegisterAuthDto {
   @IsString()
   @IsNotEmpty()
   refCodeR!: string;
+}
+
+export class CreateQRDto {
+  @ApiProperty()
+  @IsString()
+  membership_type!: Memberships;
 }
