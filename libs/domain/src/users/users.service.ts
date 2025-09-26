@@ -49,6 +49,11 @@ export class UserCommonService {
     return user;
   }
 
+  async getUserByIdFirebase(id: string) {
+    const user = await db.collection('users').doc(id).get();
+    return user;
+  }
+
   async createUser(
     email: string,
     password: string,
