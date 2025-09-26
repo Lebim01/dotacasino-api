@@ -18,7 +18,7 @@ export class MembershipsController {
   })
   async list(@CurrentUser() _user: { userId?: string }) {
     let current_membership = 'free';
-    if (_user.userId) {
+    if (_user && _user.userId) {
       const user = await this.users.getUserByIdFirebase(_user.userId);
       current_membership = user.get('membership');
       if (user.get('membership_status') != 'paid') {
