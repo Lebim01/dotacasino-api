@@ -21,6 +21,8 @@ export class ProfileService {
         language: true,
         avatarUrl: true,
         createdAt: true,
+        refCodeL: true,
+        refCodeR: true,
       },
     });
     return user;
