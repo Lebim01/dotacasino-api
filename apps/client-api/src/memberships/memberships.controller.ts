@@ -3,6 +3,7 @@ import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { MembershipsService } from './memberships.service';
 import { CurrentUser } from '@security/current-user.decorator';
 import { UserCommonService } from '@domain/users/users.service';
+import { NETWORKS } from '@domain/disruptive/disruptive.service';
 
 @ApiTags('Memberships')
 @Controller('memberships')
@@ -11,6 +12,15 @@ export class MembershipsController {
     private readonly service: MembershipsService,
     private readonly users: UserCommonService,
   ) {}
+
+  @Get('networks')
+  @ApiOkResponse({
+    description: 'Get networks transaction',
+    example: NETWORKS
+  })
+  async networks(){
+    return NETWORKS
+  }
 
   @Get()
   @ApiOkResponse({

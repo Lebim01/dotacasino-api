@@ -17,9 +17,29 @@ export const disruptiveUrl = axios.create({
   },
 });
 
-type Networks = 'BSC' | 'TRX' | 'ETH' | 'POLYGON';
+export type Networks = 'BSC' | 'TRX' | 'ETH' | 'POLYGON';
 
-const NETWORKS: Record<Networks, string> = {
+export const NETWORKS: Record<Networks, { network: string; protocol: string }> =
+  {
+    BSC: {
+      network: 'BSC',
+      protocol: 'BEP20',
+    },
+    ETH: {
+      network: 'ETH',
+      protocol: 'ERC20',
+    },
+    POLYGON: {
+      network: 'POLYGON',
+      protocol: 'ERC20',
+    },
+    TRX: {
+      network: 'TRC',
+      protocol: 'USDT',
+    },
+  };
+
+const NETWORKS_ADDRESS: Record<Networks, string> = {
   BSC: '0x55d398326f99059fF775485246999027B3197955',
   TRX: '41a614f803b6fd780986a42c78ec9c7f77e6ded13c',
   ETH: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
@@ -36,7 +56,7 @@ export class DisruptiveService {
     const body = {
       network,
       fundsGoal: amount,
-      smartContractAddress: NETWORKS[network],
+      smartContractAddress: NETWORKS_ADDRESS[network],
     };
     try {
       const response = await disruptiveUrl.post(url, body);
@@ -313,7 +333,7 @@ export class DisruptiveService {
   async sendWithdraw(payload: { address: string; amount: number }[]) {
     const body = {
       network: 'BSC',
-      smartContractAddress: NETWORKS.BSC,
+      smartContractAddress: NETWORKS_ADDRESS.BSC,
       name: 'casino withdraw',
       eventGetSymbol: 'USDT',
       massPaymentType: 1,

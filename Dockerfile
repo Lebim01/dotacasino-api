@@ -29,7 +29,7 @@ COPY --from=build /app/dist ./dist
 COPY --from=deps /app/libs/db ./libs/db
 
 # Variables de puertos por si las usas en cada app
-ENV PORT_CLIENT=3001 PORT_ADMIN=3002 PORT_WORKERS=3003
+ENV PORT_CLIENT=3001 PORT_ADMIN=3002 PORT_WORKERS=3003 PORT_BACKOFFICE=3004
 
 # Propaga APP para el CMD (puedes sobreescribir con -e APP=...)
 ARG APP

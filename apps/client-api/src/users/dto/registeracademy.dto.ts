@@ -1,5 +1,6 @@
 import {
   IsEmail,
+  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -8,6 +9,7 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Memberships } from 'apps/backoffice-api/src/types';
+import { NETWORKS, Networks } from '@domain/disruptive/disruptive.service';
 
 export class RegisterAuthDto {
   @ApiProperty()
@@ -72,4 +74,9 @@ export class CreateQRDto {
   @ApiProperty()
   @IsString()
   membership_type!: Memberships;
+
+  @ApiProperty()
+  @IsString()
+  @IsEnum(NETWORKS)
+  network!: Networks;
 }
