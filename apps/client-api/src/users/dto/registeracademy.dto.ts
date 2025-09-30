@@ -9,7 +9,13 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Memberships } from 'apps/backoffice-api/src/types';
-import { NETWORKS, Networks } from '@domain/disruptive/disruptive.service';
+
+export enum Networks {
+  BSC = 'BSC',
+  TRX = 'TRX',
+  ETH = 'ETH',
+  POLYGON = 'POLYGON',
+}
 
 export class RegisterAuthDto {
   @ApiProperty()
@@ -75,8 +81,9 @@ export class CreateQRDto {
   @IsString()
   membership_type!: Memberships;
 
-  @ApiProperty()
-  @IsString()
-  @IsEnum(NETWORKS)
+  @ApiProperty({
+    enum: Networks,
+  })
+  @IsEnum(Networks)
   network!: Networks;
 }
