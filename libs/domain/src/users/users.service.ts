@@ -18,7 +18,10 @@ import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
 import { Memberships } from 'apps/backoffice-api/src/types';
 import { MEMBERSHIP_PRICES } from 'apps/backoffice-api/src/constants';
 import { db } from 'apps/backoffice-api/src/firebase/admin';
-import { DisruptiveService } from '@domain/disruptive/disruptive.service';
+import {
+  DisruptiveService,
+  Networks,
+} from '@domain/disruptive/disruptive.service';
 import { USER_ROLES } from 'apps/backoffice-api/src/auth/auth.constants';
 
 export function generateDisplayName() {
@@ -127,7 +130,11 @@ export class UserCommonService {
     });
   }
 
-  async createMembershipQR(id_user: string, membership_type: Memberships) {
+  async createMembershipQR(
+    id_user: string,
+    membership_type: Memberships,
+    network: Networks,
+  ) {
     const amount = MEMBERSHIP_PRICES[membership_type];
     if (!amount) throw new HttpException('INVALID_MEMBERSHIP_TYPE', 403);
 
@@ -142,6 +149,7 @@ export class UserCommonService {
       await this.disruptiveService.createMembership(
         id_user,
         membership_type,
+        network,
         diff,
         true,
       );
@@ -149,6 +157,7 @@ export class UserCommonService {
       await this.disruptiveService.createMembership(
         id_user,
         membership_type,
+        network,
         amount,
         true,
       );

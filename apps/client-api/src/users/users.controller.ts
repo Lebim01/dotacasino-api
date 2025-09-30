@@ -52,7 +52,11 @@ export class UsersController {
     @CurrentUser() user: { userId: string },
     @Body() body: CreateQRDto,
   ) {
-    await this.userCommon.createMembershipQR(user.userId, body.membership_type);
+    await this.userCommon.createMembershipQR(
+      user.userId,
+      body.membership_type,
+      body.network,
+    );
     return this.userCommon.getQRMembership(user.userId);
   }
 

@@ -69,11 +69,12 @@ export class DisruptiveService {
   async createMembership(
     user_id: string,
     membership_type: Memberships,
+    network: Networks,
     amount: number,
     is_upgrade = false,
   ) {
     try {
-      const response = await this.generateDisruptivePayment('BSC', amount);
+      const response = await this.generateDisruptivePayment(network, amount);
       const { address } = response.data;
       const expires_at = new Date(
         response.timeEnd + 15 * 60 * 1000,
