@@ -8,6 +8,7 @@ import { JwtAuthModule } from '@security/jwt.module';
 import { WalletModule } from '@domain/wallet/wallet.module';
 import { KycReviewModule } from './kyc-review/kyc-review.module';
 import { DepositsModule } from './deposits/deposits.module';
+import { GitslotparkModule } from './gitslotpark/gitslotpark.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { DepositsModule } from './deposits/deposits.module';
     WalletAdminModule,
     KycReviewModule,
     DepositsModule,
+    GitslotparkModule,
   ],
   controllers: [HealthController],
 })
