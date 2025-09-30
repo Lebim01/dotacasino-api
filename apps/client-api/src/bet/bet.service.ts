@@ -50,13 +50,13 @@ export class BetService {
       this.api.post<OpenGameApiResponse, OpenGameDto>('openGame/', {
         ...this.params,
         cmd: 'openGame',
-        domain: 'https://admin-api-1039762081728.us-central1.run.app',
-        exitUrl: `${domain}/close.php`,
+        domain,
+        exitUrl: `${domain}/exit`,
         language: 'en',
         continent: 'eur',
         login: userId,
         gameId,
-        cdnUrl: `${domain}/exit`,
+        cdnUrl: `${domain}/resources`,
         demo: '1',
       }),
     );

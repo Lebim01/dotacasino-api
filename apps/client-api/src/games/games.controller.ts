@@ -47,7 +47,7 @@ export class GamesController {
   ) {
     return this.games.openGame(
       gameSlug,
-      headers.origin || 'https://dota.click',
+      headers.origin || 'https://dotacasino-front.vercel.app',
       u?.userId,
     );
   }
