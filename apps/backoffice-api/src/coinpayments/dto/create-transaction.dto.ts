@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { Coins, Memberships } from '../../types';
+import { Networks } from '@domain/disruptive/disruptive.service';
 
 export class CreateTransactionDto {
   @ApiProperty()
@@ -14,6 +15,11 @@ export class CreateTransactionMembershipDto {
   @IsOptional()
   @IsString()
   membership_type!: Memberships;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  network!: Networks;
 }
 
 export class FirebaseObject {
