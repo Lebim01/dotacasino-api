@@ -11,6 +11,7 @@ import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiUnauthorizedResponse,
+  ApiBody,
 } from '@nestjs/swagger';
 import { AuthCommonService } from '@domain/auth/auth.service';
 import {
@@ -30,6 +31,7 @@ export class AuthController {
 
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
+  @ApiBody({ type: RegisterDto })
   @ApiCreatedResponse({
     description: 'User registered successfully',
     type: RegisterResponseDto,

@@ -49,10 +49,4 @@ export class RegisterDto {
   })
   @IsString()
   referralCode!: string;
-
-  @ApiProperty({
-    description: 'left | right',
-  })
-  @IsString()
-  side!: 'left' | 'right';
 }
