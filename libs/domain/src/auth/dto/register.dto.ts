@@ -5,6 +5,7 @@ import {
   IsBoolean,
   IsOptional,
   Length,
+  IsNotEmpty,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -48,5 +49,6 @@ export class RegisterDto {
     example: 'REF123',
   })
   @IsString()
+  @IsNotEmpty()
   referralCode!: string;
 }
