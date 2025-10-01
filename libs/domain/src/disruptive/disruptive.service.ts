@@ -176,12 +176,10 @@ export class DisruptiveService {
 
   async createDisruptiveTransactionCasino(
     network: Networks,
-    usertoken: string,
+    userid: string,
     amount: number,
-    cashier: string,
   ) {
     try {
-      const userid = await this.casinoService.getIdUser(usertoken);
       const response = await this.generateDisruptivePayment(network, amount);
       const { address } = response.data;
       const expires_at = new Date(
@@ -190,7 +188,7 @@ export class DisruptiveService {
       const qrcode_url = `https://api.qrserver.com/v1/create-qr-code/?size=225x225&data=${address}`;
 
       const doc = await db.collection('disruptive-casino').add({
-        usertoken,
+        userid,
         amount,
         expires_at,
         address,
@@ -198,7 +196,6 @@ export class DisruptiveService {
         network,
         created_at: new Date(),
         status: 'pending',
-        cashier,
       });
 
       await db.collection('casino-transactions').doc(doc.id).set({
@@ -208,7 +205,6 @@ export class DisruptiveService {
         amount,
         userid,
         address,
-        cashier,
       });
 
       return { qrcode_url, address, expires_at, amount };
@@ -367,13 +363,7 @@ export class DisruptiveService {
     }
   }
 
-  async requestWithdraw(
-    cashier: string,
-    usertoken: string,
-    amount: number,
-    address: string,
-  ) {
-    const userid = await this.casinoService.getIdUser(usertoken);
+  async requestWithdraw(userid: string, amount: number, address: string) {
     const doc = await db
       .collection('casino-transactions')
       .where('userid', '==', userid)
@@ -394,13 +384,11 @@ export class DisruptiveService {
         userid,
         amount,
         address,
-        cashier,
       });
     }
   }
 
-  async getPendingAmount(usertoken: string) {
-    const userid = await this.casinoService.getIdUser(usertoken);
+  async getPendingAmount(userid: string) {
     const doc = await db
       .collection('casino-transactions')
       .where('userid', '==', userid)
@@ -411,8 +399,7 @@ export class DisruptiveService {
     return !doc ? 0 : doc.get('amount');
   }
 
-  async cancelDisruptiveWithdrawCasino(usertoken: string) {
-    const userid = await this.casinoService.getIdUser(usertoken);
+  async cancelDisruptiveWithdrawCasino(userid: string) {
     const doc = await db
       .collection('casino-transactions')
       .where('userid', '==', userid)

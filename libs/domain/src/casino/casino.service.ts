@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { db } from 'apps/backoffice-api/src/firebase/admin';
 import { dateToString } from 'apps/backoffice-api/src/utils/firebase';
 import axios from 'axios';
+import { PrismaService } from 'libs/db/src/prisma.service';
 
 const DOMAIN = `https://admin.dota.click`;
 const CURRENCY = 'USD';
@@ -21,105 +22,39 @@ const login: any = {
 
 @Injectable()
 export class CasinoService {
-  async getToken(cashier: string) {
-    const url = `${DOMAIN}/index.php?act=admin&area=login&response=js`;
-    const formdata = new FormData();
-    formdata.append('login', login[cashier]);
-    formdata.append('password', 'Casino123');
-    const res = await axios.post(url, formdata);
+  constructor(private readonly prisma: PrismaService) {}
 
-    return res.data.token;
-  }
-
-  async addCredits(
-    cashier: string,
-    tokenuser: string,
-    amount: number,
-    transaction_id: string,
-  ) {
-    const userid = await this.getIdUser(tokenuser);
-
-    const token = await this.getToken(cashier);
-    const url = `${DOMAIN}/index.php?act=admin&area=balance&type=frame&response=js&token=${token}&id=${userid}`;
-    const formdata = new FormData();
-    formdata.append('send', 'true');
-    formdata.append('operation', 'in');
-    formdata.append('amount', amount.toString());
-    formdata.append('balance_currency', CURRENCY);
-    const res = await axios.post(url, formdata);
-    const status = res.data.successMessage == 'Balance successfully changed';
-
-    await db.collection('casino-transactions').doc(transaction_id).set({
-      status: 'approved',
-      approved_at: new Date(),
-      amount,
-    });
-
-    await db
-      .collection('disruptive-casino')
-      .doc(transaction_id)
-      .collection('responses')
-      .add({
-        created_at: new Date(),
-        data: res.data,
+  async removeCredits(userid: string, amount: number) {
+    await this.prisma.$transaction(async (tx) => {
+      const wallet = await tx.wallet.findFirst({
+        where: {
+          userId: {
+            equals: userid,
+          },
+          currency: {
+            equals: 'USD',
+          },
+        },
       });
 
-    return status ? res.data.successMessage : 'Failed balance';
-  }
+      if (wallet && Number(wallet.balance) >= amount) {
+        const newBal = Number(wallet?.balance || 0) - amount;
+        tx.wallet.update({
+          where: {
+            id: wallet.id,
+          },
+          data: {
+            balance: wallet.balance,
+          },
+        });
+        return newBal;
+      }
 
-  async removeCredits(cashier: string, userid: number, amount: number) {
-    const token = await this.getToken(cashier);
-    const url = `${DOMAIN}/index.php?act=admin&area=balance&type=frame&response=js&token=${token}&id=${userid}`;
-    const formdata = new FormData();
-    formdata.append('send', 'true');
-    formdata.append('operation', 'out');
-    formdata.append('amount', amount.toString());
-    formdata.append('balance_currency', CURRENCY);
-    await axios.post(url, formdata);
-    return true;
-  }
-
-  async isValid(token: string) {
-    const url = `https://dota.click/api.php?type=query`;
-    const res = await axios.post(url, {
-      cmd: 'terminalInfo',
-      first: true,
-      cache: false,
-      session: null,
-      token: token,
-      version: 9,
-      domain: 'https://api.dota.click',
+      return -1;
     });
-    return Boolean(res.data?.content?.id);
   }
 
-  async getIdUser(token: string) {
-    const url = `https://dota.click/api.php?type=query`;
-    const res = await axios.post(url, {
-      cmd: 'terminalInfo',
-      first: true,
-      cache: false,
-      session: null,
-      token: token,
-      version: 9,
-      domain: 'https://api.dota.click',
-    });
-    return res.data.content.id;
-  }
-
-  async getBalance(token: string) {
-    const url = `https://dota.click/api.php?type=query`;
-    const res = await axios.post(url, {
-      cmd: 'terminalInfo',
-      first: true,
-      cache: false,
-      session: null,
-      token: token,
-      version: 9,
-      domain: 'https://api.dota.click',
-    });
-    return Number(res.data.content.cash);
-  }
+  async getBalance(token: string) {}
 
   async getTransactions(userid: number) {
     const transactions = await db
