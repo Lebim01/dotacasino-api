@@ -20,6 +20,7 @@ import { RecoveryModule } from './auth/recovery/recovery.module';
 import { UsersModule } from './users/users.module';
 import { MembershipsModule } from './memberships/memberships.module';
 import { DepositCoinsModule } from './deposit-coins/coins.module';
+import { WithdrawCoinsModule } from './withdraw-coins/coins.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { DepositCoinsModule } from './deposit-coins/coins.module';
     UsersModule,
     MembershipsModule,
     DepositCoinsModule,
+    WithdrawCoinsModule,
   ],
   controllers: [HealthController],
 })

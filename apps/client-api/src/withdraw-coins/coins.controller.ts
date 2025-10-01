@@ -2,13 +2,13 @@ import { Body, Controller, Delete, Get, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@security/jwt.guard';
 import { CurrentUser } from '@security/current-user.decorator';
-import { CreateQRDto } from './dto/registeracademy.dto';
+import { RequestDTO } from './dto/withdraw.dto';
 import { DisruptiveService } from '@domain/disruptive/disruptive.service';
 import { CasinoService } from '@domain/casino/casino.service';
 
 @ApiTags('Withdraw Coins')
 @Controller('withdraw-coins')
-export class CoinsController {
+export class WithdrawCoinsController {
   constructor(
     private readonly disruptiveService: DisruptiveService,
     private readonly casinoService: CasinoService,
@@ -17,6 +17,7 @@ export class CoinsController {
   @Get('list')
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get history' })
   getlist(@CurrentUser() user: { userId: string }) {
     return this.disruptiveService.getWithdrawList(user.userId);
   }
@@ -24,11 +25,11 @@ export class CoinsController {
   @Post('create')
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
-  @ApiBody({ type: CreateQRDto })
-  @ApiOperation({ summary: 'Create QR payment' })
+  @ApiBody({ type: RequestDTO })
+  @ApiOperation({ summary: 'Create request' })
   async createqrmembership(
     @CurrentUser() user: { userId: string },
-    @Body() body: CreateQRDto,
+    @Body() body: RequestDTO,
   ) {
     const balance = await this.casinoService.getBalance(user.userId);
     const pending = await this.disruptiveService.getPendingAmount(user.userId);
@@ -53,7 +54,7 @@ export class CoinsController {
   @Delete('cancel')
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Cancel' })
+  @ApiOperation({ summary: 'Cancel current' })
   async deleteqr(@CurrentUser() user: { userId: string }) {
     return this.disruptiveService.cancelDisruptiveWithdrawCasino(user.userId);
   }
