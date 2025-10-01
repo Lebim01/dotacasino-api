@@ -6,6 +6,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import dayjs from 'dayjs';
 import weekday from 'dayjs/plugin/isoWeek';
 import weekOfYear from 'dayjs/plugin/weekOfYear';
+import { PrismaService } from 'libs/db/src/prisma.service';
 
 async function bootstrap() {
   dayjs.extend(weekday);
@@ -15,6 +16,8 @@ async function bootstrap() {
   });
 
   const app = await NestFactory.create(AppModule);
+  const prisma = app.get(PrismaService);
+  await prisma.enableShutdownHooks(app);
   app.setGlobalPrefix('v1');
   app.enableCors({
     origin: '*',

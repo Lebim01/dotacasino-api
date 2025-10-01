@@ -62,6 +62,8 @@ export class DisruptiveController {
   }
 
   @Post('cancel-transaction-casino')
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
   async canceltransactioncasino(
     @Body() body: CompleteTransactionDisruptiveCasinoDto,
   ) {
@@ -71,34 +73,41 @@ export class DisruptiveController {
   }
 
   @Post('cancel-withdraw-casino')
-  async cancelwithdrawcasino(@Body() body: UserTokenDTO) {
-    return this.disruptiveService.cancelDisruptiveWithdrawCasino(
-      body.usertoken,
-    );
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  async cancelwithdrawcasino(
+    @Body() body: UserTokenDTO,
+    @CurrentUser() user: { userId: string },
+  ) {
+    return this.disruptiveService.cancelDisruptiveWithdrawCasino(user.userId);
   }
 
   @Post('create-transaction-casino')
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
   async createtransactioncasino(
     @Body() body: CreateTransactionDisruptiveCasinoDto,
+    @CurrentUser() user: { userId: string },
   ) {
     return this.disruptiveService.createDisruptiveTransactionCasino(
       body.network,
-      body.usertoken,
+      user.userId,
       body.amount,
-      body.cashier,
     );
   }
 
   @Post('withdraw-casino')
-  async withdrawcasino(@Body() body: CreateWithdrawCasino) {
-    const balance = await this.casinoService.getBalance(body.usertoken);
-    const pending = await this.disruptiveService.getPendingAmount(
-      body.usertoken,
-    );
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  async withdrawcasino(
+    @Body() body: CreateWithdrawCasino,
+    @CurrentUser() user: { userId: string },
+  ) {
+    const balance = await this.casinoService.getBalance(user.userId);
+    const pending = await this.disruptiveService.getPendingAmount(user.userId);
     if (balance >= body.amount + pending) {
       await this.disruptiveService.requestWithdraw(
-        body.cashier,
-        body.usertoken,
+        user.userId,
         body.amount,
         body.address,
       );
@@ -158,7 +167,8 @@ export class DisruptiveController {
         status: 'approved',
         approved_at: new Date(),
       });
-      await this.casinoService.removeCredits(cashier, userid, amount);
+
+      // TODO: restar creditos
     }
   }
 
@@ -184,12 +194,7 @@ export class DisruptiveController {
           completed_at: new Date(),
         });
 
-        return this.casinoService.addCredits(
-          transaction.get('cashier'),
-          transaction.get('usertoken'),
-          transaction.get('amount'),
-          transaction.id,
-        );
+        // TODO: sumar creditos
       }
     }
 
@@ -228,9 +233,10 @@ export class DisruptiveController {
   }
 
   @Post('get-transactions')
-  async gettransactions(@Body() body: UserTokenDTO) {
-    const userid = await this.casinoService.getIdUser(body.usertoken);
-    return this.casinoService.getTransactions(userid);
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  async gettransactions(@CurrentUser() user: { userId: string }) {
+    return this.casinoService.getTransactions(user.userId);
   }
 
   @Get('get-withdraw-casino')

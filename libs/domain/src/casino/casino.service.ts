@@ -56,7 +56,7 @@ export class CasinoService {
 
   async getBalance(token: string) {}
 
-  async getTransactions(userid: number) {
+  async getTransactions(userid: string) {
     const transactions = await db
       .collection('casino-transactions')
       .where('userid', '==', userid)

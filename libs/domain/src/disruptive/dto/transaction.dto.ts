@@ -20,10 +20,6 @@ export class CreateTransactionDisruptiveCasinoDto {
   @IsNotEmpty()
   @IsString()
   usertoken!: string;
-
-  @IsNotEmpty()
-  @IsString()
-  cashier!: string;
 }
 
 export class CompleteTransactionDisruptiveCasinoDto {
@@ -35,19 +31,11 @@ export class CompleteTransactionDisruptiveCasinoDto {
 export class CreateWithdrawCasino {
   @IsNotEmpty()
   @IsString()
-  usertoken!: string;
-
-  @IsNotEmpty()
-  @IsString()
   address!: string;
 
   @IsNotEmpty()
   @IsNumber()
   amount!: number;
-
-  @IsNotEmpty()
-  @IsString()
-  cashier!: string;
 }
 
 export class UserTokenDTO {

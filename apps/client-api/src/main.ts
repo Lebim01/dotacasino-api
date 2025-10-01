@@ -3,10 +3,13 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import bodyParser from 'body-parser';
+import { PrismaService } from 'libs/db/src/prisma.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('v1');
+  const prisma = app.get(PrismaService);
+  await prisma.enableShutdownHooks(app);
   app.use(bodyParser.json({ limit: '50mb' }));
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.enableCors({
