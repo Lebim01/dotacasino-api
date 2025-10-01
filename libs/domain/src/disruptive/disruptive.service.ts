@@ -174,6 +174,16 @@ export class DisruptiveService {
     }
   }
 
+  async getTransactionCasino(userid: string) {
+    const docs = await db
+      .collection('disruptive-casino')
+      .where('userid', '==', userid)
+      .where('status', '==', 'pending')
+      .get();
+
+    return docs.empty ? null : docs.docs[0].data();
+  }
+
   async createDisruptiveTransactionCasino(
     network: Networks,
     userid: string,
@@ -306,10 +316,10 @@ export class DisruptiveService {
     );
   }
 
-  async cancelDisruptiveTransactionCasino(address: string) {
+  async cancelDisruptiveTransactionCasino(userid: string) {
     const res = await db
       .collection('disruptive-casino')
-      .where('address', '==', address)
+      .where('userid', '==', userid)
       .where('status', '==', 'pending')
       .get()
       .then((r: any) => (r.empty ? null : r.docs[0]));
