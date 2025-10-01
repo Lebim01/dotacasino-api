@@ -9,7 +9,6 @@ import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 import { EmailModule } from './email/email.module';
-import { DepositsModule } from './deposits/deposits.module';
 import { CoinpaymentsModule } from './coinpayments/coinpayments.module';
 import { MembershipsModule } from './memberships/memberships.module';
 import { RanksModule } from './ranks/ranks.module';
@@ -26,6 +25,8 @@ import { CasinoModule } from '@domain/casino/casino.module';
 import { DisruptiveController } from '@domain/disruptive/disruptive.controller';
 import { DisruptiveService } from '@domain/disruptive/disruptive.service';
 import { CasinoService } from '@domain/casino/casino.service';
+import { WalletModule } from '@domain/wallet/wallet.module';
+import { PrismaService } from 'libs/db/src/prisma.service';
 
 @Module({
   imports: [
@@ -52,8 +53,9 @@ import { CasinoService } from '@domain/casino/casino.service';
     SignalsModule,
     DisruptiveModule,
     CasinoModule,
+    WalletModule,
   ],
   controllers: [AppController, DisruptiveController],
-  providers: [AppService, DisruptiveService, CasinoService],
+  providers: [AppService, DisruptiveService, PrismaService, CasinoService],
 })
 export class AppModule {}

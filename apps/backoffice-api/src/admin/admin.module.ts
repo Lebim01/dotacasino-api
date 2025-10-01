@@ -10,6 +10,8 @@ import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
 import { AuthService } from '../auth/auth.service';
 import { DisruptiveService } from '@domain/disruptive/disruptive.service';
 import { CasinoService } from '@domain/casino/casino.service';
+import { WalletService } from '@domain/wallet/wallet.service';
+import { PrismaService } from 'libs/db/src/prisma.service';
 
 @Module({
   providers: [
@@ -21,7 +23,8 @@ import { CasinoService } from '@domain/casino/casino.service';
     AuthAcademyService,
     JwtService,
     DisruptiveService,
-    CasinoService,
+    WalletService,
+    PrismaService,
     AuthService,
   ],
   controllers: [AdminController],

@@ -8,6 +8,7 @@ import { Memberships } from 'apps/backoffice-api/src/types';
 import { db } from 'apps/backoffice-api/src/firebase/admin';
 import { dateToString } from 'apps/backoffice-api/src/utils/firebase';
 import * as googleTaskService from 'apps/backoffice-api/src/googletask/utils';
+import { WalletService } from '@domain/wallet/wallet.service';
 
 export const disruptiveUrl = axios.create({
   baseURL: 'https://my.disruptivepayments.io',
@@ -48,7 +49,7 @@ const NETWORKS_ADDRESS: Record<Networks, string> = {
 
 @Injectable()
 export class DisruptiveService {
-  constructor(private readonly casinoService: CasinoService) {}
+  constructor(private readonly walletService: WalletService) {}
 
   async generateDisruptivePayment(network: Networks, amount: number) {
     const url = '/api/payments/single';

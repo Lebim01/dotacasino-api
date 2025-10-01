@@ -7,10 +7,10 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
 import { DisruptiveService } from '@domain/disruptive/disruptive.service';
-import { CasinoService } from '@domain/casino/casino.service';
 import { JwtStrategy } from '@security/jwt.strategy';
 import { UserCommonService } from '@domain/users/users.service';
 import { PrismaService } from 'libs/db/src/prisma.service';
+import { WalletService } from '@domain/wallet/wallet.service';
 
 @Module({
   imports: [
@@ -29,7 +29,7 @@ import { PrismaService } from 'libs/db/src/prisma.service';
     JwtStrategy,
     DisruptiveService,
     UserCommonService,
-    CasinoService,
+    WalletService,
     AuthAcademyService,
   ],
 })

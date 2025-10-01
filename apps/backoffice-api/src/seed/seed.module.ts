@@ -5,7 +5,7 @@ import { UserCommonService } from '@domain/users/users.service';
 import { PrismaService } from 'libs/db/src/prisma.service';
 import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
 import { DisruptiveService } from '@domain/disruptive/disruptive.service';
-import { CasinoService } from '@domain/casino/casino.service';
+import { WalletService } from '@domain/wallet/wallet.service';
 
 @Module({
   imports: [],
@@ -15,7 +15,7 @@ import { CasinoService } from '@domain/casino/casino.service';
     PrismaService,
     AuthAcademyService,
     DisruptiveService,
-    CasinoService,
+    WalletService,
   ],
   exports: [SeedService],
   controllers: [SeedCotroller],

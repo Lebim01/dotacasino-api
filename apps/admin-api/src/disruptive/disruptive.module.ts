@@ -3,10 +3,9 @@ import { DisruptiveController } from './disruptive.controller';
 import { DisruptiveService } from './disruptive.service';
 import { WalletService } from '@domain/wallet/wallet.service';
 import { PrismaService } from 'libs/db/src/prisma.service';
-import { CasinoService } from '@domain/casino/casino.service';
 
 @Module({
-  providers: [DisruptiveService, WalletService, PrismaService, CasinoService],
+  providers: [DisruptiveService, WalletService, PrismaService],
   controllers: [DisruptiveController],
   imports: [],
 })

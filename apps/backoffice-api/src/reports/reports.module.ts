@@ -11,6 +11,8 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
 import { DisruptiveService } from '@domain/disruptive/disruptive.service';
 import { CasinoService } from '@domain/casino/casino.service';
+import { WalletService } from '@domain/wallet/wallet.service';
+import { PrismaService } from 'libs/db/src/prisma.service';
 
 @Module({
   providers: [
@@ -23,7 +25,8 @@ import { CasinoService } from '@domain/casino/casino.service';
     AuthService,
     JwtService,
     DisruptiveService,
-    CasinoService,
+    WalletService,
+    PrismaService,
     AuthAcademyService,
   ],
   controllers: [ReportsController],

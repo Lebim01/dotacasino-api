@@ -4,7 +4,7 @@ import { MembershipsService } from './memberships.service';
 import { UserCommonService } from '@domain/users/users.service';
 import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
 import { DisruptiveService } from '@domain/disruptive/disruptive.service';
-import { CasinoService } from '@domain/casino/casino.service';
+import { WalletService } from '@domain/wallet/wallet.service';
 
 @Module({
   controllers: [MembershipsController],
@@ -13,7 +13,7 @@ import { CasinoService } from '@domain/casino/casino.service';
     UserCommonService,
     AuthAcademyService,
     DisruptiveService,
-    CasinoService,
+    WalletService,
   ],
 })
 export class MembershipsModule {}
