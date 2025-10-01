@@ -9,6 +9,7 @@ import { WalletModule } from '@domain/wallet/wallet.module';
 import { KycReviewModule } from './kyc-review/kyc-review.module';
 import { DepositsModule } from './deposits/deposits.module';
 import { GitslotparkModule } from './gitslotpark/gitslotpark.module';
+import { Tbs2apiModule } from './tbs2api/tbs2api.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { GitslotparkModule } from './gitslotpark/gitslotpark.module';
     KycReviewModule,
     DepositsModule,
     GitslotparkModule,
+    Tbs2apiModule,
   ],
   controllers: [HealthController],
 })

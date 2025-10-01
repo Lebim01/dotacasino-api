@@ -6,10 +6,4 @@ export class HealthController {
   ping() {
     return { ok: true, app: 'admin-api' };
   }
-
-  @Post('log')
-  log(@Body() body: any, @Headers() headers: any) {
-    console.log(headers);
-    console.log(body);
-  }
 }
