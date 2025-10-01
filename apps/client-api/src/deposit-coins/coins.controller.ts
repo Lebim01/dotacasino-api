@@ -9,10 +9,7 @@ import { DisruptiveService } from '@domain/disruptive/disruptive.service';
 @ApiTags('Deposit Coins')
 @Controller('deposit-coins')
 export class CoinsController {
-  constructor(
-    private readonly userCommon: UserCommonService,
-    private readonly disruptiveService: DisruptiveService,
-  ) {}
+  constructor(private readonly disruptiveService: DisruptiveService) {}
 
   @Get('qr')
   @ApiBearerAuth('access-token')

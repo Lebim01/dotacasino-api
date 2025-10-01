@@ -425,7 +425,24 @@ export class DisruptiveService {
     }
   }
 
-  async getWithdrawList() {
+  async getWithdrawList(userid: string) {
+    const docs = await db
+      .collection('casino-transactions')
+      .where('userid', '==', userid)
+      .where('type', '==', 'withdraw')
+      .where('status', '==', 'pending')
+      .get();
+
+    return docs.docs.map((r: any) => ({
+      id: r.id,
+      address: r.get('address'),
+      amount: r.get('amount'),
+      created_at: dateToString(r.get('created_at')),
+      userid: r.get('userid'),
+    }));
+  }
+
+  async getWithdrawListAdmin() {
     const docs = await db
       .collection('casino-transactions')
       .where('type', '==', 'withdraw')

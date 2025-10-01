@@ -19,7 +19,7 @@ import { ReferralModule } from './referral/referral.module';
 import { RecoveryModule } from './auth/recovery/recovery.module';
 import { UsersModule } from './users/users.module';
 import { MembershipsModule } from './memberships/memberships.module';
-import { CoinsModule } from './coins/coins.module';
+import { DepositCoinsModule } from './deposit-coins/coins.module';
 
 @Module({
   imports: [
@@ -41,7 +41,7 @@ import { CoinsModule } from './coins/coins.module';
     RecoveryModule,
     UsersModule,
     MembershipsModule,
-    CoinsModule
+    DepositCoinsModule,
   ],
   controllers: [HealthController],
 })

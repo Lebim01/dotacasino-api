@@ -244,6 +244,6 @@ export class DisruptiveController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(USER_ROLES.ADMIN)
   async getwithdrawcasino() {
-    return this.disruptiveService.getWithdrawList();
+    return this.disruptiveService.getWithdrawListAdmin();
   }
 }
