@@ -95,12 +95,6 @@ export class GamesService {
     const response = await this.bet.openGame(game.betId, domain, userId);
 
     if (response.status == 'success') {
-      console.log({
-        sessionId: response.content.gameRes.sessionId,
-        gameId: game.id,
-        userId,
-      });
-
       await this.prisma.betSession.create({
         data: {
           sessionId: response.content.gameRes.sessionId,

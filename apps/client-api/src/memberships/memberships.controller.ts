@@ -1,9 +1,10 @@
-import { Controller, Get } from '@nestjs/common';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { MembershipsService } from './memberships.service';
 import { CurrentUser } from '@security/current-user.decorator';
 import { UserCommonService } from '@domain/users/users.service';
 import { NETWORKS } from '@domain/disruptive/disruptive.service';
+import { JwtAuthGuard } from '@security/jwt.guard';
 
 @ApiTags('Memberships')
 @Controller('memberships')
@@ -16,16 +17,18 @@ export class MembershipsController {
   @Get('networks')
   @ApiOkResponse({
     description: 'Get networks transaction',
-    example: NETWORKS
+    example: NETWORKS,
   })
-  async networks(){
-    return NETWORKS
+  async networks() {
+    return NETWORKS;
   }
 
   @Get()
   @ApiOkResponse({
     description: 'Get memberships',
   })
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
   async list(@CurrentUser() _user: { userId?: string }) {
     let current_membership = 'free';
     if (_user && _user.userId) {
