@@ -13,7 +13,8 @@ type ResponseJson = {
     device: string; // "2" = desktop+mobile
     img: string;
     system_name2?: string;
-    demo: "0" | "1";
+    demo: '0' | '1';
+    width: '0' | '1';
   }>;
   gameTitles: string[];
 };
@@ -55,6 +56,7 @@ async function main() {
             category: (g.categories || null) as GameCategory,
             betId: g.id,
             allowDemo: g.demo == '1',
+            width: g.width,
           })),
         },
       },
