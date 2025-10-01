@@ -57,7 +57,7 @@ export class BetService {
         login: userId,
         gameId,
         cdnUrl: `${domain}/resources`,
-        demo: '1',
+        demo: '0',
       }),
     );
     return data;
