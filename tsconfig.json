@@ -12,6 +12,7 @@
     "emitDecoratorMetadata": true,
     "skipLibCheck": true,
     "baseUrl": ".",
+    "noImplicitAny": false,
     "paths": {
       "@libs/*": ["libs/*/src"],
       "@common/*": ["libs/common/src/*"],

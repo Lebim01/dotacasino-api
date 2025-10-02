@@ -32,7 +32,7 @@ export class BinaryService {
     sponsor_id: string,
     position: 'left' | 'right',
   ) {
-    let parent_id = null;
+    let parent_id: null | string = null;
 
     let next_user_id = sponsor_id;
     while (!parent_id) {

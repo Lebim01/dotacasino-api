@@ -23,7 +23,7 @@ function makeid(length: number) {
 export class AuthAcademyService {
   async registerUser(userObject: RegisterAuthDto) {
     let sponsor_name = null;
-    let position = null;
+    let position: null | string = null;
 
     if (userObject.sponsor_id) {
       const sponsor = await db
