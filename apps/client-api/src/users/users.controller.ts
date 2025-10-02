@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { currentMultiplier } from 'apps/backoffice-api/src/utils/deposits';
@@ -58,6 +66,14 @@ export class UsersController {
       body.network,
     );
     return this.userCommon.getQRMembership(user.userId);
+  }
+
+  @Delete('qr-membership')
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Delete current QR payment' })
+  async deleteqrmembership(@CurrentUser() user: { userId: string }) {
+    return this.userCommon.deleteQRMembership(user.userId);
   }
 
   @Get('/:code')

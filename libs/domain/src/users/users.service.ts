@@ -183,4 +183,16 @@ export class UserCommonService {
 
     return null;
   }
+
+  async deleteQRMembership(id_user: string) {
+    const user = await db.collection('users').doc(id_user).get();
+    const txn_id = user.get('membership_link_disruptive');
+
+    if (txn_id) {
+      await db.collection('disruptive-academy').doc(txn_id).delete();
+      return 'OK'
+    }
+
+    return 'NO';
+  }
 }
