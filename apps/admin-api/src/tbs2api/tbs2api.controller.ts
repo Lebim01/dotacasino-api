@@ -75,4 +75,32 @@ export class Tbs2apiController {
       };
     }
   }
+
+  @Post('testing')
+  async testing(@Body() body: any) {
+    if (body.cmd == 'sessionInfo') {
+      return {
+        status: 'success',
+        microtime: 0.001423,
+        dateTime: '2025-10-02 02:21:04',
+        error: null,
+        content: {
+          cmd: 'sessionInfo',
+          serverMathematics: null,
+          serverResources: null,
+          sessionId: body.session,
+          exitUrl: 'https:\/\/dotacasino-front.vercel.app\/exit',
+          id: '306',
+          name: 'Golf Keno',
+          currency: 'USD',
+          language: 'en',
+          type: 'fox',
+          systemName: 'golf_keno',
+          version: 0,
+          mobile: 1,
+          denomination: '',
+        },
+      };
+    }
+  }
 }
