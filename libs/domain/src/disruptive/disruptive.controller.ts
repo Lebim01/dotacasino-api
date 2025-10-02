@@ -135,7 +135,7 @@ export class DisruptiveController {
         id: d.id,
         address: d.get('address'),
         amount: d.get('amount'),
-      });
+      } as never);
     }
 
     const { address, fundsGoal, network } =

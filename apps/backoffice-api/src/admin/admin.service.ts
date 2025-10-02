@@ -84,7 +84,7 @@ export class AdminService {
         total:
           users_to_pay.docs.reduce((a, b) => a + b.get('deposit_amount'), 0) *
           0.02,
-      });
+      } as never);
     }
 
     return data;

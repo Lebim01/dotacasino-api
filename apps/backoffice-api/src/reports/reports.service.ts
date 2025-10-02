@@ -549,7 +549,7 @@ export class ReportsService {
         total: total_with + total_without,
         start_week: date.startOf('week').toISOString(),
         end_week: date.endOf('week').toISOString(),
-      });
+      } as never);
     }
 
     return data;

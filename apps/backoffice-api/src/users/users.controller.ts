@@ -358,7 +358,7 @@ export class UsersController {
         key,
         balance: user.get(`balance_${key}`) - (user.get(`pending_${key}`) || 0),
         pending: user.get(`pending_${key}`),
-      });
+      } as never);
     }
 
     return data;
