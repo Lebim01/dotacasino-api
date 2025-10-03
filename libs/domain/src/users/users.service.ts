@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  ConflictException,
-  Logger,
-  HttpException,
-} from '@nestjs/common';
+import { Injectable, ConflictException, HttpException } from '@nestjs/common';
 import { PrismaService } from 'libs/db/src/prisma.service';
 import * as argon2 from 'argon2';
 import { makeRefCode } from 'libs/shared/src/refcode';
@@ -190,7 +185,7 @@ export class UserCommonService {
 
     if (txn_id) {
       await db.collection('disruptive-academy').doc(txn_id).delete();
-      return 'OK'
+      return 'OK';
     }
 
     return 'NO';
