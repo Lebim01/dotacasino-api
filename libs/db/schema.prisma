@@ -154,6 +154,8 @@ model BetTicket {
   status    String
   payout    Decimal?
   createdAt DateTime @default(now())
+  meta      Json
+  idempotencyKey String?  @unique
 }
 
 model Referral {

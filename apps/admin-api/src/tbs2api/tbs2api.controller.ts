@@ -45,6 +45,18 @@ export class Tbs2apiController {
         win: new Decimal(body.win),
       };
 
+      const ticket = await this.prismaService.betTicket.create({
+        data: {
+          gameId: body.gameId,
+          stake: payload.bet,
+          status: 'SETTLED',
+          userId: body.login,
+          payout: payload.win,
+          meta: body,
+          idempotencyKey: body.tradeId,
+        },
+      });
+
       if (balance.lessThan(payload.bet)) {
         return {
           status: 'fail',
@@ -59,7 +71,7 @@ export class Tbs2apiController {
           reason: 'spin-game',
           userId: body.login,
           idempotencyKey: body.tradeId,
-          meta: body,
+          meta: { ticket: ticket.id },
         });
       } else {
         newBalance = await this.walletService.debit({
@@ -67,7 +79,7 @@ export class Tbs2apiController {
           reason: 'spin-game',
           userId: body.login,
           idempotencyKey: body.tradeId,
-          meta: body,
+          meta: { ticket: ticket.id },
         });
       }
 
@@ -212,7 +224,7 @@ export class Tbs2apiController {
     }
 
     if (body.cmd == 'gameSpin') {
-      const dateTime = dayjs().format('YYYY-MM-DD HH:MM:ss')
+      const dateTime = dayjs().format('YYYY-MM-DD HH:MM:ss');
       const credit = 9720;
       return {
         status: 'success',
