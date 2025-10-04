@@ -71,7 +71,7 @@ export class Tbs2apiController {
           reason: 'spin-game',
           userId: body.login,
           idempotencyKey: body.tradeId,
-          meta: { ticket: ticket.id },
+          meta: { ticket_id: ticket.id, ...body },
         });
       } else {
         newBalance = await this.walletService.debit({
@@ -79,7 +79,7 @@ export class Tbs2apiController {
           reason: 'spin-game',
           userId: body.login,
           idempotencyKey: body.tradeId,
-          meta: { ticket: ticket.id },
+          meta: { ticket_id: ticket.id, ...body },
         });
       }
 
