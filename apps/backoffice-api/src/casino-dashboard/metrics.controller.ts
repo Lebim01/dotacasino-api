@@ -65,4 +65,15 @@ export class MetricsController {
 
     return { from, to, hours: Number(hours) || 24, deposits, withdrawals, grossProfit, netProfit, activePlayers };
   }
+
+  @Get('wallet-summary')
+  async summary() {
+    return this.service.getSummary();
+  }
+
+  @Get('wallet-top-holders')
+  async topHolders(@Query('limit') limit = '20') {
+    const n = Math.max(1, Math.min(100, Number(limit) || 20));
+    return this.service.getTopHolders({ limit: n });
+  }
 }

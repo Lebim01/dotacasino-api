@@ -125,4 +125,79 @@ export class MetricsService {
       net: net.toNumber(),
     };
   }
+
+  /**
+   * Resumen global:
+   * - totalBalance: suma de todas las wallets
+   * - walletsCount: número de wallets
+   * - usersCount: usuarios únicos con wallet
+   * - avgPerWallet
+   * - avgPerUser (promedio del total por usuario)
+   */
+  async getSummary() {
+    const agg = await this.prisma.wallet.aggregate({
+      _sum: { balance: true },
+      _count: { _all: true },
+    });
+
+    // groupBy por usuario para calcular usuarios únicos y promedio por usuario
+    const perUser = await this.prisma.wallet.groupBy({
+      by: ['userId'],
+      _sum: { balance: true },
+    });
+
+    const usersCount = perUser.length;
+    const totalBalance = d(agg._sum.balance).toNumber();
+    const walletsCount = agg._count._all;
+
+    const avgPerWallet = walletsCount
+      ? d(totalBalance).div(walletsCount).toNumber()
+      : 0;
+    const sumPerUser = perUser.reduce(
+      (acc, r) => acc.plus(d(r._sum.balance)),
+      new Decimal(0),
+    );
+    const avgPerUser = usersCount ? sumPerUser.div(usersCount).toNumber() : 0;
+
+    return {
+      totalBalance,
+      walletsCount,
+      usersCount,
+      avgPerWallet,
+      avgPerUser,
+    };
+  }
+
+  /**
+   * Top N usuarios por saldo total (suma de todas sus wallets).
+   * Une con tabla User para mostrar email/nombre.
+   */
+  async getTopHolders({ limit }: { limit: number }) {
+    // 1) groupBy userId
+    const groups = await this.prisma.wallet.groupBy({
+      by: ['userId'],
+      _sum: { balance: true },
+      orderBy: { _sum: { balance: 'desc' } },
+      take: limit,
+    });
+
+    const userIds = groups.map(g => g.userId);
+    const users = await this.prisma.user.findMany({
+      where: { id: { in: userIds } },
+      select: { id: true, email: true, firstName: true, lastName: true, displayName: true },
+    });
+    const userMap = new Map(users.map(u => [u.id, u]));
+
+    return groups.map(g => {
+      const u = userMap.get(g.userId);
+      return {
+        userId: g.userId,
+        total: d(g._sum.balance).toNumber(),
+        user: u ? {
+          email: u.email,
+          name: u.displayName || [u.firstName, u.lastName].filter(Boolean).join(' ').trim() || null,
+        } : null,
+      };
+    });
+  }
 }
