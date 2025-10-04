@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import Decimal from 'decimal.js';
 import { PrismaService } from 'libs/db/src/prisma.service';
+import { normalizeRange } from './casino-dashboard.service';
 
 type Range = { from?: string; to?: string };
 type HoursWindow = { hours: number };
@@ -80,19 +81,33 @@ export class MetricsService {
    * Resultado = stakes - payouts
    */
   async getGrossProfit(range: Range) {
-    const whereCommon = toDateRange(range);
+    const { from, to } = normalizeRange(range);
 
-    const betPlace = await this.prisma.ledgerEntry.aggregate({
-      _sum: { amount: true },
-      where: { kind: 'BET_PLACE', ...whereCommon },
-    });
-    const betWin = await this.prisma.ledgerEntry.aggregate({
-      _sum: { amount: true },
-      where: { kind: 'BET_WIN', ...whereCommon },
-    });
+    const res: any[] = await this.prisma.$queryRawUnsafe(
+      `
+        SELECT 
+          SUM(
+            CASE
+              WHEN (meta->>'win') ~ '^-?\d+(\.\d+)?$' THEN (meta->>'win')::numeric
+              ELSE 0
+            END
+          ) AS sum_win,
+           SUM(
+            CASE
+              WHEN (meta->>'bet') ~ '^-?\d+(\.\d+)?$' THEN (meta->>'bet')::numeric
+              ELSE 0
+            END
+          ) AS sum_bet
+        FROM "LedgerEntry"
+        WHERE "kind" = 'spin-game'
+          AND "createdAt" BETWEEN $1 AND $2
+      `,
+      from,
+      to,
+    );
 
-    const stakes = d(betPlace._sum.amount).abs(); // convertir negativos a valor apostado
-    const payouts = d(betWin._sum.amount); // ya es positivo
+    const stakes = d(res[0].sum_bet).abs(); // convertir negativos a valor apostado
+    const payouts = d(res[0].sum_win); // ya es positivo
     const ggr = stakes.minus(payouts); // GGR = stakes - payouts
 
     return {
@@ -181,22 +196,33 @@ export class MetricsService {
       take: limit,
     });
 
-    const userIds = groups.map(g => g.userId);
+    const userIds = groups.map((g) => g.userId);
     const users = await this.prisma.user.findMany({
       where: { id: { in: userIds } },
-      select: { id: true, email: true, firstName: true, lastName: true, displayName: true },
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        displayName: true,
+      },
     });
-    const userMap = new Map(users.map(u => [u.id, u]));
+    const userMap = new Map(users.map((u) => [u.id, u]));
 
-    return groups.map(g => {
+    return groups.map((g) => {
       const u = userMap.get(g.userId);
       return {
         userId: g.userId,
         total: d(g._sum.balance).toNumber(),
-        user: u ? {
-          email: u.email,
-          name: u.displayName || [u.firstName, u.lastName].filter(Boolean).join(' ').trim() || null,
-        } : null,
+        user: u
+          ? {
+              email: u.email,
+              name:
+                u.displayName ||
+                [u.firstName, u.lastName].filter(Boolean).join(' ').trim() ||
+                null,
+            }
+          : null,
       };
     });
   }

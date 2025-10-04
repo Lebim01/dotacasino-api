@@ -18,7 +18,9 @@ export class PrismaService
     // si ya existe en global, reusar
     if (process.env.NODE_ENV !== 'production') {
       if (!globalThis?.__PRISMA__) {
-        globalThis = { __PRISMA__: new PrismaClient() };
+        globalThis = {
+          __PRISMA__: new PrismaClient(),
+        };
       }
       prismaGlobal = globalThis?.__PRISMA__;
       super(); // inicializa el super para Nest

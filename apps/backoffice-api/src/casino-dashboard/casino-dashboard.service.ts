@@ -8,7 +8,7 @@ import Decimal from 'decimal.js';
 type Range = { from?: string; to?: string };
 type RangeWithLimit = Range & { limit: number };
 
-function normalizeRange({ from, to }: Range): { from: Date; to: Date } {
+export function normalizeRange({ from, to }: Range): { from: Date; to: Date } {
   const now = new Date();
   const toDate = to ? new Date(to) : now;
   // por defecto últimos 30 días
@@ -173,13 +173,18 @@ export class CasinoDashboardService {
     const betPlaceRows: Array<{ day: string; sum: string | number | null }> =
       await this.prisma.$queryRawUnsafe(
         `
-        SELECT to_char(date_trunc('day', "createdAt"), 'YYYY-MM-DD') AS day,
-               SUM("amount") AS sum
+         SELECT to_char(date_trunc('day', "createdAt"), 'YYYY-MM-DD') AS day,
+              SUM(
+                CASE
+                  WHEN (meta->>'bet') ~ '^-?\d+(\.\d+)?$' THEN (meta->>'bet')::numeric
+                  ELSE 0
+                END
+              ) AS sum_win
         FROM "LedgerEntry"
-        WHERE "kind" = 'BET_PLACE'
+        WHERE "kind" = 'spin-game'
           AND "createdAt" BETWEEN $1 AND $2
         GROUP BY 1
-        ORDER BY 1;
+        ORDER BY 1
       `,
         from,
         to,
@@ -190,12 +195,17 @@ export class CasinoDashboardService {
       await this.prisma.$queryRawUnsafe(
         `
         SELECT to_char(date_trunc('day', "createdAt"), 'YYYY-MM-DD') AS day,
-               SUM("amount") AS sum
+          SUM(
+            CASE
+              WHEN (meta->>'win') ~ '^-?\d+(\.\d+)?$' THEN (meta->>'win')::numeric
+              ELSE 0
+            END
+          ) AS sum_win
         FROM "LedgerEntry"
-        WHERE "kind" = 'BET_WIN'
+        WHERE "kind" = 'spin-game'
           AND "createdAt" BETWEEN $1 AND $2
         GROUP BY 1
-        ORDER BY 1;
+        ORDER BY 1
       `,
         from,
         to,
@@ -230,7 +240,7 @@ export class CasinoDashboardService {
                COALESCE(g."title", 'Unknown') AS "title",
                COUNT(*)::int AS rounds
         FROM "BetTicket" t
-        LEFT JOIN "Game" g ON g.id = t."gameId"
+        LEFT JOIN "Game" g ON g."betId" = t."gameId"
         WHERE t."createdAt" BETWEEN $1 AND $2
         GROUP BY t."gameId", g."title"
         ORDER BY rounds DESC
@@ -249,7 +259,7 @@ export class CasinoDashboardService {
                COALESCE(g."title", 'Unknown') AS "title",
                COALESCE(SUM(t."stake"), 0)::text AS volume
         FROM "BetTicket" t
-        LEFT JOIN "Game" g ON g.id = t."gameId"
+        LEFT JOIN "Game" g ON g."betId" = t."gameId"
         WHERE t."createdAt" BETWEEN $1 AND $2
         GROUP BY t."gameId", g."title"
         ORDER BY SUM(t."stake") DESC
@@ -318,9 +328,14 @@ export class CasinoDashboardService {
       await this.prisma.$queryRawUnsafe(
         `
         SELECT to_char(date_trunc('day', "createdAt"), 'YYYY-MM-DD') AS day,
-               SUM("amount") AS sum
+              SUM(
+                CASE
+                  WHEN (meta->>'bet') ~ '^-?\d+(\.\d+)?$' THEN (meta->>'bet')::numeric
+                  ELSE 0
+                END
+              ) AS sum
         FROM "LedgerEntry"
-        WHERE "kind" = 'BET_PLACE'
+        WHERE "kind" = 'spin-game'
           AND "createdAt" BETWEEN $1 AND $2
         GROUP BY 1
         ORDER BY 1;
@@ -333,9 +348,14 @@ export class CasinoDashboardService {
       await this.prisma.$queryRawUnsafe(
         `
         SELECT to_char(date_trunc('day', "createdAt"), 'YYYY-MM-DD') AS day,
-               SUM("amount") AS sum
+              SUM(
+                CASE
+                  WHEN (meta->>'win') ~ '^-?\d+(\.\d+)?$' THEN (meta->>'win')::numeric
+                  ELSE 0
+                END
+              ) AS sum
         FROM "LedgerEntry"
-        WHERE "kind" = 'BET_WIN'
+        WHERE "kind" = 'spin-game'
           AND "createdAt" BETWEEN $1 AND $2
         GROUP BY 1
         ORDER BY 1;
