@@ -179,12 +179,10 @@ export class CasinoDashboardService {
                   WHEN (meta->>'bet') ~ '^-?\d+(\.\d+)?$' THEN (meta->>'bet')::numeric
                   ELSE 0
                 END
-              ) AS sum_win
+              ) AS sum
         FROM "LedgerEntry"
         WHERE "kind" = 'spin-game'
           AND "createdAt" BETWEEN $1 AND $2
-        GROUP BY 1
-        ORDER BY 1
       `,
         from,
         to,
@@ -200,12 +198,10 @@ export class CasinoDashboardService {
               WHEN (meta->>'win') ~ '^-?\d+(\.\d+)?$' THEN (meta->>'win')::numeric
               ELSE 0
             END
-          ) AS sum_win
+          ) AS sum
         FROM "LedgerEntry"
         WHERE "kind" = 'spin-game'
           AND "createdAt" BETWEEN $1 AND $2
-        GROUP BY 1
-        ORDER BY 1
       `,
         from,
         to,
