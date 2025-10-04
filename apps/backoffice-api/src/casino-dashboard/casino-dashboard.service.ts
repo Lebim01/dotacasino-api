@@ -173,16 +173,12 @@ export class CasinoDashboardService {
     const betPlaceRows: Array<{ day: string; sum: string | number | null }> =
       await this.prisma.$queryRawUnsafe(
         `
-         SELECT to_char(date_trunc('day', "createdAt"), 'YYYY-MM-DD') AS day,
-              SUM(
-                CASE
-                  WHEN (meta->>'bet') ~ '^-?\d+(\.\d+)?$' THEN (meta->>'bet')::numeric
-                  ELSE 0
-                END
-              ) AS sum
+        SELECT to_char(date_trunc('day', "createdAt"), 'YYYY-MM-DD') AS day,
+          SUM((meta->>'bet')::numeric) AS sum
         FROM "LedgerEntry"
         WHERE "kind" = 'spin-game'
           AND "createdAt" BETWEEN $1 AND $2
+        GROUP BY 1
       `,
         from,
         to,
@@ -193,15 +189,11 @@ export class CasinoDashboardService {
       await this.prisma.$queryRawUnsafe(
         `
         SELECT to_char(date_trunc('day', "createdAt"), 'YYYY-MM-DD') AS day,
-          SUM(
-            CASE
-              WHEN (meta->>'win') ~ '^-?\d+(\.\d+)?$' THEN (meta->>'win')::numeric
-              ELSE 0
-            END
-          ) AS sum
+          SUM((meta->>'win')::numeric) AS sum
         FROM "LedgerEntry"
         WHERE "kind" = 'spin-game'
           AND "createdAt" BETWEEN $1 AND $2
+        GROUP BY 1
       `,
         from,
         to,
@@ -324,12 +316,7 @@ export class CasinoDashboardService {
       await this.prisma.$queryRawUnsafe(
         `
         SELECT to_char(date_trunc('day', "createdAt"), 'YYYY-MM-DD') AS day,
-              SUM(
-                CASE
-                  WHEN (meta->>'bet') ~ '^-?\d+(\.\d+)?$' THEN (meta->>'bet')::numeric
-                  ELSE 0
-                END
-              ) AS sum
+          SUM((meta->>'bet')::numeric) AS sum
         FROM "LedgerEntry"
         WHERE "kind" = 'spin-game'
           AND "createdAt" BETWEEN $1 AND $2
@@ -344,12 +331,7 @@ export class CasinoDashboardService {
       await this.prisma.$queryRawUnsafe(
         `
         SELECT to_char(date_trunc('day', "createdAt"), 'YYYY-MM-DD') AS day,
-              SUM(
-                CASE
-                  WHEN (meta->>'win') ~ '^-?\d+(\.\d+)?$' THEN (meta->>'win')::numeric
-                  ELSE 0
-                END
-              ) AS sum
+          SUM((meta->>'win')::numeric) AS sum
         FROM "LedgerEntry"
         WHERE "kind" = 'spin-game'
           AND "createdAt" BETWEEN $1 AND $2

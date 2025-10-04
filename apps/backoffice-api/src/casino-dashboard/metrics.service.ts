@@ -86,18 +86,8 @@ export class MetricsService {
     const res: any[] = await this.prisma.$queryRawUnsafe(
       `
         SELECT 
-          SUM(
-            CASE
-              WHEN (meta->>'win') ~ '^-?\d+(\.\d+)?$' THEN (meta->>'win')::numeric
-              ELSE 0
-            END
-          ) AS sum_win,
-           SUM(
-            CASE
-              WHEN (meta->>'bet') ~ '^-?\d+(\.\d+)?$' THEN (meta->>'bet')::numeric
-              ELSE 0
-            END
-          ) AS sum_bet
+          SUM((meta->>'bet')::numeric) AS sum_bet,
+          SUM((meta->>'win')::numeric) AS sum_win
         FROM "LedgerEntry"
         WHERE "kind" = 'spin-game'
           AND "createdAt" BETWEEN $1 AND $2

@@ -142,8 +142,6 @@ export class WalletService {
       // Leemos siempre dentro de la tx para evitar estados obsoletos
       const wallet = await this.getOrCreateWallet(input.userId, client);
 
-      console.log(wallet, amount);
-
       const current = new Decimal(wallet.balance);
       if (current.lt(amount)) {
         throw new Error('Fondos insuficientes');
