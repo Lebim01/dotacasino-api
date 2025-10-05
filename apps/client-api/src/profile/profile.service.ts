@@ -23,6 +23,8 @@ export class ProfileService {
         createdAt: true,
         refCodeL: true,
         refCodeR: true,
+        firstName: true,
+        lastName: true,
       },
     });
     return user;
@@ -37,6 +39,8 @@ export class ProfileService {
         phone: dto.phone,
         language: dto.language,
         avatarUrl: dto.avatarUrl,
+        firstName: dto.firstName,
+        lastName: dto.lastName,
       },
       select: {
         id: true,

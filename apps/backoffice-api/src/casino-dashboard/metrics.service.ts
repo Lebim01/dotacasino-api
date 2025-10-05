@@ -111,7 +111,7 @@ export class MetricsService {
     const stakes = d(res[0].sum_bet).abs(); // convertir negativos a valor apostado
     const payouts = d(res[0].sum_win); // ya es positivo
     const memberships = d(m[0].sum);
-    const ggr = stakes.minus(payouts).plus(memberships); // GGR = stakes - payouts
+    const ggr = stakes.minus(payouts).plus(memberships); // GGR = stakes - payouts + memberships
 
     return {
       stakes: stakes.toNumber(),
