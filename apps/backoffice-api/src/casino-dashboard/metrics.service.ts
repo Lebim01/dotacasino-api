@@ -96,9 +96,22 @@ export class MetricsService {
       to,
     );
 
+    const m: any[] = await this.prisma.$queryRawUnsafe(
+      `
+        SELECT 
+          SUM("amount") AS sum
+        FROM "LedgerEntry"
+        WHERE "kind" = 'membership'
+          AND "createdAt" BETWEEN $1 AND $2
+      `,
+      from,
+      to,
+    );
+
     const stakes = d(res[0].sum_bet).abs(); // convertir negativos a valor apostado
     const payouts = d(res[0].sum_win); // ya es positivo
-    const ggr = stakes.minus(payouts); // GGR = stakes - payouts
+    const memberships = d(m[0].sum);
+    const ggr = stakes.minus(payouts).plus(memberships); // GGR = stakes - payouts
 
     return {
       stakes: stakes.toNumber(),
