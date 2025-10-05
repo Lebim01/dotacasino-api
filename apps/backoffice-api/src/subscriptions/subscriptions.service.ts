@@ -11,12 +11,15 @@ import { BondsService } from '../bonds/bonds.service';
 import { getLimitDeposit, getLimitMembership } from '../utils/deposits';
 import { MEMBERSHIP_PRICES, memberships_object } from '../constants';
 import { Memberships } from '../types';
+import { PrismaService } from 'libs/db/src/prisma.service';
+import Decimal from 'decimal.js';
 
 @Injectable()
 export class SubscriptionsService {
   constructor(
     private readonly binaryService: BinaryService,
     private readonly bondService: BondsService,
+    private readonly prisma: PrismaService,
   ) {}
 
   async isActiveUser(id_user: string) {
@@ -153,6 +156,23 @@ export class SubscriptionsService {
         concept:
           `Membresia ${memberships_object[type].display} ` +
           (is_upgrade ? ' (Upgrade)' : ''),
+      });
+    }
+
+    if (volumen) {
+      await this.prisma.ledgerEntry.create({
+        data: {
+          amount: new Decimal(membership_price),
+          kind: 'membership',
+          meta: {
+            txn_id,
+            is_upgrade,
+            type,
+          },
+          idempotencyKey: txn_id,
+          balanceAfter: null,
+          walletId: '',
+        },
       });
     }
 
