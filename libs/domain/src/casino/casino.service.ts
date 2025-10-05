@@ -1,3 +1,4 @@
+import { WalletService } from '@domain/wallet/wallet.service';
 import { Injectable } from '@nestjs/common';
 import { db } from 'apps/backoffice-api/src/firebase/admin';
 import { dateToString } from 'apps/backoffice-api/src/utils/firebase';
@@ -22,7 +23,10 @@ const login: any = {
 
 @Injectable()
 export class CasinoService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly walletService: WalletService,
+  ) {}
 
   async removeCredits(userid: string, amount: number) {
     await this.prisma.$transaction(async (tx) => {
@@ -54,7 +58,9 @@ export class CasinoService {
     });
   }
 
-  async getBalance(token: string) {}
+  async getBalance(userid: string) {
+    return this.walletService.getBalance(userid);
+  }
 
   async getTransactions(userid: string) {
     const transactions = await db

@@ -29,12 +29,14 @@ import { RolesGuard } from '@security/roles.guard';
 import { Roles } from '@security/roles.decorator';
 import { USER_ROLES } from 'apps/backoffice-api/src/auth/auth.constants';
 import { CurrentUser } from '@security/current-user.decorator';
+import { WalletService } from '@domain/wallet/wallet.service';
 
 @Controller('disruptive')
 export class DisruptiveController {
   constructor(
     private readonly disruptiveService: DisruptiveService,
     private readonly casinoService: CasinoService,
+    private readonly walletService: WalletService,
   ) {}
 
   @Post('create-transaction-deposit')
@@ -159,7 +161,6 @@ export class DisruptiveController {
         .doc(id)
         .get();
 
-      const cashier = transaction.get('cashier');
       const userid = transaction.get('userid');
       const amount = transaction.get('amount');
 
@@ -169,6 +170,12 @@ export class DisruptiveController {
       });
 
       // TODO: restar creditos
+      await this.walletService.debit({
+        amount,
+        reason: 'WITHDRAW',
+        userId: userid,
+        idempotencyKey: transaction.id,
+      });
     }
   }
 
