@@ -105,7 +105,7 @@ export class DisruptiveController {
     @Body() body: CreateWithdrawCasino,
     @CurrentUser() user: { userId: string },
   ) {
-    const balance = await this.casinoService.getBalance(user.userId);
+    const balance = await this.walletService.getBalance(user.userId);
     const pending = await this.disruptiveService.getPendingAmount(user.userId);
     if (balance >= body.amount + pending) {
       await this.disruptiveService.requestWithdraw(
@@ -237,20 +237,5 @@ export class DisruptiveController {
     }
 
     return status ? transaction.get('status') : 'NO';
-  }
-
-  @Post('get-transactions')
-  @ApiBearerAuth('access-token')
-  @UseGuards(JwtAuthGuard)
-  async gettransactions(@CurrentUser() user: { userId: string }) {
-    return this.casinoService.getTransactions(user.userId);
-  }
-
-  @Get('get-withdraw-casino')
-  @ApiBearerAuth('access-token')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(USER_ROLES.ADMIN)
-  async getwithdrawcasino() {
-    return this.disruptiveService.getWithdrawListAdmin();
   }
 }

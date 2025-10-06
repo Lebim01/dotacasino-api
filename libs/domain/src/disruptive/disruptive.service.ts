@@ -468,4 +468,14 @@ export class DisruptiveService {
       .then((r: any) => (r.empty ? null : r.docs[0]));
     return transaction;
   }
+
+  async getTransactionAcademy(address: string) {
+    const transaction = await db
+      .collection('disruptive-academy')
+      .where('address', '==', address)
+      .where('status', '==', 'pending')
+      .get()
+      .then((r: any) => (r.empty ? null : r.docs[0]));
+    return transaction;
+  }
 }
