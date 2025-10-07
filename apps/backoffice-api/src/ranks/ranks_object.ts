@@ -15,15 +15,15 @@ export enum Ranks {
 }
 
 export const ranksPoints: Record<Ranks, number> = {
-  [Ranks.DIAMANTE_ROYAL]: 8_000_000,
-  [Ranks.DIAMANTE_CORONA]: 5_000_000,
-  [Ranks.DIAMANTE_NEGRO]: 1_500_000,
-  [Ranks.DIAMANTE_PREMIER]: 600_000,
-  [Ranks.DIAMANTE_EJECUTIVO]: 300_000,
-  [Ranks.DIAMANTE]: 150_000,
-  [Ranks.EMBAJADOR]: 60_000,
-  [Ranks.DIRECTOR_PREMIER]: 30_000,
-  [Ranks.DIRECTOR]: 15_000,
+  [Ranks.DIAMANTE_ROYAL]: 1_500_000,
+  [Ranks.DIAMANTE_CORONA]: 1_000_000,
+  [Ranks.DIAMANTE_NEGRO]: 600_000,
+  [Ranks.DIAMANTE_PREMIER]: 200_000,
+  [Ranks.DIAMANTE_EJECUTIVO]: 100_000,
+  [Ranks.DIAMANTE]: 60_000,
+  [Ranks.EMBAJADOR]: 40_000,
+  [Ranks.DIRECTOR_PREMIER]: 25_000,
+  [Ranks.DIRECTOR]: 10_000,
   [Ranks.CONSTRUCTOR]: 5000,
   [Ranks.NONE]: 0,
 };
@@ -89,7 +89,7 @@ export const ranks_object: Record<Ranks, RankDetail> = {
     start_points: sumTo(Ranks.DIRECTOR),
     points: ranksPoints[Ranks.DIRECTOR],
     binary_percent: binary_percent[Ranks.DIRECTOR],
-    bonus: 200,
+    bonus: 100,
   },
   [Ranks.DIRECTOR_PREMIER]: {
     display: 'Director Premier',
@@ -99,7 +99,7 @@ export const ranks_object: Record<Ranks, RankDetail> = {
     start_points: sumTo(Ranks.DIRECTOR_PREMIER),
     points: ranksPoints[Ranks.DIRECTOR_PREMIER],
     binary_percent: binary_percent[Ranks.DIRECTOR_PREMIER],
-    bonus: 400,
+    bonus: 250,
   },
   [Ranks.EMBAJADOR]: {
     display: 'Embajador',
@@ -109,7 +109,7 @@ export const ranks_object: Record<Ranks, RankDetail> = {
     start_points: sumTo(Ranks.EMBAJADOR),
     points: ranksPoints[Ranks.EMBAJADOR],
     binary_percent: binary_percent[Ranks.EMBAJADOR],
-    bonus: 800,
+    bonus: 400,
   },
   [Ranks.DIAMANTE]: {
     display: 'Diamante',
@@ -119,7 +119,7 @@ export const ranks_object: Record<Ranks, RankDetail> = {
     start_points: sumTo(Ranks.DIAMANTE),
     points: ranksPoints[Ranks.DIAMANTE],
     binary_percent: binary_percent[Ranks.DIAMANTE],
-    bonus: 1500,
+    bonus: 600,
   },
   [Ranks.DIAMANTE_EJECUTIVO]: {
     display: 'Diamante Ejecutivo',
@@ -129,7 +129,7 @@ export const ranks_object: Record<Ranks, RankDetail> = {
     start_points: sumTo(Ranks.DIAMANTE_EJECUTIVO),
     points: ranksPoints[Ranks.DIAMANTE_EJECUTIVO],
     binary_percent: binary_percent[Ranks.DIAMANTE_EJECUTIVO],
-    bonus: 4000,
+    bonus: 1000,
   },
   [Ranks.DIAMANTE_PREMIER]: {
     display: 'Diamante Premier',
@@ -142,7 +142,7 @@ export const ranks_object: Record<Ranks, RankDetail> = {
     start_points: sumTo(Ranks.DIAMANTE_PREMIER),
     points: ranksPoints[Ranks.DIAMANTE_PREMIER],
     binary_percent: binary_percent[Ranks.DIAMANTE_PREMIER],
-    bonus: 8000,
+    bonus: 2000,
   },
   [Ranks.DIAMANTE_NEGRO]: {
     display: 'Diamante Negro',
@@ -155,7 +155,7 @@ export const ranks_object: Record<Ranks, RankDetail> = {
     start_points: sumTo(Ranks.DIAMANTE_NEGRO),
     points: ranksPoints[Ranks.DIAMANTE_NEGRO],
     binary_percent: binary_percent[Ranks.DIAMANTE_NEGRO],
-    bonus: 20_000,
+    bonus: 6000,
   },
   [Ranks.DIAMANTE_CORONA]: {
     display: 'Diamante Corona',
@@ -168,7 +168,7 @@ export const ranks_object: Record<Ranks, RankDetail> = {
     start_points: sumTo(Ranks.DIAMANTE_CORONA),
     points: ranksPoints[Ranks.DIAMANTE_CORONA],
     binary_percent: binary_percent[Ranks.DIAMANTE_CORONA],
-    bonus: 100_000,
+    bonus: 10_000,
   },
   [Ranks.DIAMANTE_ROYAL]: {
     display: 'Diamante Royal',
@@ -181,6 +181,6 @@ export const ranks_object: Record<Ranks, RankDetail> = {
     start_points: sumTo(Ranks.DIAMANTE_ROYAL),
     points: ranksPoints[Ranks.DIAMANTE_ROYAL],
     binary_percent: binary_percent[Ranks.DIAMANTE_ROYAL],
-    bonus: 200_000,
+    bonus: 15_000,
   },
 };

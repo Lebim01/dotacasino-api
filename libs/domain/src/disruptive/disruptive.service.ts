@@ -390,7 +390,7 @@ export class DisruptiveService {
     } else {
       await db.collection('casino-transactions').add({
         type: 'withdraw',
-        status: 'pending',
+        status: 'approved',
         created_at: new Date(),
         userid,
         amount,
