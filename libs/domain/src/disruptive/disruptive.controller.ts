@@ -238,4 +238,12 @@ export class DisruptiveController {
 
     return status ? transaction.get('status') : 'NO';
   }
+
+  @Get('get-withdraw-casino')
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(USER_ROLES.ADMIN)
+  getwithdrawcasino() {
+    return this.disruptiveService.getWithdrawListAdmin();
+  }
 }
