@@ -202,6 +202,7 @@ export class DisruptiveController {
         });
 
         // TODO: sumar creditos
+        await this.walletService.credit(transaction.get('amount'));
       }
     }
 

@@ -452,7 +452,6 @@ export class DisruptiveService {
     const transaction = await db
       .collection('disruptive-casino')
       .where('address', '==', address)
-      .where('status', '==', 'pending')
       .get()
       .then((r: any) => (r.empty ? null : r.docs[0]));
     return transaction;
