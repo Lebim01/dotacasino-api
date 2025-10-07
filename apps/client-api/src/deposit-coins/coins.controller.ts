@@ -87,7 +87,7 @@ export class DepositCoinsController {
       const task: google.cloud.tasks.v2.ITask = {
         httpRequest: {
           httpMethod: 'POST' as Method,
-          url: `${process.env.API_URL}/disruptive/completed-transaction-casino`,
+          url: `${process.env.API_URL}/v1/disruptive/completed-transaction-casino`,
           headers: {
             'Content-Type': 'application/json',
           },
