@@ -106,7 +106,7 @@ export class DisruptiveController {
     @CurrentUser() user: { userId: string },
   ) {
     const balance = await this.walletService.getBalance(user.userId);
-    const pending = await this.disruptiveService.getPendingAmount(user.userId);
+    const pending = await this.walletService.getPendingAmount(user.userId);
     if (balance >= body.amount + pending) {
       await this.disruptiveService.requestWithdraw(
         user.userId,

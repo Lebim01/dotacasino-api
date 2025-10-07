@@ -37,6 +37,7 @@ import { DisruptiveService } from '@domain/disruptive/disruptive.service';
 import { JwtAuthGuard } from '@security/jwt.guard';
 import { Roles } from '@security/roles.decorator';
 import { CurrentUser } from '@security/current-user.decorator';
+import { WalletService } from '@domain/wallet/wallet.service';
 
 @ApiTags('Users')
 @Controller('users')
@@ -46,6 +47,7 @@ export class UsersController {
     private readonly commonUserService: UserCommonService,
     private readonly authService: AuthService,
     private readonly disruptiveService: DisruptiveService,
+    private readonly walletService: WalletService,
   ) {}
 
   @ApiExcludeEndpoint()
@@ -347,21 +349,10 @@ export class UsersController {
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   async getbalance(@CurrentUser() { userId }: { userId: string }) {
-    const user = await db.collection('users').doc(userId).get();
-
-    const bonds = ['bond_direct', 'bond_binary', 'bond_rewards', 'bond_ranks'];
-
-    const data = [];
-
-    for (const key of bonds) {
-      data.push({
-        key,
-        balance: user.get(`balance_${key}`) - (user.get(`pending_${key}`) || 0),
-        pending: user.get(`pending_${key}`),
-      } as never);
-    }
-
-    return data;
+    return {
+      balance: await this.walletService.getBalance(userId),
+      pending: await this.walletService.getPendingAmount(userId),
+    };
   }
 
   @Get('withdraw-history')

@@ -4,7 +4,6 @@ import { JwtAuthGuard } from '@security/jwt.guard';
 import { CurrentUser } from '@security/current-user.decorator';
 import { RequestDTO } from './dto/withdraw.dto';
 import { DisruptiveService } from '@domain/disruptive/disruptive.service';
-import { CasinoService } from '@domain/casino/casino.service';
 import { WalletService } from '@domain/wallet/wallet.service';
 
 @ApiTags('Withdraw Coins')
@@ -33,7 +32,7 @@ export class WithdrawCoinsController {
     @Body() body: RequestDTO,
   ) {
     const balance = await this.walletService.getBalance(user.userId);
-    const pending = await this.disruptiveService.getPendingAmount(user.userId);
+    const pending = await this.walletService.getPendingAmount(user.userId);
     if (balance >= body.amount + pending) {
       await this.disruptiveService.requestWithdraw(
         user.userId,

@@ -62,7 +62,6 @@ export class UsersController {
   @Post('qr-membership-polling')
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Get QR payment' })
   async getqrmembershippolling(
     @CurrentUser() user: { userId: string },
     @Body() body,

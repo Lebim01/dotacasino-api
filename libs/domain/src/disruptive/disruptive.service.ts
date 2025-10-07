@@ -399,17 +399,6 @@ export class DisruptiveService {
     }
   }
 
-  async getPendingAmount(userid: string) {
-    const doc = await db
-      .collection('casino-transactions')
-      .where('userid', '==', userid)
-      .where('type', '==', 'withdraw')
-      .where('status', '==', 'pending')
-      .get()
-      .then((r: any) => (r.empty ? null : r.docs[0]));
-    return !doc ? 0 : doc.get('amount');
-  }
-
   async cancelDisruptiveWithdrawCasino(userid: string) {
     const doc = await db
       .collection('casino-transactions')

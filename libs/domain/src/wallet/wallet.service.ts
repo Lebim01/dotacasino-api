@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import { db } from 'apps/backoffice-api/src/firebase/admin';
 import Decimal from 'decimal.js';
 import { PrismaService } from 'libs/db/src/prisma.service';
 import { CURRENCY } from 'libs/shared/src/currency';
@@ -171,5 +172,16 @@ export class WalletService {
 
     if (tx) return apply(tx);
     return await this.prisma.$transaction(async (client) => apply(client));
+  }
+
+  async getPendingAmount(userid: string) {
+    const doc = await db
+      .collection('casino-transactions')
+      .where('userid', '==', userid)
+      .where('type', '==', 'withdraw')
+      .where('status', '==', 'pending')
+      .get()
+      .then((r: any) => (r.empty ? null : r.docs[0]));
+    return !doc ? 0 : doc.get('amount');
   }
 }
