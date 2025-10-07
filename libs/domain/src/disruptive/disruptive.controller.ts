@@ -132,7 +132,7 @@ export class DisruptiveController {
   async createwithdrawqr(@Body() body: ApproveWithdraw) {
     const transactions = [];
     for (const id of body.ids) {
-      const d = await db.collection('disruptive-casino').doc(id).get();
+      const d = await db.collection('casino-transactions').doc(id).get();
       transactions.push({
         id: d.id,
         address: d.get('address'),
