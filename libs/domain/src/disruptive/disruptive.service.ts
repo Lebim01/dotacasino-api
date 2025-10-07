@@ -420,7 +420,6 @@ export class DisruptiveService {
       .collection('casino-transactions')
       .where('userid', '==', userid)
       .where('type', '==', 'withdraw')
-      .where('status', '==', 'pending')
       .get();
 
     return docs.docs.map((r: any) => ({
@@ -429,6 +428,7 @@ export class DisruptiveService {
       amount: r.get('amount'),
       created_at: dateToString(r.get('created_at')),
       userid: r.get('userid'),
+      status: r.get('status'),
     }));
   }
 
