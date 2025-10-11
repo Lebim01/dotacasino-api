@@ -10,7 +10,10 @@ import {
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@security/jwt.guard';
 import { CurrentUser } from '@security/current-user.decorator';
-import { CreateDepositQRDto, CompleteTransactionDisruptiveCasinoDto } from './dto/deposit.dto';
+import {
+  CreateDepositQRDto,
+  CompleteTransactionDisruptiveCasinoDto,
+} from './dto/deposit.dto';
 import { DisruptiveService } from '@domain/disruptive/disruptive.service';
 import { google } from '@google-cloud/tasks/build/protos/protos';
 import {
@@ -76,6 +79,8 @@ export class DepositCoinsController {
     );
 
     if (!transaction) throw new HttpException('not found', 401);
+    if (transaction.get('status') != 'pending')
+      throw new HttpException('completed', 401);
 
     const status = await this.disruptiveService.validateStatus(
       transaction.get('network'),

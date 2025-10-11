@@ -261,7 +261,15 @@ export class DisruptiveService {
           Number(res.data.data.fundsGoal) ==
           Number(res.data.data.amountCaptured);
 
-        return status == 'COMPLETED' || (status == 'FUNDED' && foundsGoal);
+        const foundsBalance =
+          Number(res.data.data.fundsGoal) ==
+          Number(res.data.data.currentBalance);
+
+        return (
+          status == 'COMPLETED' ||
+          (status == 'FUNDED' && foundsGoal) ||
+          (status == 'EXPIRED' && foundsBalance)
+        );
       }
 
       return false;

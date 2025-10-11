@@ -179,6 +179,22 @@ export class DisruptiveController {
     }
   }
 
+  @Post('validate')
+  async validate(@Body() body: CompleteTransactionDisruptiveCasinoDto) {
+    const transaction = await this.disruptiveService.getTransaction(
+      body.address,
+    );
+
+    if (!transaction) throw new HttpException('not found', 401);
+
+    const status = await this.disruptiveService.validateStatus(
+      transaction.get('network'),
+      body.address,
+    );
+
+    return status;
+  }
+
   @Post('completed-transaction-casino')
   async completedtransactioncasino(
     @Body() body: CompleteTransactionDisruptiveCasinoDto,
@@ -202,7 +218,16 @@ export class DisruptiveController {
         });
 
         // TODO: sumar creditos
-        await this.walletService.credit(transaction.get('amount'));
+        await this.walletService.credit({
+          amount: transaction.get('amount'),
+          reason: 'USER_TOPUP',
+          userId: transaction.get('userid'),
+          meta: {
+            txid: transaction.id,
+            address: transaction.get('address'),
+            network: transaction.get('network'),
+          },
+        });
       }
     }
 
