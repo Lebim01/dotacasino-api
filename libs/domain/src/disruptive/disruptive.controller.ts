@@ -227,6 +227,7 @@ export class DisruptiveController {
             address: transaction.get('address'),
             network: transaction.get('network'),
           },
+          idempotencyKey: transaction.id,
         });
       }
     }
