@@ -8,7 +8,6 @@ import {
   IsNotEmpty,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-
 export class RegisterDto {
   @ApiProperty({
     description: 'User email address',
@@ -49,6 +48,6 @@ export class RegisterDto {
     example: 'REF123',
   })
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   referralCode!: string;
 }

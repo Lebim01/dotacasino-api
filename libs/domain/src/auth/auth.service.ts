@@ -122,7 +122,9 @@ export class AuthCommonService {
     const email = dto.email.trim().toLowerCase();
 
     try {
-      const sponsor = await this.referralService.getByCode(dto.referralCode);
+      const sponsor = await this.referralService.getByCode(
+        dto.referralCode || '3GA95ET8',
+      );
       const created = await this.prisma.$transaction(async () => {
         const user = await this.usersService.createUser(
           email,
