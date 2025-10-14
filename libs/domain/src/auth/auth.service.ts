@@ -122,25 +122,25 @@ export class AuthCommonService {
     const email = dto.email.trim().toLowerCase();
 
     try {
-      const sponsor = await this.referralService.getByCode(
-        dto.referralCode || '3GA95ET8',
-      );
+      const code = dto.referralCode || '3GA95ET8';
+      const sponsor = await this.referralService.getByCode(code);
       const created = await this.prisma.$transaction(async () => {
         const user = await this.usersService.createUser(
           email,
           dto.password,
           dto.country,
           sponsor!.id,
-          sponsor!.refCodeL == dto.referralCode ? 'left' : 'right',
+          sponsor!.refCodeL == code ? 'left' : 'right',
         );
 
-        await this.referralService.attachByCode(user.id, dto.referralCode);
+        await this.referralService.attachByCode(user.id, code);
         await this.walletService.createWallet(user.id);
         return user;
       });
 
       return this.sanitize(created);
     } catch (error) {
+      console.error(error);
       throw new InternalServerErrorException(
         'No se pudo completar el registro',
       );
