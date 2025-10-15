@@ -103,7 +103,7 @@ export class GamesService {
         },
       });
 
-      return response;
+      return { ...response, game };
     } else {
       console.log(response);
       return response;
