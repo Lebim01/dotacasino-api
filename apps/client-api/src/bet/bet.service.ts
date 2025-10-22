@@ -56,7 +56,7 @@ export class BetService {
         continent: 'eur',
         login: userId,
         gameId,
-        cdnUrl: `https://cdn.lvslot.net/resources`,
+        cdnUrl: `http://cdn.lvslot.net/resources`,
         demo: '0',
       }),
     );
