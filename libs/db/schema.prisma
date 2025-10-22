@@ -132,6 +132,7 @@ model Game {
   sessions       BetSession[]
   allowDemo      Boolean       @default(false)
   width          String        @default("0")
+  show           Boolean       @default(true)
 
   @@index([enabled])
 }
