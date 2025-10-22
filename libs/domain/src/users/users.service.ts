@@ -91,7 +91,7 @@ export class UserCommonService {
           email,
           country,
           passwordHash,
-          roles: [USER_ROLES.ADMIN],
+          roles: [USER_ROLES.USER],
           refCodeL,
           refCodeR,
           firebaseId: res.id,
