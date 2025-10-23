@@ -9,14 +9,7 @@ export class SeedService {
 
   async seed() {
     await this.userCommon.createUser(
-      'victoralvarezsaucedo@gmail.com',
-      '11111111',
-      'MX',
-      '',
-      'left',
-    );
-    await this.userCommon.createUser(
-      'marcoslevagomez@gmail.com',
+      'codigo1@dota.click',
       '11111111',
       'MX',
       '',
