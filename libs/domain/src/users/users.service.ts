@@ -19,7 +19,7 @@ import {
 } from '@domain/disruptive/disruptive.service';
 import { USER_ROLES } from 'apps/backoffice-api/src/auth/auth.constants';
 
-export function generateDisplayName() {
+function generateDisplayName() {
   return (
     uniqueNamesGenerator({
       dictionaries: [adjectives, colors, animals],
@@ -29,6 +29,12 @@ export function generateDisplayName() {
     }) + Math.floor(Math.random() * 1000)
   );
 }
+
+type StdMexClabeInfo = {
+  clabe: string;
+  bank?: string;
+  instructions?: { BENEFICIARIO: string; CONCEPTO: string };
+};
 
 @Injectable()
 export class UserCommonService {
@@ -189,5 +195,15 @@ export class UserCommonService {
     }
 
     return 'NO';
+  }
+
+  async getStdMexClabe(userId: string): Promise<StdMexClabeInfo | null> {
+    // TODO: Lee desde tu tabla Users o tabla dedicada (p.ej. UserStdMex { userId, clabe, ... })
+    return null;
+  }
+
+  async setStdMexClabe(userId: string, info: StdMexClabeInfo): Promise<void> {
+    // TODO: Inserta/actualiza de forma que cada usuario tenga SÓLO UNA CLABE
+    // Usa unique index por (userId) o por (clabe) según tu modelo
   }
 }

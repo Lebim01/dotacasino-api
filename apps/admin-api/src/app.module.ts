@@ -11,6 +11,8 @@ import { DepositsModule } from './deposits/deposits.module';
 import { GitslotparkModule } from './gitslotpark/gitslotpark.module';
 import { Tbs2apiModule } from './tbs2api/tbs2api.module';
 import { DisruptiveModule } from './disruptive/disruptive.module';
+import { StdMexModule } from '@domain/stdmex/stdmex.module';
+import { FxModule } from '@domain/fx/fx.module';
 
 @Module({
   imports: [
@@ -22,7 +24,9 @@ import { DisruptiveModule } from './disruptive/disruptive.module';
     DepositsModule,
     GitslotparkModule,
     Tbs2apiModule,
-    DisruptiveModule
+    DisruptiveModule,
+    StdMexModule,
+    FxModule,
   ],
   controllers: [HealthController],
 })
