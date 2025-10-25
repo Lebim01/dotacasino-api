@@ -5,12 +5,16 @@ import {
   Headers,
   Param,
   Post,
+  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { StdMexService } from './stdmex.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { StdMexWebhookDto } from './dto/webhook.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { JwtAuthGuard } from '@security/jwt.guard';
+import { CurrentUser } from '@security/current-user.decorator';
 
 /**
  * Rutas sugeridas:
@@ -25,17 +29,18 @@ import { StdMexWebhookDto } from './dto/webhook.dto';
 export class StdMexController {
   constructor(private readonly stdmex: StdMexService) {}
 
-  @Get('stdmex/clabe/:userId')
-  async getOrCreateClabe(@Param('userId') userId: string) {
-    return this.stdmex.getOrCreateClabeForUser(userId);
+  @Get('stdmex/clabe')
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  async getOrCreateClabe(@CurrentUser() user) {
+    return this.stdmex.getOrCreateClabeForUser(user.id);
   }
 
-  @Post('stdmex/orders/:userId')
-  async createOrder(
-    @Param('userId') userId: string,
-    @Body() dto: CreateOrderDto,
-  ) {
-    return this.stdmex.createDepositOrder(userId, dto);
+  @Post('stdmex/orders')
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  async createOrder(@CurrentUser() user, @Body() dto: CreateOrderDto) {
+    return this.stdmex.createDepositOrder(user.id, dto);
   }
 
   @Post('stdmex/clabe/:clabe/block')

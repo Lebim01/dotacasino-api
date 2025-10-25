@@ -50,4 +50,55 @@ export class UsersService {
       },
     });
   }
+
+  async setStdMexClabe(
+    userId: string,
+    data: {
+      clabe: string;
+      bank?: string;
+      instructions?: any;
+    },
+  ) {
+    const stdMexId = await this.prisma.user
+      .findFirst({
+        where: {
+          id: userId,
+        },
+      })
+      .then((r) => r?.stdMexId);
+
+    const stdMex = await this.prisma.stdMex.upsert({
+      create: {
+        bank: data.bank || '',
+        clabe: data.clabe || '',
+        instructions: data.instructions || {},
+      },
+      update: data,
+      where: {
+        id: stdMexId || "",
+      },
+    });
+
+    return this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        stdMexId: stdMex.id,
+      },
+    });
+  }
+
+  async getStdMexClabe(userId: string) {
+    return this.prisma.user
+      .findFirst({
+        where: {
+          id: userId,
+        },
+        include: {
+          stdMex: true,
+        },
+      })
+      .then((r) => r?.stdMex);
+  }
 }

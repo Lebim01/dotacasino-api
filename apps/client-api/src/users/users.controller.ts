@@ -129,4 +129,11 @@ export class UsersController {
   async reference(@Param('code') code: string) {
     return this.users.getReferenceCode(code);
   }
+
+  @Get('/stdmex')
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  stdmex(@CurrentUser() user){
+    return this.users.getStdMexClabe(user.id);
+  }
 }

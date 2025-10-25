@@ -4,11 +4,9 @@ import { ConfigService } from '@nestjs/config';
 import { firstValueFrom } from 'rxjs';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { StdMexWebhookDto, StdMexStatus } from './dto/webhook.dto';
-
-// Abstracciones que debes implementar en tu app:
-import { FxService } from '../common/fx.service';
-import { UsersService } from '../common/users.service';
-import { WalletsService } from '../common/wallets.service';
+import { FxService } from '@domain/fx/fx.service';
+import { WalletService } from '@domain/wallet/wallet.service';
+import { UsersService } from 'apps/client-api/src/users/users.service';
 
 type GetOrCreateClabeResponse = {
   id_usuario: string;
@@ -43,7 +41,7 @@ export class StdMexService {
     private readonly cfg: ConfigService,
     private readonly fx: FxService,
     private readonly users: UsersService,
-    private readonly wallets: WalletsService,
+    private readonly wallets: WalletService,
   ) {
     // Token que STDMEX enviará en el header Authorization a tu webhook
     this.expectedWebhookAuth = this.cfg.get<string>('STDMEX_WEBHOOK_TOKEN');
@@ -62,7 +60,7 @@ export class StdMexService {
         id_usuario: userId,
         clabe: existing.clabe,
         Banco: existing.bank ?? 'STP',
-        instrucciones: existing.instructions ?? {
+        instrucciones: {
           BENEFICIARIO: '',
           CONCEPTO: '',
         },
@@ -174,25 +172,15 @@ export class StdMexService {
       await this.users.setStdMexClabe(body.id_usuario, { clabe: body.clabe });
     }
 
-    // Idempotencia: si ya procesaste esta transacción, no dupliques
-    const already = await this.wallets.hasExternalCreditProcessed(
-      body.id_transaccion,
-      'STDMEX',
-    );
-    if (already) {
-      this.logger.log(`Webhook duplicado ignorado: ${body.id_transaccion}`);
-      return { respuesta: 'aceptado' };
-    }
-
     // Solo acreditar si está aprobado
     if (body.status === StdMexStatus.APPROVED) {
       const amountMxn = Number(body.monto);
       const usdMxn = await this.fx.getUsdMxn(); // p.ej. 1 USD = 18.50 MXN
       const amountUsdt = amountMxn / usdMxn;
 
-      await this.wallets.creditUser({
+      await this.wallets.credit({
         userId: body.id_usuario,
-        amountUsdt,
+        amount: amountUsdt,
         meta: {
           provider: 'STDMEX',
           id_transaccion: body.id_transaccion,
@@ -201,9 +189,8 @@ export class StdMexService {
           rateUsdMxn: usdMxn,
           tiene_aviso_deposito: body.tiene_aviso_deposito,
         },
-        externalId: body.id_transaccion,
-        externalProvider: 'STDMEX',
-        memo: `Depósito fiat MXN convertido a USDT (STDMEX)`,
+        idempotencyKey: body.id_transaccion,
+        reason: `Depósito fiat MXN convertido a USDT (STDMEX)`,
       });
 
       this.logger.log(

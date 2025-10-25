@@ -54,6 +54,10 @@ model User {
   language     String?
   avatarUrl    String?
 
+  // --Pays
+  stdMexId      String?
+  stdMex StdMex? @relation(fields: [stdMexId], references: [id])
+
   RefreshToken  RefreshToken[]
   KycDocument   KycDocument[]
   KycSubmission KycSubmission[]
@@ -61,6 +65,14 @@ model User {
   gameSessions  BetSession[]
   Referral      Referral[]
   PasswordReset PasswordReset[]
+}
+
+model StdMex {
+  id           String @id @default(uuid())
+  clabe        String
+  bank         String
+  instructions Json
+  User         User[]
 }
 
 model Wallet {
@@ -148,14 +160,14 @@ model BetSession {
 }
 
 model BetTicket {
-  id        String   @id @default(uuid())
-  userId    String
-  gameId    String
-  stake     Decimal
-  status    String
-  payout    Decimal?
-  createdAt DateTime @default(now())
-  meta      Json
+  id             String   @id @default(uuid())
+  userId         String
+  gameId         String
+  stake          Decimal
+  status         String
+  payout         Decimal?
+  createdAt      DateTime @default(now())
+  meta           Json
   idempotencyKey String?  @unique
 }
 

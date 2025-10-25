@@ -4,6 +4,8 @@ import { StdMexService } from './stdmex.service';
 import { StdMexController } from './stdmex.controller';
 import { HttpModule } from '@nestjs/axios';
 import { FxService } from '@domain/fx/fx.service';
+import { UsersService } from 'apps/client-api/src/users/users.service';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
@@ -23,9 +25,13 @@ import { FxService } from '@domain/fx/fx.service';
       }),
       inject: [ConfigService],
     }),
+    CacheModule.register({
+      ttl: 5, // opcional
+      max: 100, // opcional
+    }),
   ],
   controllers: [StdMexController],
-  providers: [StdMexService, FxService],
+  providers: [StdMexService, FxService, UsersService],
   exports: [StdMexService],
 })
 export class StdMexModule {}
