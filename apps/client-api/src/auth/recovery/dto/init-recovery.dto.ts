@@ -1,9 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsEmail } from 'class-validator';
+import { IsBoolean, IsEmail, IsString } from 'class-validator';
 export class InitRecoveryDto {
   @ApiProperty()
   @IsEmail()
   email!: string;
+
+  @ApiProperty()
+  @IsString()
+  host!: string;
 }
 
 export class ResponseOK {

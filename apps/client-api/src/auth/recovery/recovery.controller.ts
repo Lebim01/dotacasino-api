@@ -33,7 +33,7 @@ export class RecoveryController {
     const ip =
       (req.headers['x-forwarded-for'] as string)?.split(',')[0] ?? req.ip;
     const ua = req.headers['user-agent'] as string | undefined;
-    return this.svc.init(dto.email, req.headers.host || '', ip, ua);
+    return this.svc.init(dto.email, dto.host || '', ip, ua);
   }
 
   @Post('verify')
