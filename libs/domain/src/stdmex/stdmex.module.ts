@@ -6,6 +6,7 @@ import { HttpModule } from '@nestjs/axios';
 import { FxService } from '@domain/fx/fx.service';
 import { UsersService } from 'apps/client-api/src/users/users.service';
 import { CacheModule } from '@nestjs/cache-manager';
+import { PrismaService } from 'libs/db/src/prisma.service';
 
 @Module({
   imports: [
@@ -31,7 +32,7 @@ import { CacheModule } from '@nestjs/cache-manager';
     }),
   ],
   controllers: [StdMexController],
-  providers: [StdMexService, FxService, UsersService],
+  providers: [StdMexService, FxService, UsersService, PrismaService],
   exports: [StdMexService],
 })
 export class StdMexModule {}
