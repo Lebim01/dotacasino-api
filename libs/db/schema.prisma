@@ -55,8 +55,8 @@ model User {
   avatarUrl    String?
 
   // --Pays
-  stdMexId      String?
-  stdMex StdMex? @relation(fields: [stdMexId], references: [id])
+  stdMexId String?
+  stdMex   StdMex? @relation(fields: [stdMexId], references: [id])
 
   RefreshToken  RefreshToken[]
   KycDocument   KycDocument[]
@@ -148,6 +148,14 @@ model Game {
   priority       Int           @default(1)
 
   @@index([enabled])
+}
+
+model Country {
+  id   String @id @default(uuid())
+  name String
+  code String
+
+  @@index([code])
 }
 
 model BetSession {
