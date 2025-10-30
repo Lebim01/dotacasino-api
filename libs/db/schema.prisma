@@ -145,6 +145,7 @@ model Game {
   allowDemo      Boolean       @default(false)
   width          String        @default("0")
   show           Boolean       @default(true)
+  priority       Int           @default(1)
 
   @@index([enabled])
 }

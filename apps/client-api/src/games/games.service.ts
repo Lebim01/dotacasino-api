@@ -41,20 +41,22 @@ export class GamesService {
       ];
     }
 
-    const orderBy:
+    /*const orderBy:
       | Prisma.GameOrderByWithRelationInput
       | Prisma.GameOrderByWithRelationInput[] =
       q.sort === 'alpha'
         ? { title: 'asc' }
         : q.sort === 'recent'
           ? { createdAt: 'desc' }
-          : [{ order: 'asc' }, { title: 'asc' }];
+          : [{ order: 'asc' }, { title: 'asc' }];*/
 
     const skip = (q.page - 1) * q.pageSize;
     const [items, total] = await this.prisma.$transaction([
       this.prisma.game.findMany({
         where,
-        orderBy,
+        orderBy: {
+          priority: 'desc',
+        },
         skip,
         take: q.pageSize,
         select: {
