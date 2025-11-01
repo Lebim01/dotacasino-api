@@ -50,7 +50,7 @@ export class BondsService {
 
       await this.walletService.credit({
         amount: _amount,
-        reason: type,
+        reason: 'REFERRAL_BONUS',
         userId: user_id,
         meta: {
           ...extras,

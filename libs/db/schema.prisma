@@ -46,6 +46,7 @@ model User {
   passwordHash String
   roles        String[]  @default(["user"])
   firebaseId   String    @default("")
+  sponsorId    String?
   refCodeL     String?   @unique @db.VarChar(16)
   refCodeR     String?   @unique @db.VarChar(16)
   // ---- Perfil ----

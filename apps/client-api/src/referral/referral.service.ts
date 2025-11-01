@@ -48,6 +48,15 @@ export class ReferralService {
       data: { userId, parentId: parent.id, level },
     });
 
+    await this.prisma.user.update({
+      data: {
+        sponsorId: parent.id,
+      },
+      where: {
+        id: userId,
+      },
+    });
+
     return { ok: true, parentId: parent.id, level };
   }
 

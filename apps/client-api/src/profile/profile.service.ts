@@ -78,9 +78,34 @@ export class ProfileService {
   }
 
   async getStats(userId: string) {
-    const referral_bonus = await this.prisma.ledgerEntry.findMany({
-      
-    })
+    const wallet = await this.prisma.wallet.findFirst({
+      where: {
+        userId,
+      },
+    });
+
+    if (wallet) {
+      const referral_bonus = await this.prisma.ledgerEntry.aggregate({
+        _sum: {
+          amount: true,
+        },
+        where: {
+          kind: 'REFERRAL_BONUS',
+          walletId: wallet.id,
+        },
+      });
+      const referral_count = await this.prisma.user.aggregate({
+        _count: true,
+        where: {
+          sponsorId: userId,
+        },
+      });
+      return {
+        referral_bonus: referral_bonus._sum,
+        referral_count: referral_count._count,
+      };
+    }
+
     return {
       referral_bonus: 0,
       referral_count: 0,
