@@ -3,10 +3,14 @@ import * as argon2 from 'argon2';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { PrismaService } from 'libs/db/src/prisma.service';
+import { WalletService } from '@domain/wallet/wallet.service';
 
 @Injectable()
 export class ProfileService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly walletService: WalletService,
+  ) {}
 
   async getProfile(userId: string) {
     const user = await this.prisma.user.findUnique({
@@ -100,15 +104,18 @@ export class ProfileService {
           sponsorId: userId,
         },
       });
+      const balance = await this.walletService.getBalance(userId);
       return {
         referral_bonus: referral_bonus._sum,
         referral_count: referral_count._count,
+        balance,
       };
     }
 
     return {
       referral_bonus: 0,
       referral_count: 0,
+      balance: 0,
     };
   }
 }
