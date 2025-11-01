@@ -11,6 +11,7 @@ import { firestore } from 'firebase-admin';
 import { dateToString } from '../utils/firebase';
 import { AuthService } from '../auth/auth.service';
 import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
+import { PrismaService } from 'libs/db/src/prisma.service';
 
 @Injectable()
 export class UsersService {
@@ -18,6 +19,7 @@ export class UsersService {
     private readonly mailerService: MailerService,
     private readonly authService: AuthService,
     private readonly authAcademyService: AuthAcademyService,
+    private readonly prismaService: PrismaService,
   ) {}
 
   async getUsers(page: number, limit: number) {
@@ -436,5 +438,18 @@ export class UsersService {
           status: 'reclaim',
         },
       });
+  }
+
+  async search(email: string) {
+    return this.prismaService.user.findMany({
+      where: {
+        email: {
+          contains: email,
+        },
+      },
+      include: {
+        wallets: true,
+      },
+    });
   }
 }

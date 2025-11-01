@@ -38,6 +38,7 @@ import { JwtAuthGuard } from '@security/jwt.guard';
 import { Roles } from '@security/roles.decorator';
 import { CurrentUser } from '@security/current-user.decorator';
 import { WalletService } from '@domain/wallet/wallet.service';
+import { gte } from 'zod';
 
 @ApiTags('Users')
 @Controller('users')
@@ -388,5 +389,10 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   reclaimnft(@CurrentUser() { userId }: { userId: string }) {
     return this.usersService.reclaimNft(userId);
+  }
+
+  @Get('search')
+  search(@Query('email') email: string) {
+    return this.usersService.search(email);
   }
 }
