@@ -4,10 +4,14 @@ import { UsersService } from '../users/users.service';
 import { firestore } from 'firebase-admin';
 import { Bonds, messages, direct_percent, levels_percent } from './bonds';
 import { Ranks, ranks_object } from '../ranks/ranks_object';
+import { WalletService } from '@domain/wallet/wallet.service';
 
 @Injectable()
 export class BondsService {
-  constructor(private readonly userService: UsersService) {}
+  constructor(
+    private readonly userService: UsersService,
+    private readonly walletService: WalletService,
+  ) {}
 
   async addBond(
     user_id: string, // usuario que recibe el bono
@@ -38,9 +42,20 @@ export class BondsService {
           profits: firestore.FieldValue.increment(_amount),
           ...update,
         });
+
       await this.addProfitDetail(user_id, type, _amount, user_origin_bond, {
         ...extras,
         benefited_user_name: user.get('name'),
+      });
+
+      await this.walletService.credit({
+        amount: _amount,
+        reason: type,
+        userId: user_id,
+        meta: {
+          ...extras,
+          user_origin_bond,
+        },
       });
     } else {
       await this.addLostProfit(user_id, type, _amount, user_origin_bond);

@@ -52,6 +52,8 @@ export class ProfileService {
         language: true,
         avatarUrl: true,
         createdAt: true,
+        firstName: true,
+        lastName: true,
       },
     });
     return updated;
@@ -73,5 +75,15 @@ export class ProfileService {
       data: { passwordHash: newHash },
     });
     return { message: 'Contraseña actualizada' };
+  }
+
+  async getStats(userId: string) {
+    const referral_bonus = await this.prisma.ledgerEntry.findMany({
+      
+    })
+    return {
+      referral_bonus: 0,
+      referral_count: 0,
+    };
   }
 }

@@ -12,7 +12,12 @@ import { CurrentUser } from '@security/current-user.decorator';
 import { ProfileService } from './profile.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
-import { ApiBearerAuth, ApiBody, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { ProfileResponseDto } from './dto/profile-response.dto';
 
 @ApiTags('Profile')
@@ -22,10 +27,15 @@ import { ProfileResponseDto } from './dto/profile-response.dto';
 export class ProfileController {
   constructor(private readonly profile: ProfileService) {}
 
+  @Get('stats')
+  stats(@CurrentUser() user) {
+    return this.profile.getStats(user.userId);
+  }
+
   @Get()
   @ApiOkResponse({
     description: 'Get user profile',
-    type: ProfileResponseDto
+    type: ProfileResponseDto,
   })
   async me(@CurrentUser() user: { userId: string }) {
     return this.profile.getProfile(user.userId);
@@ -35,7 +45,7 @@ export class ProfileController {
   @ApiBody({ type: UpdateProfileDto })
   @ApiOkResponse({
     description: 'Update user profile',
-    type: ProfileResponseDto
+    type: ProfileResponseDto,
   })
   async update(
     @CurrentUser() user: { userId: string },
@@ -49,15 +59,15 @@ export class ProfileController {
   @ApiBody({ type: ChangePasswordDto })
   @ApiOkResponse({
     description: 'Password changed successfully',
-    schema: { 
+    schema: {
       type: 'object',
       properties: {
         message: {
           type: 'string',
-          example: 'Password changed successfully'
-        }
-      }
-    }
+          example: 'Password changed successfully',
+        },
+      },
+    },
   })
   async changePassword(
     @CurrentUser() user: { userId: string },
