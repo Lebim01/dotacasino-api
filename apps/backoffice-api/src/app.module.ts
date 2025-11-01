@@ -29,6 +29,7 @@ import { WalletModule } from '@domain/wallet/wallet.module';
 import { PrismaService } from 'libs/db/src/prisma.service';
 import { CasinoDashboardModule } from './casino-dashboard/casino-dashboard.module';
 import { GamesModule } from './games/games.module';
+import { ReportsCasinoModule } from './reports-casino/reports-casino.module';
 
 @Module({
   imports: [
@@ -58,6 +59,7 @@ import { GamesModule } from './games/games.module';
     WalletModule,
     CasinoDashboardModule,
     GamesModule,
+    ReportsCasinoModule,
   ],
   controllers: [AppController, DisruptiveController],
   providers: [AppService, DisruptiveService, PrismaService, CasinoService],

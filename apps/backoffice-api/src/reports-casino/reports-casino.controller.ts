@@ -1,5 +1,5 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { ReportsService } from './reports.service';
+import { ReportsService } from './reports-casino.service';
 import { GetCasinoWeeklyPnlDto } from './dto/get-casino-weekly-pnl.dto';
 
 @Controller('reports/casino')

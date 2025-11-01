@@ -57,7 +57,7 @@ export class ReportsService {
         COALESCE(SUM(CASE WHEN meta->>'action' = 'BET' THEN amount ELSE 0 END), 0)  AS bets_sum,
         COALESCE(SUM(CASE WHEN meta->>'action' = 'WIN' THEN amount ELSE 0 END), 0)  AS wins_sum,
         COALESCE(SUM(amount), 0)                                                    AS net_sum,
-        COUNT(*)                                                                     AS spins
+        COUNT(*)::int                                                               AS spins
       FROM "LedgerEntry"
       WHERE kind = 'spin-game'
         AND "createdAt" >= ${startUtc.toJSDate()}
