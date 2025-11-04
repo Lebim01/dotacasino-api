@@ -134,6 +134,6 @@ export class UsersController {
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   stdmex(@CurrentUser() user){
-    return this.users.getStdMexClabe(user.id);
+    return this.users.getStdMexClabe(user.userId);
   }
 }

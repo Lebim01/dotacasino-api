@@ -33,14 +33,14 @@ export class StdMexController {
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   async getOrCreateClabe(@CurrentUser() user) {
-    return this.stdmex.getOrCreateClabeForUser(user.id);
+    return this.stdmex.getOrCreateClabeForUser(user.userId);
   }
 
   @Post('stdmex/orders')
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   async createOrder(@CurrentUser() user, @Body() dto: CreateOrderDto) {
-    return this.stdmex.createDepositOrder(user.id, dto);
+    return this.stdmex.createDepositOrder(user.userId, dto);
   }
 
   @Post('stdmex/clabe/:clabe/block')
