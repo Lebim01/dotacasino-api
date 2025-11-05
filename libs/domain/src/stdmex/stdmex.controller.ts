@@ -15,6 +15,7 @@ import { StdMexWebhookDto } from './dto/webhook.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@security/jwt.guard';
 import { CurrentUser } from '@security/current-user.decorator';
+import { FxService } from '@domain/fx/fx.service';
 
 /**
  * Rutas sugeridas:
@@ -27,7 +28,10 @@ import { CurrentUser } from '@security/current-user.decorator';
 @Controller()
 @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
 export class StdMexController {
-  constructor(private readonly stdmex: StdMexService) {}
+  constructor(
+    private readonly stdmex: StdMexService,
+    private readonly fx: FxService,
+  ) {}
 
   @Get('stdmex/clabe')
   @ApiBearerAuth('access-token')
@@ -63,5 +67,10 @@ export class StdMexController {
     @Body() body: StdMexWebhookDto,
   ) {
     return this.stdmex.handleWebhook(authorization, body);
+  }
+
+  @Get('usdmxn')
+  usdmxn() {
+    return this.fx.getUsdMxn();
   }
 }

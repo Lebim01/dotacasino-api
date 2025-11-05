@@ -3,6 +3,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
 import type { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import axios from 'axios';
 
 /**
  * FxService — obtiene USD/MXN (FIX) desde Banxico (SIE API).
@@ -17,7 +18,18 @@ export class FxService {
   constructor(
     private readonly http: HttpService,
     @Inject(CACHE_MANAGER) private readonly cache: Cache,
-  ) {}
+  ) {
+    this.http = new HttpService(
+      axios.create({
+        baseURL: 'https://www.banxico.org.mx/SieAPIRest/service/v1',
+        timeout: 8000,
+        headers: {
+          'Bmx-Token': process.env.BANXICO_TOKEN,
+          'Content-Type': 'application/json',
+        },
+      }),
+    );
+  }
 
   /**
    * Rate actual (dato oportuno). Si no hay (fin de semana/feriado),
@@ -30,6 +42,7 @@ export class FxService {
 
     // 1) Intento "dato oportuno"
     const latest = await this.fetchLatestFix().catch((e) => {
+      console.log(e.response);
       this.logger.warn(`Banxico oportuno no disponible: ${e?.message ?? e}`);
       return null;
     });
