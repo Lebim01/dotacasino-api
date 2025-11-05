@@ -30,6 +30,8 @@ import { PrismaService } from 'libs/db/src/prisma.service';
 import { CasinoDashboardModule } from './casino-dashboard/casino-dashboard.module';
 import { GamesModule } from './games/games.module';
 import { ReportsCasinoModule } from './reports-casino/reports-casino.module';
+import { AuthAcademyController } from '@domain/auth-academy/auth-academy.controller';
+import { AuthAcademyModule } from '@domain/auth-academy/auth-academy.module';
 
 @Module({
   imports: [
@@ -60,6 +62,7 @@ import { ReportsCasinoModule } from './reports-casino/reports-casino.module';
     CasinoDashboardModule,
     GamesModule,
     ReportsCasinoModule,
+    AuthAcademyModule
   ],
   controllers: [AppController, DisruptiveController],
   providers: [AppService, DisruptiveService, PrismaService, CasinoService],

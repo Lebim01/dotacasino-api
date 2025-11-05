@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common';
 import dayjs from 'dayjs';
 import { db as admin, db } from '../firebase/admin';
 import { firestore } from 'firebase-admin';
-import { BinaryService } from '../binary/binary.service';
 import { PayloadAssignBinaryPosition } from './types';
 import { google } from '@google-cloud/tasks/build/protos/protos';
 import * as googleTaskService from '../googletask/utils';
@@ -17,7 +16,6 @@ import Decimal from 'decimal.js';
 @Injectable()
 export class SubscriptionsService {
   constructor(
-    private readonly binaryService: BinaryService,
     private readonly bondService: BondsService,
     private readonly prisma: PrismaService,
   ) {}
@@ -208,7 +206,7 @@ export class SubscriptionsService {
     const task: google.cloud.tasks.v2.ITask = {
       httpRequest: {
         httpMethod: 'POST' as Method,
-        url: process.env.API_URL + `/subscriptions/assignBinaryPosition`,
+        url: process.env.API_URL + `/auth-binary/assignBinaryPosition`,
         body: Buffer.from(JSON.stringify(body)),
         headers: {
           'Content-Type': 'application/json',
@@ -220,95 +218,5 @@ export class SubscriptionsService {
       task,
       googleTaskService.getPathQueue('assign-binary-position'),
     );
-  }
-
-  async assignBinaryPosition(
-    payload: PayloadAssignBinaryPosition,
-    volumen = true,
-  ) {
-    console.log('assignBinaryPosition', payload);
-    const user = await admin.collection('users').doc(payload.id_user).get();
-
-    /**
-     * Asignar posicion en el binario (SOLO USUARIOS NUEVOS)
-     */
-    const hasBinaryPosition = !!user.get('parent_binary_user_id');
-    if (!hasBinaryPosition) {
-      const finish_position = user.get('position');
-
-      /**
-       * Las dos primeras personas de cada ciclo van al lado del derrame
-       */
-      const sponsorRef = admin.collection('users').doc(user.get('sponsor_id'));
-
-      let binaryPosition: { parent_id: string | null } = {
-        parent_id: null,
-      };
-
-      console.log('sponsor_id', user.get('sponsor_id'));
-
-      while (!binaryPosition?.parent_id) {
-        binaryPosition = await this.binaryService.calculatePositionOfBinary(
-          user.get('sponsor_id'),
-          finish_position,
-        );
-      }
-
-      console.log(binaryPosition);
-
-      /**
-       * se setea el valor del usuario padre en el usuario que se registro
-       */
-      if (!binaryPosition?.parent_id) {
-        throw new Error('Error al posicionar el binario');
-      }
-
-      await user.ref.update({
-        parent_binary_user_id: binaryPosition.parent_id,
-      });
-      await sponsorRef.update({
-        count_direct_people_this_cycle: firestore.FieldValue.increment(1),
-      });
-
-      try {
-        /**
-         * se setea el valor del hijo al usuario ascendente en el binario
-         */
-        await admin
-          .collection('users')
-          .doc(binaryPosition.parent_id)
-          .update(
-            finish_position == 'left'
-              ? { left_binary_user_id: user.id }
-              : { right_binary_user_id: user.id },
-          );
-      } catch (err) {
-        console.error(err);
-      }
-
-      try {
-        await this.binaryService.increaseUnderlinePeople(user.id);
-      } catch (err) {
-        console.log('Error increaseUnderlinePeople');
-        console.error(err);
-      }
-    }
-
-    /**
-     * aumenta los puntos del binario hacia arriba
-     */
-    if (volumen && payload.points > 0) {
-      try {
-        await this.binaryService.increaseBinaryPoints(
-          user.id,
-          Number(payload.points),
-          'Membresia',
-          payload.txn_id,
-        );
-      } catch (err) {
-        console.log('Error increaseBinaryPoints');
-        console.error(err);
-      }
-    }
   }
 }

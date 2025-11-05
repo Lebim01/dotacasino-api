@@ -84,14 +84,11 @@ export class SubscriptionsController {
     );
 
     if (!user.get('parent_binary_user_id')) {
-      await this.subscriptionService.assignBinaryPosition(
-        {
-          id_user: user.id,
-          txn_id: '',
-          points: MEMBERSHIP_PRICES[body.membership as Memberships],
-        },
-        false,
-      );
+      await this.subscriptionService.addQueueBinaryPosition({
+        id_user: user.id,
+        txn_id: '',
+        points: MEMBERSHIP_PRICES[body.membership as Memberships],
+      });
     }
 
     return {
@@ -164,7 +161,7 @@ export class SubscriptionsController {
     @Body()
     body: PayloadAssignBinaryPosition,
   ) {
-    return this.subscriptionService.assignBinaryPosition(body);
+    return this.subscriptionService.addQueueBinaryPosition(body);
   }
 
   @ApiExcludeEndpoint()

@@ -1,10 +1,17 @@
+import { google } from '@google-cloud/tasks/build/protos/protos';
 import { Injectable } from '@nestjs/common';
 import { USER_ROLES } from 'apps/backoffice-api/src/auth/auth.constants';
 import { RegisterAuthDto } from 'apps/backoffice-api/src/auth/dto/register-auth.dto';
 import { Bonds } from 'apps/backoffice-api/src/bonds/bonds';
 import { db } from 'apps/backoffice-api/src/firebase/admin';
+import {
+  addToQueue,
+  getPathQueue,
+} from 'apps/backoffice-api/src/googletask/utils';
+import { PayloadAssignBinaryPosition } from 'apps/backoffice-api/src/subscriptions/types';
 import { getLimitMembership } from 'apps/backoffice-api/src/utils/deposits';
 import { hash } from 'bcryptjs';
+import { firestore } from 'firebase-admin';
 
 function makeid(length: number) {
   let result = '';
@@ -21,6 +28,144 @@ function makeid(length: number) {
 
 @Injectable()
 export class AuthAcademyService {
+  async calculatePositionOfBinary(
+    sponsor_id: string,
+    position: 'left' | 'right',
+  ) {
+    let parent_id: null | string = null;
+
+    let next_user_id = sponsor_id;
+    while (!parent_id) {
+      const sponsorData = await db.collection('users').doc(next_user_id).get();
+
+      if (sponsorData.get(`${position}_binary_user_id`)) {
+        next_user_id = sponsorData.get(`${position}_binary_user_id`);
+      } else {
+        parent_id = next_user_id;
+      }
+    }
+
+    return {
+      parent_id,
+    };
+  }
+
+  async increaseUnderlinePeople(registerUserId: string) {
+    const batch = db.batch();
+
+    let currentUser: string | null = registerUserId;
+    let user = await db.collection('users').doc(registerUserId).get();
+
+    do {
+      if (!user.get('parent_binary_user_id')) break;
+
+      user = await db
+        .collection('users')
+        .doc(user.get('parent_binary_user_id'))
+        .get();
+
+      if (user.exists) {
+        const side =
+          user.get('left_binary_user_id') == currentUser ? 'left' : 'right';
+
+        currentUser = user.id;
+
+        batch.update(user.ref, {
+          count_underline_people: firestore.FieldValue.increment(1),
+        });
+
+        batch.set(
+          db
+            .collection('users')
+            .doc(user.id)
+            .collection(`${side}-people`)
+            .doc(registerUserId),
+          {
+            user_id: registerUserId,
+            created_at: new Date(),
+            membership_status: 'paid',
+            rank: 'none',
+          },
+        );
+      } else {
+        currentUser = null;
+      }
+    } while (currentUser);
+
+    // Commit the batch
+    await batch.commit();
+  }
+
+  async assignBinaryPosition(payload: PayloadAssignBinaryPosition) {
+    console.log('assignBinaryPosition', payload);
+    const user = await db.collection('users').doc(payload.id_user).get();
+
+    /**
+     * Asignar posicion en el binario (SOLO USUARIOS NUEVOS)
+     */
+    const hasBinaryPosition = !!user.get('parent_binary_user_id');
+    if (!hasBinaryPosition) {
+      const finish_position = user.get('position');
+
+      /**
+       * Las dos primeras personas de cada ciclo van al lado del derrame
+       */
+      const sponsorRef = db.collection('users').doc(user.get('sponsor_id'));
+
+      let binaryPosition: { parent_id: string | null } = {
+        parent_id: null,
+      };
+
+      console.log('sponsor_id', user.get('sponsor_id'));
+
+      while (!binaryPosition?.parent_id) {
+        binaryPosition = await this.calculatePositionOfBinary(
+          user.get('sponsor_id'),
+          finish_position,
+        );
+      }
+
+      console.log(binaryPosition);
+
+      /**
+       * se setea el valor del usuario padre en el usuario que se registro
+       */
+      if (!binaryPosition?.parent_id) {
+        throw new Error('Error al posicionar el binario');
+      }
+
+      await user.ref.update({
+        parent_binary_user_id: binaryPosition.parent_id,
+      });
+      await sponsorRef.update({
+        count_direct_people_this_cycle: firestore.FieldValue.increment(1),
+      });
+
+      try {
+        /**
+         * se setea el valor del hijo al usuario ascendente en el binario
+         */
+        await db
+          .collection('users')
+          .doc(binaryPosition.parent_id)
+          .update(
+            finish_position == 'left'
+              ? { left_binary_user_id: user.id }
+              : { right_binary_user_id: user.id },
+          );
+      } catch (err) {
+        console.error(err);
+      }
+
+      try {
+        await this.increaseUnderlinePeople(user.id);
+      } catch (err) {
+        console.log('Error increaseUnderlinePeople');
+        console.error(err);
+      }
+    }
+  }
+
   async registerUser(userObject: RegisterAuthDto) {
     let sponsor_name = null;
     let position: null | string = null;
@@ -57,10 +202,32 @@ export class AuthAcademyService {
       },
     });
 
+    await this.addQueueBinaryPosition({
+      id_user: user.id,
+      points: 0,
+      txn_id: null,
+    });
+
     return {
       id: user.id,
       ...formattedUser,
     };
+  }
+
+  async addQueueBinaryPosition(body: PayloadAssignBinaryPosition) {
+    type Method = 'POST';
+    const task: google.cloud.tasks.v2.ITask = {
+      httpRequest: {
+        httpMethod: 'POST' as Method,
+        url: process.env.API_URL + `/auth-binary/assignBinaryPosition`,
+        body: Buffer.from(JSON.stringify(body)),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    };
+
+    await addToQueue(task, getPathQueue('assign-binary-position'));
   }
 
   async getPassword(pass: string) {
