@@ -175,7 +175,7 @@ export class AuthAcademyService {
         .collection('users')
         .doc(userObject.sponsor_id)
         .get();
-      position = sponsor.get('left') == userObject.side ? 'left' : 'right';
+      position = userObject.side;
       sponsor_name = sponsor.get('name');
     }
 

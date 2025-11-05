@@ -54,6 +54,7 @@ model User {
   phone        String?
   language     String?
   avatarUrl    String?
+  sponsorCode  String?
 
   // --Pays
   stdMexId String?

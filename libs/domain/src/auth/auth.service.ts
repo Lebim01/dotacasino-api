@@ -131,6 +131,7 @@ export class AuthCommonService {
           dto.country,
           sponsor!.id,
           sponsor!.refCodeL == code ? 'left' : 'right',
+          code,
         );
 
         await this.referralService.attachByCode(user.id, code);

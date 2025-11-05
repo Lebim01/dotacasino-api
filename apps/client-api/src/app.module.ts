@@ -22,6 +22,7 @@ import { MembershipsModule } from './memberships/memberships.module';
 import { DepositCoinsModule } from './deposit-coins/coins.module';
 import { WithdrawCoinsModule } from './withdraw-coins/coins.module';
 import { StdMexModule } from '@domain/stdmex/stdmex.module';
+import { AuthAcademyModule } from '@domain/auth-academy/auth-academy.module';
 
 @Module({
   imports: [
@@ -45,7 +46,8 @@ import { StdMexModule } from '@domain/stdmex/stdmex.module';
     MembershipsModule,
     DepositCoinsModule,
     WithdrawCoinsModule,
-    StdMexModule
+    StdMexModule,
+    AuthAcademyModule,
   ],
   controllers: [HealthController],
 })

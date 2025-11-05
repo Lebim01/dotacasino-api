@@ -64,6 +64,7 @@ export class UserCommonService {
     country: string,
     sponsor_id: string,
     side: 'left' | 'right',
+    sponsorCode?: string,
   ) {
     const passwordHash = await argon2.hash(password);
 
@@ -102,6 +103,7 @@ export class UserCommonService {
           refCodeR,
           firebaseId: res.id,
           displayName,
+          sponsorCode,
         },
         select: { id: true, email: true, country: true, createdAt: true },
       });
