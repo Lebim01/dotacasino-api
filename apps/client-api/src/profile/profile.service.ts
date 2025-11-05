@@ -4,6 +4,7 @@ import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { PrismaService } from 'libs/db/src/prisma.service';
 import { WalletService } from '@domain/wallet/wallet.service';
+import { db } from 'apps/backoffice-api/src/firebase/admin';
 
 @Injectable()
 export class ProfileService {
@@ -59,6 +60,9 @@ export class ProfileService {
         firstName: true,
         lastName: true,
       },
+    });
+    await db.collection('users').doc(userId).update({
+      name: dto.displayName,
     });
     return updated;
   }

@@ -12,14 +12,14 @@ export class AuthAcademyController {
     return this.auth.assignBinaryPosition(payload);
   }
 
-  @Post('set-binary')
+  /*@Post('set-binary')
   async setbinary() {
     const users = await db
       .collection('users')
       .orderBy('created_at', 'asc')
       .get();
 
-    /*const batch = db.batch();
+    const batch = db.batch();
     for (const u of users.docs) {
       const payload: any = {};
       if (u.get('sponsor_id') == 'y99Xc1XzMM2c0kF49TVS') {
@@ -45,7 +45,7 @@ export class AuthAcademyController {
       }
       await batch2.commit();
     }
-    await batch.commit();*/
+    await batch.commit();
 
     for (const u of users.docs) {
       if (u.get('email') == 'codigo1@dota.click') continue;
@@ -57,5 +57,5 @@ export class AuthAcademyController {
         txn_id: null,
       });
     }
-  }
+  }*/
 }
