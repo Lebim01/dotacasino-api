@@ -46,6 +46,18 @@ export class BetService {
   }
 
   async openGame(gameId: string, domain: string, userId: string) {
+    console.log({
+        ...this.params,
+        cmd: 'openGame',
+        domain,
+        exitUrl: `${domain}/exit`,
+        language: 'en',
+        continent: 'usa',
+        login: userId,
+        gameId,
+        cdnUrl: `${domain}/resources`,
+        demo: '0',
+      })
     const { data } = await firstValueFrom(
       this.api.post<OpenGameApiResponse, OpenGameDto>('openGame/', {
         ...this.params,
@@ -60,6 +72,7 @@ export class BetService {
         demo: '0',
       }),
     );
+    console.log(data)
     return data;
   }
 
