@@ -128,7 +128,7 @@ model GameProvider {
 
 model Game {
   id             String        @id @default(uuid())
-  betId          String
+  betId          String        @unique
   slug           String        @unique
   title          String
   gameType       String? // ej. "BAC", "DT", "ROU" (Live); o vacío para lobby

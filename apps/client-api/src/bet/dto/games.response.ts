@@ -1,7 +1,13 @@
 export interface GamesApiResponse {
-  gameLabels: string[];
-  gameTitles: string[];
-  gameList: Game[];
+  status: string;
+  microtime: number;
+  dateTime: string;
+  error: string;
+  content: {
+    gameLabels: string[];
+    gameTitles: string[];
+    gameList: Game[];
+  };
 }
 
 export interface Game {

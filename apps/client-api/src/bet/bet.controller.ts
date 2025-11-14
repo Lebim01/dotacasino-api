@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Patch, Query } from '@nestjs/common';
 import { ApiExcludeController, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { BetService } from './bet.service';
 
@@ -28,5 +28,10 @@ export class BetController {
   @Get('sessionlog')
   sessionlog(){
     return this.betService.sessionLogs("290664467");
+  }
+
+  @Patch('update-game-list')
+  async updategamelist(){
+    return this.betService.updateList();
   }
 }
