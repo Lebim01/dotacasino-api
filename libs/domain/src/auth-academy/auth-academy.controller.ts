@@ -1,4 +1,4 @@
-import { Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { AuthAcademyService } from './auth-academy.service';
 import { PayloadAssignBinaryPosition } from 'apps/backoffice-api/src/subscriptions/types';
 import { db } from 'apps/backoffice-api/src/firebase/admin';
@@ -8,7 +8,7 @@ export class AuthAcademyController {
   constructor(private readonly auth: AuthAcademyService) {}
 
   @Post('assignBinaryPosition')
-  assignBinaryPosition(payload: PayloadAssignBinaryPosition) {
+  assignBinaryPosition(@Body() payload: PayloadAssignBinaryPosition) {
     return this.auth.assignBinaryPosition(payload);
   }
 

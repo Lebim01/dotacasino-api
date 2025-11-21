@@ -105,12 +105,11 @@ export class AuthAcademyService {
      */
     const hasBinaryPosition = !!user.get('parent_binary_user_id');
     if (!hasBinaryPosition) {
-      const finish_position = user.get('position');
+      const finish_position = user.get('position') || 'right';
 
       /**
        * Las dos primeras personas de cada ciclo van al lado del derrame
        */
-      const sponsorRef = db.collection('users').doc(user.get('sponsor_id'));
 
       let binaryPosition: { parent_id: string | null } = {
         parent_id: null,
@@ -136,10 +135,15 @@ export class AuthAcademyService {
 
       await user.ref.update({
         parent_binary_user_id: binaryPosition.parent_id,
+        position: finish_position,
       });
-      await sponsorRef.update({
-        count_direct_people_this_cycle: firestore.FieldValue.increment(1),
-      });
+
+      if (user.get('sponsor_id')) {
+        const sponsorRef = db.collection('users').doc(user.get('sponsor_id'));
+        await sponsorRef.update({
+          count_direct_people_this_cycle: firestore.FieldValue.increment(1),
+        });
+      }
 
       try {
         /**

@@ -1,10 +1,4 @@
-import {
-  Body,
-  Controller,
-  Patch,
-  Post,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Patch, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
   ApiBearerAuth,
@@ -19,6 +13,7 @@ import { Roles } from '@security/roles.decorator';
 import { AuthCommonService } from '@domain/auth/auth.service';
 import { RegisterDto } from '@domain/auth/dto/register.dto';
 import { LoginDto } from '@domain/auth/dto/login.dto';
+import { db } from '../firebase/admin';
 
 @ApiTags('Authentication & Authorization')
 @Controller('auth')
@@ -62,5 +57,19 @@ export class AuthController {
     const { email } = body;
     const updatedUser = await this.authService.revokeAdminRole(email);
     return updatedUser;
+  }
+
+  @Post('test')
+  async test() {
+    const users = await db
+      .collection('users')
+      .orderBy('created_at', 'asc')
+      .get();
+    for (const u of users.docs) {
+      const parent_id = u.get('parent_binary_user_id');
+      if (!parent_id) {
+        console.log(u.id);
+      }
+    }
   }
 }
