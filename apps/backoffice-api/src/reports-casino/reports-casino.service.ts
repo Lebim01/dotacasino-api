@@ -54,8 +54,8 @@ export class ReportsService {
       SELECT
         (meta->>'login') AS login,
         date_trunc('week', timezone(${zone}, "createdAt"))::date AS week_start_cdmx,
-        COALESCE(SUM(CASE WHEN meta->>'action' = 'BET' THEN amount ELSE 0 END), 0)  AS bets_sum,
-        COALESCE(SUM(CASE WHEN meta->>'action' = 'WIN' THEN amount ELSE 0 END), 0)  AS wins_sum,
+        COALESCE(SUM((meta->>'bet')::decimal), 0)  AS bets_sum,
+        COALESCE(SUM((meta->>'win')::decimal), 0)  AS wins_sum,
         COALESCE(SUM(amount), 0)                                                    AS net_sum,
         COUNT(*)::int                                                               AS spins
       FROM "LedgerEntry"
