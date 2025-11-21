@@ -40,15 +40,18 @@ export class GamesService {
         { gameType: { contains: q.search, mode: 'insensitive' } },
       ];
     }
-
-    /*const orderBy:
-      | Prisma.GameOrderByWithRelationInput
-      | Prisma.GameOrderByWithRelationInput[] =
-      q.sort === 'alpha'
-        ? { title: 'asc' }
-        : q.sort === 'recent'
-          ? { createdAt: 'desc' }
-          : [{ order: 'asc' }, { title: 'asc' }];*/
+    if (q.search) {
+      where.OR = [
+        { title: { contains: q.search, mode: 'insensitive' } },
+        { slug: { contains: q.search, mode: 'insensitive' } },
+        { gameType: { contains: q.search, mode: 'insensitive' } },
+      ];
+    }
+    if (q.provider) {
+      where.gameProviderId = {
+        equals: q.provider,
+      };
+    }
 
     const skip = (q.page - 1) * q.pageSize;
     const [items, total] = await this.prisma.$transaction([

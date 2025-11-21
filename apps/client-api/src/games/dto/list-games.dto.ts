@@ -22,6 +22,14 @@ export class ListGamesDto {
   category?: 'LIVE' | 'EGAME' | 'TABLE' | 'OTHER';
 
   @ApiProperty({
+    description: 'Provider',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  provider?: string;
+
+  @ApiProperty({
     description: 'Device type',
     required: false,
     enum: ['DESKTOP', 'MOBILE']

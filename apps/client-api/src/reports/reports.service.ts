@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'libs/db/src/prisma.service';
 import { MailerService } from '../mailer/mailer.service';
 
 @Injectable()
