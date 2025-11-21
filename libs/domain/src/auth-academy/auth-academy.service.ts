@@ -119,7 +119,7 @@ export class AuthAcademyService {
 
       while (!binaryPosition?.parent_id) {
         binaryPosition = await this.calculatePositionOfBinary(
-          user.get('sponsor_id'),
+          user.get('sponsor_id') || '4h3b3ZGUXw8n3xUSZT6d', // sponsor o codigo 1
           finish_position,
         );
       }
