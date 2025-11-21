@@ -35,11 +35,17 @@ export class AuthAcademyService {
     let parent_id: null | string = null;
 
     let next_user_id = sponsor_id;
+    let times = {};
     while (!parent_id) {
       const sponsorData = await db.collection('users').doc(next_user_id).get();
 
       if (sponsorData.get(`${position}_binary_user_id`)) {
         next_user_id = sponsorData.get(`${position}_binary_user_id`);
+        if (!times[next_user_id]) times[next_user_id] = 1;
+        else {
+          console.log('REPETIDO', next_user_id);
+          break;
+        }
       } else {
         parent_id = next_user_id;
       }
@@ -57,7 +63,11 @@ export class AuthAcademyService {
     let user = await db.collection('users').doc(registerUserId).get();
 
     do {
-      if (!user.get('parent_binary_user_id')) break;
+      if (
+        !user.get('parent_binary_user_id') ||
+        registerUserId == user.get('parent_binary_user_id')
+      )
+        break;
 
       user = await db
         .collection('users')

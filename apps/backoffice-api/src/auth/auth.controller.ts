@@ -67,7 +67,7 @@ export class AuthController {
       .get();
     for (const u of users.docs) {
       const parent_id = u.get('parent_binary_user_id');
-      if (!parent_id) {
+      if (!parent_id && u.id != '4h3b3ZGUXw8n3xUSZT6d') {
         console.log(u.id);
       }
     }
