@@ -190,7 +190,7 @@ export class StdMexService {
           tiene_aviso_deposito: body.tiene_aviso_deposito,
         },
         idempotencyKey: body.id_transaccion,
-        reason: `Depósito fiat MXN convertido a USDT (STDMEX)`,
+        reason: 'USER_TOPUP',
       });
 
       this.logger.log(
