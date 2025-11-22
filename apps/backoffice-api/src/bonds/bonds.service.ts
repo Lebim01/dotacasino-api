@@ -98,6 +98,7 @@ export class BondsService {
       };
 
       if (add_to_balance) {
+        update['balance'] = firestore.FieldValue.increment(credited);
         update[`balance_${type}`] = firestore.FieldValue.increment(credited);
       }
 
