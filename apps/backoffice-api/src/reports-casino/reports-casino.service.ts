@@ -3,6 +3,44 @@ import { GetCasinoWeeklyPnlDto } from './dto/get-casino-weekly-pnl.dto';
 import { DateTime } from 'luxon';
 import { PrismaService } from 'libs/db/src/prisma.service';
 
+// Tipos de apoyo para el shape que espera tu frontend
+export type DetallePorUsuario = {
+  login: string;
+  apuestas: number;
+  ganancias: number;
+  neto: number;
+  spins: number;
+};
+
+export type CasinoWeeklyUserDetailView = {
+  id: string;
+  level: number;
+  percent: number;
+  totalNeto: number;
+  totalBonus: number;
+  detallePorUsuario: DetallePorUsuario[];
+  user: {
+    id: string;
+    name: string;
+    email?: string | null;
+  };
+};
+
+export type CasinoWeeklyReportView = {
+  id: string;
+  timezone: string;
+  fromCDMX: Date;
+  toCDMX: Date;
+  createdAt: Date;
+  totalPaid: number;
+  userDetails: CasinoWeeklyUserDetailView[];
+
+  // NUEVOS CAMPOS GLOBALES DEL CORTE
+  totalBets: number; // monto total apostado por todos los jugadores
+  totalWins: number; // monto total ganado por todos los jugadores
+  netLoss: number; // pérdidas netas de los jugadores (casino = ganancia)
+};
+
 @Injectable()
 export class ReportsCasinoService {
   constructor(private readonly prisma: PrismaService) {}
@@ -118,6 +156,242 @@ export class ReportsCasinoService {
       },
       resumenPorSemana,
       detallePorUsuario: data,
+    };
+  }
+
+  // ─────────────────────────────────────────────
+  // 1) Historial global de cortes PAGADOS
+  // ─────────────────────────────────────────────
+  async getPaidReports(): Promise<CasinoWeeklyReportView[]> {
+    const reports = await this.prisma.casinoWeeklyReport.findMany({
+      orderBy: {
+        fromCDMX: 'desc',
+      },
+      include: {
+        userDetails: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                displayName: true,
+                email: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return reports.map((report) => {
+      const userDetails: CasinoWeeklyUserDetailView[] = report.userDetails.map(
+        (d) => ({
+          id: d.id,
+          level: d.level,
+          percent: d.percent,
+          totalNeto: Number(d.totalNeto),
+          totalBonus: Number(d.totalBonus),
+          detallePorUsuario:
+            (d.detallePorUsuario as unknown as DetallePorUsuario[]) ?? [],
+          user: {
+            id: d.user.id,
+            name: d.user.displayName || '',
+            email: d.user.email,
+          },
+        }),
+      );
+
+      const totalPaid = userDetails.reduce((sum, d) => sum + d.totalBonus, 0);
+
+      // NUEVO: calcular totales globales del corte
+      let totalBets = 0;
+      let totalWins = 0;
+
+      // Para no duplicar montos por jugador cuando aparece en varios userDetails
+      const seenLogins = new Set<string>();
+
+      for (const ud of userDetails) {
+        for (const row of ud.detallePorUsuario) {
+          if (seenLogins.has(row.login)) {
+            continue; // ya contamos a este jugador
+          }
+
+          seenLogins.add(row.login);
+
+          totalBets += row.apuestas || 0;
+          totalWins += row.ganancias || 0;
+        }
+      }
+
+      const netLoss = totalBets - totalWins; // si > 0, los jugadores perdieron en total
+
+      return {
+        id: report.id,
+        timezone: report.timezone,
+        fromCDMX: report.fromCDMX,
+        toCDMX: report.toCDMX,
+        createdAt: report.createdAt,
+        totalPaid,
+        totalBets,
+        totalWins,
+        netLoss,
+        userDetails,
+      };
+    });
+  }
+
+  // ─────────────────────────────────────────────
+  // 2) Historial de cortes PAGADOS para un usuario concreto
+  //    (totales calculados solo sobre SUS detalles)
+  // ─────────────────────────────────────────────
+  async getPaidReportsForUser(
+    userId: string,
+  ): Promise<CasinoWeeklyReportView[]> {
+    const reports = await this.prisma.casinoWeeklyReport.findMany({
+      where: {
+        userDetails: {
+          some: {
+            userId,
+          },
+        },
+      },
+      orderBy: {
+        fromCDMX: 'desc',
+      },
+      include: {
+        userDetails: {
+          where: {
+            userId,
+          },
+          include: {
+            user: {
+              select: {
+                id: true,
+                displayName: true,
+                email: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return reports.map((report) => {
+      const userDetails: CasinoWeeklyUserDetailView[] = report.userDetails.map(
+        (d) => ({
+          id: d.id,
+          level: d.level,
+          percent: d.percent,
+          totalNeto: Number(d.totalNeto),
+          totalBonus: Number(d.totalBonus),
+          detallePorUsuario:
+            (d.detallePorUsuario as unknown as DetallePorUsuario[]) ?? [],
+          user: {
+            id: d.user.id,
+            name: d.user.displayName || '',
+            email: d.user.email,
+          },
+        }),
+      );
+
+      const totalPaid = userDetails.reduce((sum, d) => sum + d.totalBonus, 0);
+
+      // Totales solo de la parte que ve este usuario (su propia red)
+      let totalBets = 0;
+      let totalWins = 0;
+
+      for (const ud of userDetails) {
+        for (const row of ud.detallePorUsuario) {
+          totalBets += row.apuestas || 0;
+          totalWins += row.ganancias || 0;
+        }
+      }
+
+      const netLoss = totalBets - totalWins;
+
+      return {
+        id: report.id,
+        timezone: report.timezone,
+        fromCDMX: report.fromCDMX,
+        toCDMX: report.toCDMX,
+        createdAt: report.createdAt,
+        totalPaid,
+        totalBets,
+        totalWins,
+        netLoss,
+        userDetails,
+      };
+    });
+  }
+
+  // ─────────────────────────────────────────────
+  // 3) Detalle de un corte específico para un usuario
+  // ─────────────────────────────────────────────
+  async getReportByIdForUser(
+    reportId: string,
+    userId: string,
+  ): Promise<CasinoWeeklyReportView | null> {
+    const report = await this.prisma.casinoWeeklyReport.findUnique({
+      where: { id: reportId },
+      include: {
+        userDetails: {
+          where: { userId },
+          include: {
+            user: {
+              select: {
+                id: true,
+                displayName: true,
+                email: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!report) return null;
+
+    const userDetails: CasinoWeeklyUserDetailView[] = report.userDetails.map(
+      (d) => ({
+        id: d.id,
+        level: d.level,
+        percent: d.percent,
+        totalNeto: Number(d.totalNeto),
+        totalBonus: Number(d.totalBonus),
+        detallePorUsuario:
+          (d.detallePorUsuario as unknown as DetallePorUsuario[]) ?? [],
+        user: {
+          id: d.user.id,
+          name: d.user.displayName || '',
+          email: d.user.email,
+        },
+      }),
+    );
+
+    const totalPaid = userDetails.reduce((sum, d) => sum + d.totalBonus, 0);
+
+    let totalBets = 0;
+    let totalWins = 0;
+
+    for (const ud of userDetails) {
+      for (const row of ud.detallePorUsuario) {
+        totalBets += row.apuestas || 0;
+        totalWins += row.ganancias || 0;
+      }
+    }
+
+    const netLoss = totalBets - totalWins;
+
+    return {
+      id: report.id,
+      timezone: report.timezone,
+      fromCDMX: report.fromCDMX,
+      toCDMX: report.toCDMX,
+      createdAt: report.createdAt,
+      totalPaid,
+      totalBets,
+      totalWins,
+      netLoss,
+      userDetails,
     };
   }
 }
