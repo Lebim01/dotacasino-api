@@ -8,6 +8,7 @@ import { WalletService } from '@domain/wallet/wallet.service';
 import { PrismaService } from 'libs/db/src/prisma.service';
 import { ReportsCasinoService } from '../reports-casino/reports-casino.service';
 import { Prisma } from '@prisma/client';
+import dayjs from 'dayjs';
 
 @Injectable()
 export class BondsService {
@@ -307,8 +308,8 @@ export class BondsService {
     const report = await this.prisma.casinoWeeklyReport.create({
       data: {
         timezone: res.timezone,
-        fromCDMX: res.period.fromCDMX,
-        toCDMX: res.period.toCDMX,
+        fromCDMX: dayjs(res.period.fromCDMX!).toISOString(),
+        toCDMX: dayjs(res.period.toCDMX!).toISOString(),
       },
     });
 
@@ -422,8 +423,7 @@ export class BondsService {
           percent: entry.percent,
           totalNeto: entry.totalNeto,
           totalBonus: entry.totalBonus,
-          detallePorUsuario:
-            entry.detallePorUsuario as unknown as Prisma.JsonValue,
+          detallePorUsuario: entry.detallePorUsuario,
         });
       }
     }
@@ -434,6 +434,6 @@ export class BondsService {
       });
     }
 
-    return res;
+    return acc;
   }
 }

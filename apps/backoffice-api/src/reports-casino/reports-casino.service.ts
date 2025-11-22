@@ -18,28 +18,29 @@ export class ReportsCasinoService {
     }
 
     // Si no viene rango, sacamos semana:
-    // - por defecto: semana COMPLETA ANTERIOR (viernes 00:00 a jueves 23:59:59.999) en CDMX
-    // - si includeCurrentWeek=true: semana actual (parcial, de viernes 00:00 al momento actual) en CDMX
+    // - por defecto: semana COMPLETA ANTERIOR (sábado 00:00 a viernes 23:59:59.999) en CDMX
+    // - si includeCurrentWeek=true: semana actual (parcial, de sábado 00:00 al momento actual) en CDMX
     const now = DateTime.now().setZone(zone);
 
-    // Helper: inicio de semana basada en viernes
-    const getFridayWeekStart = (ref: DateTime) => {
+    // Helper: inicio de semana basada en sábado
+    const getSaturdayWeekStart = (ref: DateTime) => {
       // Luxon: weekday -> 1 = lunes ... 7 = domingo
-      const offset = (ref.weekday - 5 + 7) % 7; // días hacia atrás hasta el viernes
+      // Queremos ir hacia atrás hasta el SÁBADO (weekday = 6)
+      const offset = (ref.weekday - 6 + 7) % 7; // días hacia atrás hasta el sábado
       return ref.minus({ days: offset }).startOf('day');
     };
 
     if (dto.includeCurrentWeek) {
-      // Semana actual (parcial), de viernes a ahora
-      const start = getFridayWeekStart(now);
+      // Semana actual (parcial), de sábado a ahora
+      const start = getSaturdayWeekStart(now);
       const end = now;
       return { startUtc: start.toUTC(), endUtc: end.toUTC(), zone };
     }
 
-    // Semana anterior completa (viernes a viernes)
-    const currentWeekStart = getFridayWeekStart(now);
-    const start = currentWeekStart.minus({ weeks: 1 }); // viernes anterior 00:00
-    const end = currentWeekStart.minus({ milliseconds: 1 }); // justo antes del viernes actual
+    // Semana anterior completa (sábado a viernes)
+    const currentWeekStart = getSaturdayWeekStart(now);
+    const start = currentWeekStart.minus({ weeks: 1 }); // sábado anterior 00:00
+    const end = currentWeekStart.minus({ milliseconds: 1 }); // viernes 23:59:59.999
     return { startUtc: start.toUTC(), endUtc: end.toUTC(), zone };
   }
 
@@ -118,9 +119,5 @@ export class ReportsCasinoService {
       resumenPorSemana,
       detallePorUsuario: data,
     };
-  }
-
-  async comissions() {
-    
   }
 }
