@@ -60,13 +60,14 @@ model User {
   stdMexId String?
   stdMex   StdMex? @relation(fields: [stdMexId], references: [id])
 
-  RefreshToken  RefreshToken[]
-  KycDocument   KycDocument[]
-  KycSubmission KycSubmission[]
-  Topup         Topup[]
-  gameSessions  BetSession[]
-  Referral      Referral[]
-  PasswordReset PasswordReset[]
+  RefreshToken            RefreshToken[]
+  KycDocument             KycDocument[]
+  KycSubmission           KycSubmission[]
+  Topup                   Topup[]
+  gameSessions            BetSession[]
+  Referral                Referral[]
+  PasswordReset           PasswordReset[]
+  casinoWeeklyUserDetails CasinoWeeklyUserDetail[]
 }
 
 model StdMex {
@@ -302,5 +303,31 @@ model PasswordReset {
   ip        String?
   userAgent String?
 
+  @@index([userId])
+}
+
+model CasinoWeeklyReport {
+  id          String                   @id @default(cuid())
+  timezone    String
+  fromCDMX    DateTime
+  toCDMX      DateTime
+  createdAt   DateTime                 @default(now())
+  userDetails CasinoWeeklyUserDetail[]
+}
+
+model CasinoWeeklyUserDetail {
+  id                String  @id @default(cuid())
+  reportId          String
+  userId            String // usuario que recibe el bono (sponsor)
+  level             Int // nivel 1..4
+  percent           Float // 0.20, 0.07, etc.
+  totalNeto         Decimal @db.Decimal(18, 2) // suma de neto que generó su downline
+  totalBonus        Decimal @db.Decimal(18, 2) // bono teórico para ese usuario en ese nivel
+  detallePorUsuario Json // [{ login, apuestas, ganancias, neto, spins }]
+
+  report CasinoWeeklyReport @relation(fields: [reportId], references: [id])
+  user   User               @relation(fields: [userId], references: [id])
+
+  @@index([reportId])
   @@index([userId])
 }

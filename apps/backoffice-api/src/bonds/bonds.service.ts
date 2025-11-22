@@ -7,6 +7,7 @@ import { Ranks, ranks_object } from '../ranks/ranks_object';
 import { WalletService } from '@domain/wallet/wallet.service';
 import { PrismaService } from 'libs/db/src/prisma.service';
 import { ReportsCasinoService } from '../reports-casino/reports-casino.service';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class BondsService {
@@ -294,28 +295,71 @@ export class BondsService {
   async payCasino() {
     const res = await this.casinoReport.getCasinoWeeklyPnl({});
 
+    // Porcentajes por nivel (nivel 1 a 4)
+    const levels = [
+      { level: 1, percent: 0.2 },
+      { level: 2, percent: 0.07 },
+      { level: 3, percent: 0.07 },
+      { level: 4, percent: 0.07 },
+    ];
+
+    // 1) Crear registro del corte semanal
+    const report = await this.prisma.casinoWeeklyReport.create({
+      data: {
+        timezone: res.timezone,
+        fromCDMX: res.period.fromCDMX,
+        toCDMX: res.period.toCDMX,
+      },
+    });
+
+    type DetalleUsuario = {
+      login: string;
+      apuestas: number;
+      ganancias: number;
+      neto: number;
+      spins: number;
+    };
+
+    type AccEntry = {
+      level: number;
+      percent: number;
+      totalNeto: number;
+      totalBonus: number;
+      detallePorUsuario: DetalleUsuario[];
+    };
+
+    // Mapa: sponsorId -> (nivel -> acumulador)
+    const acc = new Map<string, Map<number, AccEntry>>();
+
     for (const u of res.detallePorUsuario) {
       if (u.neto < 0) {
-        const neto_pagar = u.neto * -1;
+        const neto_pagar = u.neto * -1; // convertir a positivo
+        let currentUserId = u.login;
 
-        // Pagar comisiones
-        const sponsor_id = await this.prisma.user
-          .findFirst({
+        for (const lvl of levels) {
+          // Buscar el sponsor del usuario actual en la cadena
+          const sponsor = await this.prisma.user.findFirst({
             where: {
-              id: u.login,
+              id: currentUserId,
             },
             select: {
+              email: true,
               sponsorId: true,
             },
-          })
-          .then((r) => r?.sponsorId);
+          });
 
-        if (sponsor_id) {
+          const sponsorId = sponsor?.sponsorId;
+
+          // Si no hay sponsor en este nivel, dejamos de subir niveles
+          if (!sponsorId) break;
+
+          const amountForLevel = neto_pagar * lvl.percent;
+
           await this.addBond(
-            sponsor_id,
+            sponsorId,
             Bonds.CASINO,
-            neto_pagar * 0.2,
-            null,
+            amountForLevel,
+            u.login,
             true,
             {
               timezone: res.timezone,
@@ -323,10 +367,71 @@ export class BondsService {
                 fromCDMX: res.period.fromCDMX,
                 toCDMX: res.period.toCDMX,
               },
+              percent: lvl.percent,
+              level: lvl.level,
+              origin_user_login: u.login,
+              source: 'CASINO_WEEKLY_PNL',
             },
           );
+
+          // 3) Acumular el detalle para el reporte semanal
+          let levelsMap = acc.get(sponsorId);
+          if (!levelsMap) {
+            levelsMap = new Map<number, AccEntry>();
+            acc.set(sponsorId, levelsMap);
+          }
+
+          let entry = levelsMap.get(lvl.level);
+          if (!entry) {
+            entry = {
+              level: lvl.level,
+              percent: lvl.percent,
+              totalNeto: 0,
+              totalBonus: 0,
+              detallePorUsuario: [],
+            };
+            levelsMap.set(lvl.level, entry);
+          }
+
+          entry.totalNeto += neto_pagar;
+          entry.totalBonus += amountForLevel;
+
+          entry.detallePorUsuario.push({
+            login: u.login,
+            apuestas: u.apuestas,
+            ganancias: u.ganancias,
+            neto: u.neto,
+            spins: u.spins,
+          });
+
+          // Para el siguiente nivel, subimos un nivel en la red
+          currentUserId = sponsorId;
         }
       }
+    }
+
+    // 4) Guardar en Prisma el detalle por usuario y nivel
+    const rows: Prisma.CasinoWeeklyUserDetailCreateManyInput[] = [];
+
+    for (const [sponsorId, levelsMap] of acc.entries()) {
+      for (const [level, entry] of levelsMap.entries()) {
+        rows.push({
+          reportId: report.id,
+          userId: sponsorId,
+          level,
+          percent: entry.percent,
+          totalNeto: entry.totalNeto,
+          totalBonus: entry.totalBonus,
+          detallePorUsuario:
+            entry.detallePorUsuario as unknown as Prisma.JsonValue,
+        });
+      }
+    }
+
+    if (rows.length > 0) {
+      await this.prisma.casinoWeeklyUserDetail.createMany({
+        data: rows,
+      });
     }
 
     return res;
