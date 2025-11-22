@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import { firestore } from 'firebase-admin';
 import { db } from 'apps/backoffice-api/src/firebase/admin';
 import Decimal from 'decimal.js';
 import { PrismaService } from 'libs/db/src/prisma.service';
@@ -79,11 +80,11 @@ export class WalletService {
     const amount = new Decimal(input.amount);
     if (amount.lte(0)) throw new Error('El monto de crédito debe ser > 0');
 
-    const db = tx ?? this.prisma;
+    const p = tx ?? this.prisma;
 
     // Idempotencia
     if (input.idempotencyKey) {
-      const prev = await db.ledgerEntry.findUnique({
+      const prev = await p.ledgerEntry.findUnique({
         where: { idempotencyKey: input.idempotencyKey },
         select: { balanceAfter: true },
       });
@@ -98,6 +99,13 @@ export class WalletService {
         where: { id: wallet.id },
         data: { balance: newBal },
       });
+
+      await db
+        .collection('users')
+        .doc(input.userId)
+        .update({
+          balance: firestore.FieldValue.increment(amount.toNumber()),
+        });
 
       await client.ledgerEntry.create({
         data: {
@@ -128,11 +136,11 @@ export class WalletService {
     const amount = new Decimal(input.amount);
     if (amount.lte(0)) throw new Error('El monto de débito debe ser > 0');
 
-    const db = tx ?? this.prisma;
+    const p = tx ?? this.prisma;
 
     // Idempotencia
     if (input.idempotencyKey) {
-      const prev = await db.ledgerEntry.findUnique({
+      const prev = await p.ledgerEntry.findUnique({
         where: { idempotencyKey: input.idempotencyKey },
         select: { balanceAfter: true },
       });
@@ -154,6 +162,13 @@ export class WalletService {
         where: { id: wallet.id },
         data: { balance: newBal },
       });
+
+      await db
+        .collection('users')
+        .doc(input.userId)
+        .update({
+          balance: firestore.FieldValue.increment(amount.toNumber() * -1),
+        });
 
       // Guardamos el movimiento como monto negativo para claridad contable
       await client.ledgerEntry.create({
