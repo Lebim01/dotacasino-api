@@ -309,8 +309,8 @@ model PasswordReset {
 model CasinoWeeklyReport {
   id          String                   @id @default(cuid())
   timezone    String
-  fromCDMX    DateTime
-  toCDMX      DateTime
+  fromCDMX    DateTime                 @unique
+  toCDMX      DateTime                 @unique
   createdAt   DateTime                 @default(now())
   userDetails CasinoWeeklyUserDetail[]
 }
