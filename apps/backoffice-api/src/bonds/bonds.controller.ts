@@ -19,4 +19,9 @@ export class BondsController {
       body.membership_price,
     );
   }
+
+  @Post('pay-casino')
+  paycasino(){
+    return this.bondsService.payCasino();
+  }
 }

@@ -274,6 +274,7 @@ export class AuthAcademyService {
       membership_started_at: new Date(),
       membership_expires_at: null,
       membership_cap_limit: getLimitMembership('free'),
+      membership_status: 'paid',
       membership_cap_current: 0,
 
       // CONTADORES

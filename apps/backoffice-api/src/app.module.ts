@@ -32,6 +32,7 @@ import { GamesModule } from './games/games.module';
 import { ReportsCasinoModule } from './reports-casino/reports-casino.module';
 import { AuthAcademyController } from '@domain/auth-academy/auth-academy.controller';
 import { AuthAcademyModule } from '@domain/auth-academy/auth-academy.module';
+import { BondsModule } from './bonds/bonds.module';
 
 @Module({
   imports: [
@@ -62,7 +63,8 @@ import { AuthAcademyModule } from '@domain/auth-academy/auth-academy.module';
     CasinoDashboardModule,
     GamesModule,
     ReportsCasinoModule,
-    AuthAcademyModule
+    AuthAcademyModule,
+    BondsModule,
   ],
   controllers: [AppController, DisruptiveController],
   providers: [AppService, DisruptiveService, PrismaService, CasinoService],

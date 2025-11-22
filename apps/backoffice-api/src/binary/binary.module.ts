@@ -11,6 +11,7 @@ import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
 import { DisruptiveService } from '@domain/disruptive/disruptive.service';
 import { WalletService } from '@domain/wallet/wallet.service';
 import { PrismaService } from 'libs/db/src/prisma.service';
+import { ReportsCasinoService } from '../reports-casino/reports-casino.service';
 
 @Module({
   providers: [
@@ -25,6 +26,7 @@ import { PrismaService } from 'libs/db/src/prisma.service';
     WalletService,
     AuthAcademyService,
     PrismaService,
+    ReportsCasinoService,
   ],
   controllers: [BinaryController],
 })

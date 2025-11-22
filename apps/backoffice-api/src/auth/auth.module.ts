@@ -17,6 +17,7 @@ import { UserCommonService } from '@domain/users/users.service';
 import { WalletService } from '@domain/wallet/wallet.service';
 import { ReferralService } from 'apps/client-api/src/referral/referral.service';
 import { JwtAuthModule } from '@security/jwt.module';
+import { ReportsCasinoService } from '../reports-casino/reports-casino.service';
 
 @Module({
   imports: [JwtAuthModule, MailerModule],
@@ -24,13 +25,9 @@ import { JwtAuthModule } from '@security/jwt.module';
     PrismaService,
     AuthService,
     JwtStrategy,
-    SubscriptionsService,
-    BinaryService,
-    BondsService,
     UsersService,
-    CoinpaymentsService,
-    DisruptiveService,
     CasinoService,
+    DisruptiveService,
     AuthAcademyService,
     AuthCommonService,
     UserCommonService,

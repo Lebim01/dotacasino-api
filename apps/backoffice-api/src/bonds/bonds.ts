@@ -6,6 +6,7 @@ export enum Bonds {
   REWARD = 'bond_rewards',
   RANK = 'bond_rank',
   RESIDUAL = 'bond_residual',
+  CASINO = 'bond_casino',
 }
 
 export const withdraw_percent_fee: Record<Memberships, number> = {
@@ -26,6 +27,7 @@ export const messages: Record<Bonds, string> = {
   bond_rewards: 'Bono Rendimiento',
   bond_rank: 'Bono Rango',
   bond_residual: 'Bono Residual',
+  bond_casino: 'Bono casino',
 };
 
 export const levels_percent = [

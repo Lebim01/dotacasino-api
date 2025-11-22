@@ -4,7 +4,7 @@ import { DateTime } from 'luxon';
 import { PrismaService } from 'libs/db/src/prisma.service';
 
 @Injectable()
-export class ReportsService {
+export class ReportsCasinoService {
   constructor(private readonly prisma: PrismaService) {}
 
   private computePeriodCDMX(dto: GetCasinoWeeklyPnlDto) {
@@ -18,17 +18,28 @@ export class ReportsService {
     }
 
     // Si no viene rango, sacamos semana:
-    // - por defecto: semana COMPLETA ANTERIOR (lunes 00:00 a domingo 23:59:59.999) en CDMX
-    // - si includeCurrentWeek=true: semana actual (parcial) en CDMX
+    // - por defecto: semana COMPLETA ANTERIOR (viernes 00:00 a jueves 23:59:59.999) en CDMX
+    // - si includeCurrentWeek=true: semana actual (parcial, de viernes 00:00 al momento actual) en CDMX
     const now = DateTime.now().setZone(zone);
+
+    // Helper: inicio de semana basada en viernes
+    const getFridayWeekStart = (ref: DateTime) => {
+      // Luxon: weekday -> 1 = lunes ... 7 = domingo
+      const offset = (ref.weekday - 5 + 7) % 7; // días hacia atrás hasta el viernes
+      return ref.minus({ days: offset }).startOf('day');
+    };
+
     if (dto.includeCurrentWeek) {
-      const start = now.startOf('week'); // ISO: lunes
-      const end = now; // ahora mismo (parcial)
+      // Semana actual (parcial), de viernes a ahora
+      const start = getFridayWeekStart(now);
+      const end = now;
       return { startUtc: start.toUTC(), endUtc: end.toUTC(), zone };
     }
-    // semana anterior completa
-    const start = now.startOf('week').minus({ weeks: 1 });
-    const end = now.startOf('week').minus({ milliseconds: 1 });
+
+    // Semana anterior completa (viernes a viernes)
+    const currentWeekStart = getFridayWeekStart(now);
+    const start = currentWeekStart.minus({ weeks: 1 }); // viernes anterior 00:00
+    const end = currentWeekStart.minus({ milliseconds: 1 }); // justo antes del viernes actual
     return { startUtc: start.toUTC(), endUtc: end.toUTC(), zone };
   }
 
@@ -107,5 +118,9 @@ export class ReportsService {
       resumenPorSemana,
       detallePorUsuario: data,
     };
+  }
+
+  async comissions() {
+    
   }
 }

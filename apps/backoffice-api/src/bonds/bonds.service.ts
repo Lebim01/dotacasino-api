@@ -5,12 +5,16 @@ import { firestore } from 'firebase-admin';
 import { Bonds, messages, direct_percent, levels_percent } from './bonds';
 import { Ranks, ranks_object } from '../ranks/ranks_object';
 import { WalletService } from '@domain/wallet/wallet.service';
+import { PrismaService } from 'libs/db/src/prisma.service';
+import { ReportsCasinoService } from '../reports-casino/reports-casino.service';
 
 @Injectable()
 export class BondsService {
   constructor(
     private readonly userService: UsersService,
     private readonly walletService: WalletService,
+    private readonly prisma: PrismaService,
+    private readonly casinoReport: ReportsCasinoService,
   ) {}
 
   async addBond(
@@ -21,35 +25,102 @@ export class BondsService {
     add_to_balance = false,
     extras?: Record<string, any>,
   ) {
-    const user = await db.collection('users').doc(user_id).get();
-    const isActive = this.userService.isActiveUserByDoc(user);
+    const userRef = db.collection('users').doc(user_id);
 
     const _amount = Math.round(amount * 100) / 100;
 
-    if (isActive) {
-      const update: any = {};
+    if (_amount <= 0) return;
 
-      if (add_to_balance) {
-        update[`balance_${type}`] = firestore.FieldValue.increment(_amount);
-        update.membership_cap_current = firestore.FieldValue.increment(_amount);
+    let credited = 0; // cuánto SÍ se le va a dar al usuario
+    let lost = 0; // cuánto se pierde (por límite o inactividad)
+    let benefitedUserName: string | null = null;
+
+    await db.runTransaction(async (tx) => {
+      const userSnap = await tx.get(userRef);
+      if (!userSnap.exists) {
+        // si no existe el usuario, todo se considera perdido
+        lost = _amount;
+        return;
       }
 
-      await db
-        .collection('users')
-        .doc(user_id)
-        .update({
-          [type]: firestore.FieldValue.increment(_amount),
-          profits: firestore.FieldValue.increment(_amount),
-          ...update,
-        });
+      const isActive = this.userService.isActiveUserByDoc(userSnap);
 
-      await this.addProfitDetail(user_id, type, _amount, user_origin_bond, {
+      // Si el usuario NO está activo, todo el bono se va a perdidos
+      if (!isActive) {
+        lost = _amount;
+        return;
+      }
+
+      const capLimit = userSnap.get('membership_cap_limit') ?? 0;
+      const capCurrent = userSnap.get('membership_cap_current') ?? 0;
+      let membershipStatus = userSnap.get('membership_status') ?? null;
+
+      benefitedUserName = userSnap.get('name') ?? null;
+
+      // Si no hay límite configurado, nos comportamos como antes (sin cap)
+      if (!capLimit || capLimit <= 0) {
+        return;
+      }
+
+      // Hay límite de membresía: calculamos espacio disponible
+      const available = Math.max(capLimit - capCurrent, 0);
+
+      // Si ya no hay espacio disponible, todo se considera perdido
+      if (available <= 0) {
+        lost = _amount;
+
+        if (capCurrent >= capLimit && membershipStatus !== 'expired') {
+          tx.update(userRef, {
+            membership_status: 'expired',
+            membership_expires_at: firestore.FieldValue.serverTimestamp(),
+          });
+        }
+
+        return;
+      }
+
+      // Puede recibir solo hasta "available"
+      credited = Math.min(_amount, available);
+
+      // Si el bono excede el límite, la diferencia se pierde
+      if (_amount > available) {
+        lost = _amount - credited;
+      }
+
+      const newCapCurrent = capCurrent + credited;
+
+      const update: any = {
+        [type]: firestore.FieldValue.increment(credited),
+        profits: firestore.FieldValue.increment(credited),
+        membership_cap_current: firestore.FieldValue.increment(credited),
+      };
+
+      if (add_to_balance) {
+        update[`balance_${type}`] = firestore.FieldValue.increment(credited);
+      }
+
+      // Si llegamos (o sobrepasamos por precisión) el límite, marcamos la membresía como completed
+      if (newCapCurrent >= capLimit && membershipStatus !== 'expired') {
+        update.membership_status = 'expired';
+        update.membership_expires_at = firestore.FieldValue.serverTimestamp();
+      }
+
+      tx.update(userRef, update);
+    });
+
+    // ─────────────────────────────────────────────
+    // Acciones posteriores a la transacción
+    // ─────────────────────────────────────────────
+
+    // Si hubo monto acreditado, generamos detalle y crédito en wallet
+    if (credited > 0) {
+      await this.addProfitDetail(user_id, type, credited, user_origin_bond, {
         ...extras,
-        benefited_user_name: user.get('name'),
+        benefited_user_name: benefitedUserName,
       });
 
       await this.walletService.credit({
-        amount: _amount,
+        amount: credited,
         reason: 'REFERRAL_BONUS',
         userId: user_id,
         meta: {
@@ -57,8 +128,11 @@ export class BondsService {
           user_origin_bond,
         },
       });
-    } else {
-      await this.addLostProfit(user_id, type, _amount, user_origin_bond);
+    }
+
+    // Si hubo monto perdido (por límite o inactividad), lo registramos
+    if (lost > 0) {
+      await this.addLostProfit(user_id, type, lost, user_origin_bond);
     }
   }
 
@@ -215,5 +289,46 @@ export class BondsService {
         break;
       }
     }
+  }
+
+  async payCasino() {
+    const res = await this.casinoReport.getCasinoWeeklyPnl({});
+
+    for (const u of res.detallePorUsuario) {
+      if (u.neto < 0) {
+        const neto_pagar = u.neto * -1;
+
+        // Pagar comisiones
+        const sponsor_id = await this.prisma.user
+          .findFirst({
+            where: {
+              id: u.login,
+            },
+            select: {
+              sponsorId: true,
+            },
+          })
+          .then((r) => r?.sponsorId);
+
+        if (sponsor_id) {
+          await this.addBond(
+            sponsor_id,
+            Bonds.CASINO,
+            neto_pagar * 0.2,
+            null,
+            true,
+            {
+              timezone: res.timezone,
+              period: {
+                fromCDMX: res.period.fromCDMX,
+                toCDMX: res.period.toCDMX,
+              },
+            },
+          );
+        }
+      }
+    }
+
+    return res;
   }
 }
