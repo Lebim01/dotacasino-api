@@ -46,6 +46,12 @@ export class Tbs2apiController {
           win: new Decimal(body.win),
         };
 
+        let idempotencyKey = body.tradeId;
+
+        if (body.action == 'win' || body.action == 'loss') {
+          idempotencyKey += `-${body.date.replaceAll(' ', '_')}`;
+        }
+
         const ticket = await this.prismaService.betTicket.create({
           data: {
             gameId: body.gameId,
@@ -54,7 +60,7 @@ export class Tbs2apiController {
             userId: body.login,
             payout: payload.win,
             meta: body,
-            idempotencyKey: body.tradeId,
+            idempotencyKey,
           },
         });
 
@@ -96,7 +102,10 @@ export class Tbs2apiController {
     } catch (err) {
       console.log(body);
       console.error(err);
-      return 'FAIL';
+      return {
+        status: 'fail',
+        error: 'Internal server error',
+      };
     }
   }
 
