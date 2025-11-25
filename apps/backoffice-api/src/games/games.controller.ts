@@ -11,6 +11,16 @@ export class GamesController {
     return this.gamesService.list(q);
   }
 
+  @Get('providers')
+  providers(){
+    return this.gamesService.providers();
+  }
+
+  @Get('categories')
+  categories(){
+    return this.gamesService.categories();
+  }
+
   @Post('change-show/:id')
   async changeshow(@Param('id') id: string, @Body() body) {
     return this.gamesService.changeshow(id, body.show);

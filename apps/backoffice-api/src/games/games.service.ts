@@ -18,6 +18,10 @@ export class GamesService {
       ];
     }
 
+    if (q.category) {
+      where.category = q.category as string as any;
+    }
+
     const skip = (q.page - 1) * q.pageSize;
     const [items, total] = await this.prisma.$transaction([
       this.prisma.game.findMany({
@@ -58,5 +62,20 @@ export class GamesService {
         show,
       },
     });
+  }
+
+  async providers() {
+    return this.prisma.gameProvider.findMany({
+      orderBy: {
+        name: 'asc',
+      },
+    });
+  }
+
+  async categories() {
+    const rows = await this.prisma.$queryRaw<{ category: string }[]>(
+      Prisma.sql`SELECT DISTINCT category FROM "Game" WHERE category IS NOT NULL ORDER BY category`,
+    );
+    return rows.map((r) => r.category);
   }
 }

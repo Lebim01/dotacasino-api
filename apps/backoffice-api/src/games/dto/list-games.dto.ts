@@ -15,11 +15,10 @@ export class ListGamesDto {
   @ApiProperty({
     description: 'Game category',
     required: false,
-    enum: ['LIVE', 'EGAME', 'TABLE', 'OTHER']
   })
   @IsOptional()
   @IsString()
-  category?: 'LIVE' | 'EGAME' | 'TABLE' | 'OTHER';
+  category?: string;
 
   @ApiProperty({
     description: 'Device type',

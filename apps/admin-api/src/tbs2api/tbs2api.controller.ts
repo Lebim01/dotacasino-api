@@ -20,77 +20,83 @@ export class Tbs2apiController {
 
   @Post('')
   async webhook(@Body() body: any) {
-    const u = await this.userService.getUserById(body.login);
-    if (!u) {
-      return {
-        status: 'fail',
-        error: 'user_not_found',
-      };
-    }
-    const balance = await this.walletService.getBalance(body.login);
-
-    if (body.cmd == 'getBalance') {
-      return {
-        status: 'success',
-        error: '',
-        login: body.login,
-        balance: balance.toFixed(2),
-        currency: 'USD',
-      };
-    }
-
-    if (body.cmd == 'writeBet') {
-      const payload = {
-        bet: new Decimal(body.bet),
-        win: new Decimal(body.win),
-      };
-
-      const ticket = await this.prismaService.betTicket.create({
-        data: {
-          gameId: body.gameId,
-          stake: payload.bet,
-          status: 'SETTLED',
-          userId: body.login,
-          payout: payload.win,
-          meta: body,
-          idempotencyKey: body.tradeId,
-        },
-      });
-
-      if (balance.lessThan(payload.bet)) {
+    try {
+      const u = await this.userService.getUserById(body.login);
+      if (!u) {
         return {
           status: 'fail',
-          error: 'fail_balance',
+          error: 'user_not_found',
+        };
+      }
+      const balance = await this.walletService.getBalance(body.login);
+
+      if (body.cmd == 'getBalance') {
+        return {
+          status: 'success',
+          error: '',
+          login: body.login,
+          balance: balance.toFixed(2),
+          currency: 'USD',
         };
       }
 
-      let newBalance = balance;
-      if (payload.win.greaterThan(payload.bet)) {
-        newBalance = await this.walletService.credit({
-          amount: payload.win.minus(payload.bet),
-          reason: 'spin-game',
-          userId: body.login,
-          idempotencyKey: body.tradeId,
-          meta: { ticket_id: ticket.id, ...body },
-        });
-      } else {
-        newBalance = await this.walletService.debit({
-          amount: payload.bet.minus(payload.win),
-          reason: 'spin-game',
-          userId: body.login,
-          idempotencyKey: body.tradeId,
-          meta: { ticket_id: ticket.id, ...body },
-        });
-      }
+      if (body.cmd == 'writeBet') {
+        const payload = {
+          bet: new Decimal(body.bet),
+          win: new Decimal(body.win),
+        };
 
-      return {
-        status: 'success',
-        error: '',
-        login: body.login,
-        balance: newBalance.toFixed(2),
-        currency: 'USD',
-        operationId: body.tradeId,
-      };
+        const ticket = await this.prismaService.betTicket.create({
+          data: {
+            gameId: body.gameId,
+            stake: payload.bet,
+            status: 'SETTLED',
+            userId: body.login,
+            payout: payload.win,
+            meta: body,
+            idempotencyKey: body.tradeId,
+          },
+        });
+
+        if (balance.lessThan(payload.bet)) {
+          return {
+            status: 'fail',
+            error: 'fail_balance',
+          };
+        }
+
+        let newBalance = balance;
+        if (payload.win.greaterThan(payload.bet)) {
+          newBalance = await this.walletService.credit({
+            amount: payload.win.minus(payload.bet),
+            reason: 'spin-game',
+            userId: body.login,
+            idempotencyKey: body.tradeId,
+            meta: { ticket_id: ticket.id, ...body },
+          });
+        } else {
+          newBalance = await this.walletService.debit({
+            amount: payload.bet.minus(payload.win),
+            reason: 'spin-game',
+            userId: body.login,
+            idempotencyKey: body.tradeId,
+            meta: { ticket_id: ticket.id, ...body },
+          });
+        }
+
+        return {
+          status: 'success',
+          error: '',
+          login: body.login,
+          balance: newBalance.toFixed(2),
+          currency: 'USD',
+          operationId: body.tradeId,
+        };
+      }
+    } catch (err) {
+      console.log(body);
+      console.error(err);
+      return 'FAIL';
     }
   }
 
