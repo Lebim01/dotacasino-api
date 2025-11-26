@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   Headers,
@@ -41,13 +42,13 @@ export class GamesController {
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   async openGame(
-    @Headers() headers: any,
+    @Body() body: any,
     @Param('gameSlug') gameSlug: string,
     @CurrentUser() u: { userId: string },
   ) {
     return this.games.openGame(
       gameSlug,
-      headers.origin || 'https://dotacasino-front.vercel.app',
+      body.domain || 'https://dotacasino-front.vercel.app',
       u?.userId,
     );
   }

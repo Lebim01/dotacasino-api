@@ -129,7 +129,8 @@ model GameProvider {
 
 model Game {
   id             String        @id @default(uuid())
-  betId          String        @unique
+  hall           String
+  betId          String
   slug           String        @unique
   title          String
   gameType       String? // ej. "BAC", "DT", "ROU" (Live); o vacío para lobby
@@ -150,6 +151,7 @@ model Game {
   show           Boolean       @default(true)
   priority       Int           @default(1)
 
+  @@unique([hall, betId])
   @@index([enabled])
 }
 
@@ -163,6 +165,7 @@ model Country {
 
 model BetSession {
   id        String   @id @default(uuid())
+  hall      String
   userId    String
   user      User?    @relation(fields: [userId], references: [id])
   gameId    String
@@ -173,6 +176,7 @@ model BetSession {
 
 model BetTicket {
   id             String   @id @default(uuid())
+  hall           String
   userId         String
   gameId         String
   stake          Decimal
@@ -283,6 +287,7 @@ model Topup {
 
 model Server {
   id             String   @id @default(uuid())
+  country        String
   name           String
   url            String
   thumbnailUrl   String?

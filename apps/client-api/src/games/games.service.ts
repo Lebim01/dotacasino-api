@@ -3,6 +3,7 @@ import { ListGamesDto } from './dto/list-games.dto';
 import { PrismaService } from 'libs/db/src/prisma.service';
 import { GameCategory, Prisma } from '@prisma/client';
 import { BetService } from '../bet/bet.service';
+import { DOMAINS } from 'libs/shared/src/domains';
 
 // 1) Define el SELECT de forma tipada y reutilizable
 const gameCardSelect = Prisma.validator<Prisma.GameSelect>()({
@@ -29,7 +30,11 @@ export class GamesService {
   ) {}
 
   async list(q: ListGamesDto) {
-    const where: Prisma.GameWhereInput = { enabled: true, show: true };
+    const where: Prisma.GameWhereInput = {
+      enabled: true,
+      show: true,
+      hall: DOMAINS[q.domain].id,
+    };
 
     if (q.category) where.category = q.category as GameCategory;
     if (q.device) where.devices = { has: q.device };

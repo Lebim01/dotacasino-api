@@ -1,12 +1,12 @@
 import { Transform } from 'class-transformer';
-import { IsIn, IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
+import { IsIn, IsInt, IsNotEmpty, IsOptional, IsString, Max, Min } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ListGamesDto {
   @ApiProperty({
     description: 'Search term for filtering games',
     required: false,
-    example: 'poker'
+    example: 'poker',
   })
   @IsOptional()
   @IsString()
@@ -15,7 +15,7 @@ export class ListGamesDto {
   @ApiProperty({
     description: 'Game category',
     required: false,
-    enum: ['LIVE', 'EGAME', 'TABLE', 'OTHER']
+    enum: ['LIVE', 'EGAME', 'TABLE', 'OTHER'],
   })
   @IsOptional()
   @IsString()
@@ -32,7 +32,7 @@ export class ListGamesDto {
   @ApiProperty({
     description: 'Device type',
     required: false,
-    enum: ['DESKTOP', 'MOBILE']
+    enum: ['DESKTOP', 'MOBILE'],
   })
   @IsOptional()
   @IsString()
@@ -42,7 +42,7 @@ export class ListGamesDto {
     description: 'Sort order',
     required: false,
     enum: ['order', 'alpha', 'recent'],
-    default: 'order'
+    default: 'order',
   })
   @IsOptional()
   @IsIn(['order', 'alpha', 'recent'])
@@ -53,7 +53,7 @@ export class ListGamesDto {
     required: false,
     minimum: 1,
     maximum: 200,
-    default: 24
+    default: 24,
   })
   @IsOptional()
   @Transform(({ value }) => parseInt(value, 10))
@@ -66,11 +66,19 @@ export class ListGamesDto {
     description: 'Page number',
     required: false,
     minimum: 1,
-    default: 1
+    default: 1,
   })
   @IsOptional()
   @Transform(({ value }) => parseInt(value, 10))
   @IsInt()
   @Min(1)
   page: number = 1;
+
+  @ApiProperty({
+    description: 'Domain',
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  domain: string = '';
 }

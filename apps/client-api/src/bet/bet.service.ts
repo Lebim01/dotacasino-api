@@ -180,6 +180,7 @@ export class BetService {
             slug: `${providerName}-${game.id}`
               .toLowerCase()
               .replace(/\s+/g, '-'),
+            hall: '3208656',
             title: game.name,
             devices: game.device === '2' ? ['DESKTOP', 'MOBILE'] : ['DESKTOP'],
             tags: game.system_name2?.includes('new') ? ['nuevo'] : [],
