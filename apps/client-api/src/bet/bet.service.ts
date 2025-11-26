@@ -141,8 +141,16 @@ export class BetService {
     const domains = ['dotamx.com', 'dotakorea.com'];
     for (const d of domains) {
       const hall = DOMAINS[d];
+      console.log(hall);
       const response = await this.gameList({}, d);
-      const gamesdb = await this.prisma.game.findMany();
+      console.log(response.content.gameList.length);
+
+      const gamesdb = await this.prisma.game.findMany({
+        where: {
+          hall: hall.id,
+        },
+      });
+      console.log(gamesdb.length);
 
       const found: string[] = [];
 
@@ -216,8 +224,7 @@ export class BetService {
           },
         });
       }
-
-      return 'OK';
     }
+    return 'OK';
   }
 }

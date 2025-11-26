@@ -12,7 +12,7 @@ export class BetController {
     description: 'List of games',
   })
   async gameList() {
-    return this.betService.gameList({});
+    return this.betService.gameList({}, 'dotamx.com');
   }
 
   @Get('balance')
