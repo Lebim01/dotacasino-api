@@ -55,6 +55,7 @@ export class Tbs2apiController {
         const ticket = await this.prismaService.betTicket.create({
           data: {
             gameId: body.gameId,
+            hall: body.hall,
             stake: payload.bet,
             status: 'SETTLED',
             userId: body.login,

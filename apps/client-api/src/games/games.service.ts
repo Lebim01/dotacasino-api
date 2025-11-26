@@ -108,6 +108,7 @@ export class GamesService {
     if (response.status == 'success') {
       await this.prisma.betSession.create({
         data: {
+          hall: DOMAINS[domain].id,
           sessionId: response.content.gameRes.sessionId,
           gameId: game.id,
           userId,
