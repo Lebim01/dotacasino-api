@@ -16,6 +16,7 @@ import { WriteBetApiResponse } from './dto/writebet.response';
 import { PrismaService } from 'libs/db/src/prisma.service';
 import { HistoryApiResponse } from './dto/history.response';
 import { GameCategory } from '@prisma/client';
+import { DOMAINS } from 'libs/shared/src/domains';
 
 @Injectable()
 export class BetService {
@@ -34,11 +35,13 @@ export class BetService {
     };
   }
 
-  async gameList(payload: GamesListDto) {
+  async gameList(payload: GamesListDto, domain: string) {
+    const hall = DOMAINS[domain];
     const { data } = await firstValueFrom(
-      this.api.post<GamesApiResponse>('', {
-        ...payload,
+      this.api.post<GamesApiResponse>(hall.api, {
         ...this.params,
+        hall: hall.id,
+        key: hall.key,
         cmd: 'gamesList',
       }),
     );
@@ -135,81 +138,86 @@ export class BetService {
   }
 
   async updateList() {
-    const response = await this.gameList({});
-    const gamesdb = await this.prisma.game.findMany();
+    const domains = ['dotamx.com', 'dotakorea.com'];
+    for (const d of domains) {
+      const hall = DOMAINS[d];
+      const response = await this.gameList({}, d);
+      const gamesdb = await this.prisma.game.findMany();
 
-    const found: string[] = [];
+      const found: string[] = [];
 
-    for (const game of response.content.gameList) {
-      const gamedb = gamesdb.find((r) => r.betId == game.id);
+      for (const game of response.content.gameList) {
+        const gamedb = gamesdb.find((r) => r.betId == game.id);
 
-      // si existe
-      if (gamedb) {
-        found.push(game.id);
+        // si existe
+        if (gamedb) {
+          found.push(game.id);
 
-        // esta desactivado, hay que activalo
-        if (!gamedb?.enabled) {
-          console.log(game.id, 'reactivado');
-          await this.prisma.game.update({
-            where: {
-              id: gamedb.id,
+          // esta desactivado, hay que activalo
+          if (!gamedb?.enabled) {
+            console.log(game.id, 'reactivado');
+            await this.prisma.game.update({
+              where: {
+                id: gamedb.id,
+              },
+              data: {
+                enabled: true,
+              },
+            });
+          }
+        } else {
+          // crear juego nuevo
+          console.log(game.id, 'nuevo juego');
+          const providerName = game.title;
+          const code = game.title.toUpperCase().replace(/\s+/g, '_');
+
+          const provider = await this.prisma.gameProvider.upsert({
+            where: { code: code },
+            update: {},
+            create: {
+              code,
+              name: providerName,
+              platformTypes: [code],
             },
+          });
+
+          const gamenew = await this.prisma.game.create({
             data: {
-              enabled: true,
+              slug: `${providerName}-${game.id}`
+                .toLowerCase()
+                .replace(/\s+/g, '-'),
+              hall: hall.id,
+              title: game.name,
+              devices:
+                game.device === '2' ? ['DESKTOP', 'MOBILE'] : ['DESKTOP'],
+              tags: game.system_name2?.includes('new') ? ['nuevo'] : [],
+              thumbnailUrl: game.img,
+              order: 0,
+              category: (game.categories || null) as GameCategory,
+              betId: game.id,
+              allowDemo: game.demo == '1',
+              width: game.width,
+              gameProviderId: provider.id,
             },
           });
         }
-      } else {
-        // crear juego nuevo
-        console.log(game.id, 'nuevo juego');
-        const providerName = game.title;
-        const code = game.title.toUpperCase().replace(/\s+/g, '_');
+      }
 
-        const provider = await this.prisma.gameProvider.upsert({
-          where: { code: code },
-          update: {},
-          create: {
-            code,
-            name: providerName,
-            platformTypes: [code],
+      // desactivar estos juegos
+      const notfound = gamesdb.filter((r) => !found.includes(r.betId));
+      for (const g of notfound) {
+        console.log(g.betId, 'desactivado');
+        await this.prisma.game.update({
+          where: {
+            id: g.id,
           },
-        });
-
-        const gamenew = await this.prisma.game.create({
           data: {
-            slug: `${providerName}-${game.id}`
-              .toLowerCase()
-              .replace(/\s+/g, '-'),
-            hall: '3208656',
-            title: game.name,
-            devices: game.device === '2' ? ['DESKTOP', 'MOBILE'] : ['DESKTOP'],
-            tags: game.system_name2?.includes('new') ? ['nuevo'] : [],
-            thumbnailUrl: game.img,
-            order: 0,
-            category: (game.categories || null) as GameCategory,
-            betId: game.id,
-            allowDemo: game.demo == '1',
-            width: game.width,
-            gameProviderId: provider.id,
+            enabled: false,
           },
         });
       }
-    }
 
-    // desactivar estos juegos
-    const notfound = gamesdb.filter((r) => !found.includes(r.betId));
-    for (const g of notfound) {
-      console.log(g.betId, 'desactivado');
-      await this.prisma.game.update({
-        where: {
-          id: g.id,
-        },
-        data: {
-          enabled: false,
-        },
-      });
+      return 'OK';
     }
-
-    return "OK";
   }
 }
