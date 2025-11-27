@@ -58,7 +58,7 @@ export class BetService {
         domain,
         exitUrl: `${domain}/exit`,
         language: hall.lang,
-        continent: 'eur',
+        continent: hall.continent,
         login: userId,
         gameId,
         //cdnUrl: `${domain}/resources`,
