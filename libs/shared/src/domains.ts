@@ -2,14 +2,14 @@ const HALL_AMERICA = {
   id: '3208656',
   key: '9jSCHtXwSs',
   api: 'https://tbs2api.dark-a.com/API/',
-  lang: 'en',
+  lang: 'es',
   continent: 'eur',
 };
 const HALL_COREA = {
   id: '943276',
   key: 'fa0TvtMPkofAfyX1RBilCVMsO',
   api: 'https://asiaapi.net/API/',
-  lang: 'kr',
+  lang: 'ko',
   continent: 'asia',
 };
 
