@@ -112,6 +112,7 @@ enum GameCategory {
   card
   roulette
   video_poker
+  sport_betting
   arcade
   sport
 }

@@ -50,13 +50,14 @@ export class BetService {
   }
 
   async openGame(gameId: string, domain: string, userId: string) {
+    const hall = DOMAINS[domain]
     const { data } = await firstValueFrom(
       this.api.post<OpenGameApiResponse, OpenGameDto>('openGame/', {
         ...this.params,
         cmd: 'openGame',
         domain,
         exitUrl: `${domain}/exit`,
-        language: 'en',
+        language: hall.lang,
         continent: 'eur',
         login: userId,
         gameId,
@@ -138,7 +139,7 @@ export class BetService {
   }
 
   async updateList() {
-    const domains = ['dotamx.com', 'dotakorea.com'];
+    const domains = ['dotakorea.com', 'dotamx.com'];
     for (const d of domains) {
       const hall = DOMAINS[d];
       console.log(hall);
@@ -179,6 +180,13 @@ export class BetService {
           const providerName = game.title;
           const code = game.title.toUpperCase().replace(/\s+/g, '_');
 
+          const randLetters = (len = 5) =>
+            [...Array(len)]
+              .map(() =>
+                String.fromCharCode(97 + Math.floor(Math.random() * 26)),
+              )
+              .join('');
+
           const provider = await this.prisma.gameProvider.upsert({
             where: { code: code },
             update: {},
@@ -191,7 +199,7 @@ export class BetService {
 
           const gamenew = await this.prisma.game.create({
             data: {
-              slug: `${providerName}-${game.id}`
+              slug: `${providerName}-${game.id}-${randLetters()}`
                 .toLowerCase()
                 .replace(/\s+/g, '-'),
               hall: hall.id,
@@ -206,6 +214,7 @@ export class BetService {
               allowDemo: game.demo == '1',
               width: game.width,
               gameProviderId: provider.id,
+              enabled: true,
             },
           });
         }
