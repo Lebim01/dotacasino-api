@@ -18,5 +18,5 @@ export const DOMAINS = {
   'dotacasino-front.vercel.app': HALL_AMERICA,
   'dotakorea.com': HALL_COREA,
   'dota4korea.com': HALL_COREA,
-  'localhost:3000': HALL_COREA
+  'localhost:3000': HALL_AMERICA
 };

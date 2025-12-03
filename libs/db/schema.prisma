@@ -124,6 +124,7 @@ model GameProvider {
   platformTypes String[] // ej. ["AGIN","AGQ","AGNW","SLOT"]
   apiKey        String? // si aplica
   games         Game[]
+  imageUrl      String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }

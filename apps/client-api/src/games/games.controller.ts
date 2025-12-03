@@ -64,4 +64,9 @@ export class GamesController {
   async categories() {
     return this.games.categories();
   }
+
+  @Post('providers')
+  async providers(@Body() body) {
+    return this.games.providers(body.domain);
+  }
 }

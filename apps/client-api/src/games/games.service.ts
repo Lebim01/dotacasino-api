@@ -89,6 +89,20 @@ export class GamesService {
     };
   }
 
+  async providers(domain: string) {
+    const hall = DOMAINS[domain];
+    const result: any[] = await this.prisma
+      .$queryRawUnsafe(`
+        SELECT gp.id, gp.name, COUNT(g.id)::int as game_count
+        FROM "GameProvider" gp
+        LEFT JOIN "Game" g ON gp.id = g."gameProviderId" AND g.hall = '${hall.id}'
+        GROUP BY gp.id, gp.name
+        ORDER BY game_count DESC
+      `,
+    );
+    return result.filter(r => r.game_count > 0);
+  }
+
   async openGame(gameSlug: string, domain: string, userId: string) {
     const game = await this.prisma.game.findFirst({
       where: {

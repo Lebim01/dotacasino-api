@@ -65,6 +65,7 @@ export class BetService {
         demo: '0',
       }),
     );
+    console.log(data)
     return data;
   }
 
