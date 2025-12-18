@@ -16,9 +16,9 @@ echo "==> Instalando dependencias (si cambia lockfile, esto es clave)"
 yarn install --frozen-lockfile || yarn install
 
 echo "==> Build (admin-api -> client-api -> backoffice-api)"
-yarn build admin-api
-yarn build client-api
-yarn build backoffice-api
+yarn nest build admin-api
+yarn nest build client-api
+yarn nest build backoffice-api
 
 echo "==> Reiniciando servicios"
 sudo systemctl restart "$SVC_ADMIN" "$SVC_CLIENT" "$SVC_BACKOFFICE"
