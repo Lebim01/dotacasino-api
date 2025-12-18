@@ -121,7 +121,7 @@ model GameProvider {
   id            String   @id @default(uuid())
   code          String   @unique // ej. "AG"
   name          String // ej. "Asia Gaming"
-  platformTypes String[] // ej. ["AGIN","AGQ","AGNW","SLOT"]
+  platformTypes String[]
   apiKey        String? // si aplica
   games         Game[]
   imageUrl      String?
