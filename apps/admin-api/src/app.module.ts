@@ -13,6 +13,7 @@ import { Tbs2apiModule } from './tbs2api/tbs2api.module';
 import { DisruptiveModule } from './disruptive/disruptive.module';
 import { StdMexModule } from '@domain/stdmex/stdmex.module';
 import { FxModule } from '@domain/fx/fx.module';
+import { BetModule } from './bet/bet.module';
 
 @Module({
   imports: [
@@ -27,7 +28,8 @@ import { FxModule } from '@domain/fx/fx.module';
     DisruptiveModule,
     StdMexModule,
     FxModule,
+    BetModule
   ],
   controllers: [HealthController],
 })
-export class AppModule {}
+export class AppModule { }
