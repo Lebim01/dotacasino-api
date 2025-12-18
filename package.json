@@ -44,8 +44,7 @@
     "build:client": "nest build client-api",
     "build:admin": "nest build admin-api",
     "build:backoffice": "nest build backoffice-api",
-    "build:workers": "nest build workers",
-    "build:all": "yarn clean && yarn prisma:gen:local && yarn build:client && yarn build:admin && yarn build:backoffice && yarn build:workers"
+    "build:all": "yarn clean && yarn prisma:gen:local && yarn build:client && yarn build:admin && yarn build:backoffice"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.0",
