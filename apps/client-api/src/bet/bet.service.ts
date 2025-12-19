@@ -16,7 +16,7 @@ import { WriteBetApiResponse } from './dto/writebet.response';
 import { PrismaService } from 'libs/db/src/prisma.service';
 import { HistoryApiResponse } from './dto/history.response';
 import { GameCategory } from '@prisma/client';
-import { DOMAINS } from 'libs/shared/src/domains';
+import { BET_CURRENCY, DOMAINS } from 'libs/shared/src/domains';
 
 @Injectable()
 export class BetService {
@@ -130,7 +130,7 @@ export class BetService {
         cmd: 'createHall',
         api_key: '',
         agent: '',
-        currency: 'ARS',
+        currency: BET_CURRENCY,
         host: 'https://api.dotamx.com',
         login,
       }),
