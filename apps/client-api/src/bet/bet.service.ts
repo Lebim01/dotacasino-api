@@ -118,8 +118,8 @@ export class BetService {
         cmd: 'createHall',
         api_key: '',
         agent: '',
-        currency: 'USD',
-        host: 'https://admin-api-1039762081728.us-central1.run.app',
+        currency: 'ARS',
+        host: 'https://api.dotamx.com',
         login,
       }),
     );
@@ -140,7 +140,7 @@ export class BetService {
   }
 
   async updateList() {
-    const domains = ['dotakorea.com', 'dotamx.com'];
+    const domains = ['dotamx.com'];
     for (const d of domains) {
       const hall = DOMAINS[d];
       console.log(hall);
