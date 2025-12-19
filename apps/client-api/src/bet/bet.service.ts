@@ -67,14 +67,14 @@ export class BetService {
       this.api.post<OpenGameApiResponse, OpenGameDto>('openGame/', {
         ...this.params,
         cmd: 'openGame',
-        domain,
+        domain: 'https://dotamx.com',
         exitUrl: `https://${domain}/exit`,
         language: 'en',
         continent: hall.continent,
         login: userId,
         gameId,
         //cdnUrl: `${domain}/resources`,
-        demo: '1',
+        demo: '0',
       }),
     );
     console.log(data)

@@ -96,7 +96,7 @@ export class Tbs2apiController {
           error: '',
           login: body.login,
           balance: newBalance.toFixed(2),
-          currency: 'USD',
+          currency: 'ARS',
           operationId: body.tradeId,
         };
       }
