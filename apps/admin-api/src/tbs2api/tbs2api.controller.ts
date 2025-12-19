@@ -16,7 +16,7 @@ export class Tbs2apiController {
     private readonly walletService: WalletService,
     private readonly userService: UserCommonService,
     private readonly prismaService: PrismaService,
-  ) {}
+  ) { }
 
   @Post('')
   async webhook(@Body() body: any) {
@@ -36,7 +36,7 @@ export class Tbs2apiController {
           error: '',
           login: body.login,
           balance: balance.toFixed(2),
-          currency: 'USD',
+          currency: 'ARS',
         };
       }
 
