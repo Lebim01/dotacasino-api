@@ -62,7 +62,7 @@ export class BetService {
         login: userId,
         gameId,
         //cdnUrl: `${domain}/resources`,
-        demo: '0',
+        demo: '1',
       }),
     );
     console.log(data)
