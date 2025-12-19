@@ -1,3 +1,5 @@
+
+
 const HALL_AMERICA = {
   id: '3210048',
   key: 'C2G8hwMj4cxvUTAW6GkPc4I54',
@@ -20,3 +22,5 @@ export const DOMAINS = {
   'dota4korea.com': HALL_COREA,
   'localhost:3000': HALL_AMERICA
 };
+
+export const BET_CURRENCY = 'USD'
