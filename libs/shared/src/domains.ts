@@ -1,6 +1,6 @@
 const HALL_AMERICA = {
-  id: '3210036',
-  key: 'nO0SydHe225LEM33p8snpsHZT',
+  id: '3210048',
+  key: 'C2G8hwMj4cxvUTAW6GkPc4I54',
   api: 'https://tbs2api.dark-a.com/API/',
   lang: 'es',
   continent: 'eur',
