@@ -61,7 +61,7 @@ export class BetService {
       login: userId,
       gameId,
       //cdnUrl: `${domain}/resources`,
-      demo: '1',
+      demo: '0',
     })
     const { data } = await firstValueFrom(
       this.api.post<OpenGameApiResponse, OpenGameDto>('openGame/', {
