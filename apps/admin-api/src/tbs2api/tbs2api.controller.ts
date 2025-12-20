@@ -5,6 +5,7 @@ import { PrismaService } from 'libs/db/src/prisma.service';
 import Decimal from 'decimal.js';
 import dayjs from 'dayjs';
 import { md5 } from './utils';
+import { BET_CURRENCY } from 'libs/shared/src/domains';
 
 const generateHash = (session: string, dateTime: string, credit: number) => {
   return md5(session + dateTime + session + credit);
@@ -36,7 +37,7 @@ export class Tbs2apiController {
           error: '',
           login: body.login,
           balance: balance.toFixed(2),
-          currency: 'ARS',
+          currency: BET_CURRENCY,
         };
       }
 
@@ -96,7 +97,7 @@ export class Tbs2apiController {
           error: '',
           login: body.login,
           balance: newBalance.toFixed(2),
-          currency: 'ARS',
+          currency: BET_CURRENCY,
           operationId: body.tradeId,
         };
       }
@@ -146,7 +147,7 @@ export class Tbs2apiController {
         content: {
           cmd: 'gameInit',
           credit: 9730,
-          currency: 'USD',
+          currency: BET_CURRENCY,
           session: '40612265_bd3adb10d9452109a9dae404012d5d4a',
           betInfo: {
             denomination: 0.01,
