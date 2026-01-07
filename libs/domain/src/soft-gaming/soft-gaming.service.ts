@@ -22,7 +22,6 @@ export class SoftGamingService {
   private APIKEY: string;
 
   constructor(
-    private readonly http: HttpService,
     private readonly prisma: PrismaService,
   ) {
     this.APIPASS = process.env.SOFTGAMING_APIPASS || '';
