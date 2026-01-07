@@ -338,3 +338,17 @@ model CasinoWeeklyUserDetail {
   @@index([reportId])
   @@index([userId])
 }
+
+enum RequestStatus {
+  PENDING
+  ERROR
+  SUCCESS
+}
+
+model SoftGamingRecords {
+  id        String        @id @default(cuid())
+  tid       String        @unique
+  status    RequestStatus
+  metadata  Json?
+  createdAt DateTime      @default(now())
+}

@@ -14,6 +14,7 @@ import { DisruptiveModule } from './disruptive/disruptive.module';
 import { StdMexModule } from '@domain/stdmex/stdmex.module';
 import { FxModule } from '@domain/fx/fx.module';
 import { BetModule } from './bet/bet.module';
+import { SoftGamingModule } from '@domain/soft-gaming/soft-gaming.module';
 
 @Module({
   imports: [
@@ -28,8 +29,9 @@ import { BetModule } from './bet/bet.module';
     DisruptiveModule,
     StdMexModule,
     FxModule,
-    BetModule
+    BetModule,
+    SoftGamingModule,
   ],
   controllers: [HealthController],
 })
-export class AppModule { }
+export class AppModule {}
