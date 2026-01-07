@@ -1,4 +1,3 @@
-import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from 'libs/db/src/prisma.service';
 import crypto from 'crypto';
@@ -21,9 +20,7 @@ export class SoftGamingService {
   private APIPASS: string;
   private APIKEY: string;
 
-  constructor(
-    private readonly prisma: PrismaService,
-  ) {
+  constructor(private readonly prisma: PrismaService) {
     this.APIPASS = process.env.SOFTGAMING_APIPASS || '';
     this.APIKEY = process.env.SOFTGAMING_APIKEY || '';
   }
@@ -46,8 +43,8 @@ export class SoftGamingService {
     const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/Game/List?TID=${tid}&Hash=${HASH}`;
     return axios
       .get(url)
-      .then(() =>
-        this.prisma.softGamingRecords.update({
+      .then(async (r) => {
+        await this.prisma.softGamingRecords.update({
           data: {
             status: RequestStatus.SUCCESS,
             metadata: {
@@ -57,8 +54,9 @@ export class SoftGamingService {
             },
           },
           where: { id },
-        }),
-      )
+        });
+        return r.data;
+      })
       .catch(() =>
         this.prisma.softGamingRecords.update({
           data: {
