@@ -170,8 +170,8 @@ export class SoftGamingService {
       Page: game.PageCode!,
       Password: USER_PASSWORD, // fija para el usuario?
       System: game.System,
-      UserIP: '177.230.103.18',
-      Login: userId,
+      UserIP: userIp,
+      Login: '15533_IwkSiMhFCn4IEeNj6IZz',
       Hash: HASH
     }
     const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/User/AuthHTML?Login=${params.Login}&Password=${params.Password}&System=${params.System}&Page=${params.Page}&UserIP=${params.UserIP}&UserAutoCreate=${params.UserAutoCreate}&Currency=${params.Currency}&TID=${tid}&Hash=${params.Hash}`;
