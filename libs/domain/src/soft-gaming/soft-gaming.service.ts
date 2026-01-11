@@ -149,7 +149,7 @@ export class SoftGamingService {
     return { count: list.length };
   }
 
-  async getAuthorizationUser(userId: string, gameId: string, userIp: string) {
+  async getAuthorizationUser(userId: string, gameId: string, userIp: string, userPassword: string) {
     const [game, user] = await Promise.all([
       this.prisma.game.findFirst({ where: { id: gameId } }),
       this.prisma.user.findUnique({ where: { id: userId } }),
@@ -178,7 +178,7 @@ export class SoftGamingService {
       UserAutoCreate: string;
     };
     const { tid, id } = await this.getTID();
-    const USER_PASSWORD = 'Xp9vK2mB5zQ8AbCd';
+    const USER_PASSWORD = userPassword;
     const USER_LOGIN = '15533_' + userId;
     const HASH = MD5(
       `User/AuthHTML/${SERVER_IP}/${tid}/${this.APIKEY}/${USER_LOGIN}/${USER_PASSWORD}/${game.System}/${this.APIPASS}`,
@@ -231,7 +231,7 @@ export class SoftGamingService {
       });
   }
 
-  async addUser(userId: string, userIp: string, userCountry: string) {
+  async addUser(userId: string, userIp: string, userCountry: string, userPassword: string) {
     type Params = {
       Login: string;
       Password: string;
@@ -242,7 +242,7 @@ export class SoftGamingService {
       Country?: string;
     }
     const { tid, id } = await this.getTID();
-    const USER_PASSWORD = 'Xp9vK2mB5zQ8AbCd';
+    const USER_PASSWORD = userPassword;
     const HASH = MD5(`User/Add/${SERVER_IP}/${tid}/${this.APIKEY}/${userId}/${USER_PASSWORD}/USD/${this.APIPASS}`).toString()
     const params: Params = {
       Currency: 'USD',
