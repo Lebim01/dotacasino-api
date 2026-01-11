@@ -149,9 +149,9 @@ export class AuthCommonService {
   }
 
   private async issueAccessToken(payload: JwtPayload) {
-    return this.jwt.signAsync(payload, {
+    return this.jwt.signAsync(payload as any, {
       secret: process.env.JWT_ACCESS_SECRET!,
-      expiresIn: ACCESS_TTL,
+      expiresIn: ACCESS_TTL as any,
     });
   }
 
@@ -160,10 +160,10 @@ export class AuthCommonService {
     const fam = familyId ?? randomUUID();
 
     const token = await this.jwt.signAsync(
-      { sub: userId, typ: 'refresh' },
+      { sub: userId, typ: 'refresh' } as any,
       {
         secret: process.env.JWT_REFRESH_SECRET!,
-        expiresIn: REFRESH_TTL,
+        expiresIn: REFRESH_TTL as any,
         jwtid: jti, // << jti
       },
     );
