@@ -112,10 +112,17 @@ export class GamesService {
       throw new HttpException('Not found', 401);
     }
 
+    const user = await this.prisma.user.findFirst({
+      where: {
+        id: userId,
+      },
+    });
+
     const response = await this.softGaming.getAuthorizationUser(
       userId,
       game.id,
       ip,
+      user?.password_userapi!
     );
     return { status: 'success', html: response, game };
   }
