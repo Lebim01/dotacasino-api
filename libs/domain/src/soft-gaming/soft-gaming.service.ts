@@ -139,11 +139,18 @@ export class SoftGamingService {
   }
 
   async getAuthorizationUser(userId: string, gameId: string, userIp: string) {
-    const game = await this.prisma.game.findFirst({
-      where: { id: gameId },
-    });
+    const [game, user] = await Promise.all([
+      this.prisma.game.findFirst({ where: { id: gameId } }),
+      this.prisma.user.findUnique({ where: { id: userId } }),
+    ]);
+
     if (!game) {
       this.logger.error(`Game not found: ${gameId}`);
+      return null;
+    }
+
+    if (!user) {
+      this.logger.error(`User not found: ${userId}`);
       return null;
     }
 
@@ -154,27 +161,24 @@ export class SoftGamingService {
       Page: string;
       UserIP: string;
       Language?: string;
-      UserAutoCreate: string;
-      Currency?: string;
       Country?: string;
       Hash: string;
-    }
+    };
     const { tid, id } = await this.getTID();
-    const USER_PASSWORD = '123987xd'
-    const HASH = MD5(`User/AuthHTML/${SERVER_IP}/${tid}/${this.APIKEY}/15533_IwkSiMhFCn4IEeNj6IZz/${USER_PASSWORD}/${game.System}/${this.APIPASS}`).toString()
+    const USER_PASSWORD = 'Xp9#vK2$mB5!zQ8*';
+    const apiLogin = user.login_userapi || '15533_' + userId;
+    const HASH = MD5(
+      `User/AuthHTML/${SERVER_IP}/${tid}/${this.APIKEY}/${apiLogin}/${USER_PASSWORD}/${game.System}/${this.APIPASS}`,
+    ).toString();
     const params: Params = {
-      UserAutoCreate: '1',
-      Currency: 'USD',
-      //Country: 'MX',
-      //Language: 'es',
       Page: game.PageCode!,
-      Password: USER_PASSWORD, // fija para el usuario?
+      Password: USER_PASSWORD,
       System: game.System,
       UserIP: userIp,
-      Login: '15533_IwkSiMhFCn4IEeNj6IZz',
-      Hash: HASH
-    }
-    const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/User/AuthHTML?Login=${params.Login}&Password=${params.Password}&System=${params.System}&Page=${params.Page}&UserIP=${params.UserIP}&UserAutoCreate=${params.UserAutoCreate}&Currency=${params.Currency}&TID=${tid}&Hash=${params.Hash}`;
+      Login: apiLogin,
+      Hash: HASH,
+    };
+    const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/User/AuthHTML?Login=${params.Login}&Password=${params.Password}&System=${params.System}&Page=${params.Page}&UserIP=${params.UserIP}&TID=${tid}&Hash=${params.Hash}`;
     return axios
       .get(url)
       .then(async (r) => {
@@ -221,12 +225,12 @@ export class SoftGamingService {
       Hash: string;
     }
     const { tid, id } = await this.getTID();
-    const USER_PASSWORD = '123987xd'
+    const USER_PASSWORD = 'Xp9#vK2$mB5!zQ8*';
     const HASH = MD5(`User/Add/${SERVER_IP}/${tid}/${this.APIKEY}/${userId}/${USER_PASSWORD}/USD/${this.APIPASS}`).toString()
     const params: Params = {
       Currency: 'USD',
       Language: 'es',
-      Password: USER_PASSWORD, // fija para el usuario?
+      Password: USER_PASSWORD,
       RegistrationIP: userIp,
       Login: userId,
       Hash: HASH
@@ -247,10 +251,10 @@ export class SoftGamingService {
           where: { id },
         });
 
-        if (typeof r.data === 'string') {
-          throw r.data
+        if (typeof r.data === 'string' && !r.data.startsWith('1,')) {
+           throw r.data;
         }
-        return r.data
+        return r.data;
       }).catch(async (error) => {
         await this.prisma.softGamingRecords.update({
           data: {

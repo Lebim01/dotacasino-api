@@ -14,6 +14,7 @@ import { JwtPayload } from '@security/jwt.strategy';
 import { randomUUID } from 'crypto';
 import { UserCommonService } from '@domain/users/users.service';
 import { ReferralService } from 'apps/client-api/src/referral/referral.service';
+import { SoftGamingService } from '@domain/soft-gaming/soft-gaming.service';
 
 const ACCESS_TTL = process.env.JWT_ACCESS_TTL ?? '15m';
 const REFRESH_TTL = process.env.JWT_REFRESH_TTL ?? '7d';
@@ -26,6 +27,7 @@ export class AuthCommonService {
     private readonly usersService: UserCommonService,
     private readonly walletService: WalletService,
     private readonly referralService: ReferralService,
+    private readonly softGaming: SoftGamingService,
   ) {}
 
   private sanitize(user: {
@@ -114,7 +116,7 @@ export class AuthCommonService {
     };
   }
 
-  async register(dto: RegisterDto) {
+  async register(dto: RegisterDto, ip: string) {
     if (!dto.acceptTerms) {
       throw new ConflictException('Debes aceptar los términos y condiciones');
     }
@@ -136,7 +138,18 @@ export class AuthCommonService {
 
         await this.referralService.attachByCode(user.id, code);
         await this.walletService.createWallet(user.id);
-        return user;
+
+        const resSoft: any = await this.softGaming.addUser(user.id, ip);
+        let login_userapi = '';
+        if (typeof resSoft === 'string' && resSoft.startsWith('1,')) {
+          login_userapi = resSoft.split(',')[1];
+        }
+
+        return await this.prisma.user.update({
+          where: { id: user.id },
+          data: { login_userapi },
+          select: { id: true, email: true, country: true, createdAt: true },
+        });
       });
 
       return this.sanitize(created);
