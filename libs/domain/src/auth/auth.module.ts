@@ -9,6 +9,7 @@ import { DisruptiveService } from '@domain/disruptive/disruptive.service';
 import { CasinoService } from '@domain/casino/casino.service';
 import { UsersService } from 'apps/client-api/src/users/users.service';
 import { ReferralService } from 'apps/client-api/src/referral/referral.service';
+import { SoftGamingModule } from '@domain/soft-gaming/soft-gaming.module';
 
 @Module({
   controllers: [AuthController],
@@ -22,6 +23,6 @@ import { ReferralService } from 'apps/client-api/src/referral/referral.service';
     CasinoService,
   ],
   exports: [],
-  imports: [JwtAuthModule, HttpModule],
+  imports: [JwtAuthModule, HttpModule, SoftGamingModule],
 })
 export class AuthCommonModule {}
