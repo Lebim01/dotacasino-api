@@ -15,6 +15,17 @@ function randomString(length = 32) {
 
 const SERVER_IP = '147.93.32.164';
 
+function toIPv4(ip: string) {
+  if (ip && ip.includes(':')) {
+    const parts = ip.split(':');
+    const last = parts[parts.length - 1];
+    if (last.includes('.')) {
+      return last;
+    }
+  }
+  return ip;
+}
+
 @Injectable()
 export class SoftGamingService {
   private readonly logger = new Logger(SoftGamingService.name);
@@ -174,7 +185,7 @@ export class SoftGamingService {
       Page: game.PageCode!,
       Password: USER_PASSWORD,
       System: game.System,
-      UserIP: userIp,
+      UserIP: toIPv4(userIp),
       Login: apiLogin,
       Hash: HASH,
     };
@@ -231,7 +242,7 @@ export class SoftGamingService {
       Currency: 'USD',
       Language: 'es',
       Password: USER_PASSWORD,
-      RegistrationIP: userIp,
+      RegistrationIP: toIPv4(userIp),
       Login: userId,
       Hash: HASH
     }
