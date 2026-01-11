@@ -226,7 +226,7 @@ export class SoftGamingService {
       });
   }
 
-  async addUser(userId: string, userIp: string) {
+  async addUser(userId: string, userIp: string, userCountry) {
     type Params = {
       Login: string;
       Password: string;
@@ -234,6 +234,7 @@ export class SoftGamingService {
       Language?: string;
       Currency?: string;
       Hash: string;
+      Country?: string;
     }
     const { tid, id } = await this.getTID();
     const USER_PASSWORD = 'Xp9vK2mB5zQ8AbCd';
@@ -244,7 +245,8 @@ export class SoftGamingService {
       Password: USER_PASSWORD,
       RegistrationIP: toIPv4(userIp),
       Login: userId,
-      Hash: HASH
+      Hash: HASH,
+      Country: userCountry
     }
     const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/User/Add?Login=${params.Login}&Password=${params.Password}&Currency=${params.Currency || ''}&RegistrationIP=${params.RegistrationIP}&Language=${params.Language || ''}&TID=${tid}&Hash=${params.Hash}`;
     return axios
@@ -263,7 +265,7 @@ export class SoftGamingService {
         });
 
         if (typeof r.data === 'string' && !r.data.startsWith('1,')) {
-           throw r.data;
+          throw r.data;
         }
         return r.data;
       }).catch(async (error) => {
