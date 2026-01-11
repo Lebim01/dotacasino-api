@@ -16,7 +16,7 @@ export class BetController {
     private readonly walletService: WalletService,
     private readonly userService: UserCommonService,
     private readonly prismaService: PrismaService,
-  ) {}
+  ) { }
 
   @Get('')
   async hello() {
@@ -25,6 +25,7 @@ export class BetController {
 
   @Post('')
   async webhook(@Body() body: any) {
+    console.log(body)
     return 'Hello';
   }
 }
