@@ -2,11 +2,7 @@ import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { MailerModule } from '../mailer/mailer.module';
-import { SubscriptionsService } from '../subscriptions/subscriptions.service';
-import { BinaryService } from '../binary/binary.service';
-import { BondsService } from '../bonds/bonds.service';
 import { UsersService } from '../users/users.service';
-import { CoinpaymentsService } from '../coinpayments/coinpayments.service';
 import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
 import { DisruptiveService } from '@domain/disruptive/disruptive.service';
 import { CasinoService } from '@domain/casino/casino.service';
@@ -17,7 +13,7 @@ import { UserCommonService } from '@domain/users/users.service';
 import { WalletService } from '@domain/wallet/wallet.service';
 import { ReferralService } from 'apps/client-api/src/referral/referral.service';
 import { JwtAuthModule } from '@security/jwt.module';
-import { ReportsCasinoService } from '../reports-casino/reports-casino.service';
+import { SoftGamingService } from '@domain/soft-gaming/soft-gaming.service';
 
 @Module({
   imports: [JwtAuthModule, MailerModule],
@@ -33,7 +29,8 @@ import { ReportsCasinoService } from '../reports-casino/reports-casino.service';
     UserCommonService,
     WalletService,
     ReferralService,
+    SoftGamingService
   ],
   controllers: [AuthController],
 })
-export class AuthModule {}
+export class AuthModule { }

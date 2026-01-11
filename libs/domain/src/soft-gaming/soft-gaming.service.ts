@@ -41,7 +41,7 @@ export class SoftGamingService {
     const HASH = MD5(
       `Game/List/${SERVER_IP}/${tid}/${this.APIKEY}/${this.APIPASS}`,
     ).toString();
-    const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/Game/List?TID=${encodeURIComponent(tid)}&Hash=${encodeURIComponent(HASH)}`;
+    const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/Game/List?TID=${tid}&Hash=${HASH}`;
     return axios
       .get(url)
       .then(async (r) => {
@@ -78,7 +78,7 @@ export class SoftGamingService {
     const HASH = MD5(
       `Game/Categories/${SERVER_IP}/${tid}/${this.APIKEY}/${this.APIPASS}`,
     ).toString();
-    const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/Game/Categories?TID=${encodeURIComponent(tid)}&Hash=${encodeURIComponent(HASH)}&WithTechnical=1`;
+    const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/Game/Categories?TID=${tid}&Hash=${HASH}&WithTechnical=1`;
     return axios
       .get(url)
       .then(async (r) => {
@@ -165,7 +165,7 @@ export class SoftGamingService {
       Hash: string;
     };
     const { tid, id } = await this.getTID();
-    const USER_PASSWORD = 'Xp9#vK2$mB5!zQ8*';
+    const USER_PASSWORD = 'Xp9vK2mB5zQ8AbCd';
     const apiLogin = user.login_userapi || '15533_' + userId;
     const HASH = MD5(
       `User/AuthHTML/${SERVER_IP}/${tid}/${this.APIKEY}/${apiLogin}/${USER_PASSWORD}/${game.System}/${this.APIPASS}`,
@@ -178,7 +178,7 @@ export class SoftGamingService {
       Login: apiLogin,
       Hash: HASH,
     };
-    const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/User/AuthHTML?Login=${encodeURIComponent(params.Login)}&Password=${encodeURIComponent(params.Password)}&System=${encodeURIComponent(params.System)}&Page=${encodeURIComponent(params.Page)}&UserIP=${encodeURIComponent(params.UserIP)}&TID=${encodeURIComponent(tid)}&Hash=${encodeURIComponent(params.Hash)}`;
+    const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/User/AuthHTML?Login=${params.Login}&Password=${params.Password}&System=${params.System}&Page=${params.Page}&UserIP=${params.UserIP}&TID=${tid}&Hash=${params.Hash}`;
     return axios
       .get(url)
       .then(async (r) => {
@@ -225,7 +225,7 @@ export class SoftGamingService {
       Hash: string;
     }
     const { tid, id } = await this.getTID();
-    const USER_PASSWORD = 'Xp9#vK2$mB5!zQ8*';
+    const USER_PASSWORD = 'Xp9vK2mB5zQ8AbCd';
     const HASH = MD5(`User/Add/${SERVER_IP}/${tid}/${this.APIKEY}/${userId}/${USER_PASSWORD}/USD/${this.APIPASS}`).toString()
     const params: Params = {
       Currency: 'USD',
@@ -235,7 +235,7 @@ export class SoftGamingService {
       Login: userId,
       Hash: HASH
     }
-    const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/User/Add?Login=${encodeURIComponent(params.Login)}&Password=${encodeURIComponent(params.Password)}&Currency=${encodeURIComponent(params.Currency || '')}&RegistrationIP=${encodeURIComponent(params.RegistrationIP)}&Language=${encodeURIComponent(params.Language || '')}&TID=${encodeURIComponent(tid)}&Hash=${encodeURIComponent(params.Hash)}`;
+    const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/User/Add?Login=${params.Login}&Password=${params.Password}&Currency=${params.Currency || ''}&RegistrationIP=${params.RegistrationIP}&Language=${params.Language || ''}&TID=${tid}&Hash=${params.Hash}`;
     return axios
       .get(url)
       .then(async (r) => {
