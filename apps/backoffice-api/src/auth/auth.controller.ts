@@ -1,4 +1,4 @@
-import { Body, Controller, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Ip, Patch, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
   ApiBearerAuth,
@@ -21,12 +21,12 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly authCommonService: AuthCommonService,
-  ) {}
+  ) { }
 
   @Post('register')
   @ApiOperation({ summary: 'Register a new user' })
-  async registerUser(@Body() dto: RegisterDto) {
-    return this.authCommonService.register(dto);
+  async registerUser(@Body() dto: RegisterDto, @Ip() ip) {
+    return this.authCommonService.register(dto, ip);
   }
 
   @Post('login')
