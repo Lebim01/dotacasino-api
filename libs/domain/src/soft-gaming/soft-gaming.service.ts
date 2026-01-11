@@ -191,13 +191,15 @@ export class SoftGamingService {
         });
 
         try {
+          if (typeof r.data === 'string' && r.data.startsWith("15,")) {
+            throw 'Wrong hash authorization'
+          }
           return r.data
         } catch (error) {
           this.logger.error('Error parsing category list JSON', error);
           return [];
         }
       }).catch(async (error) => {
-        console.log(error.response.url)
         await this.prisma.softGamingRecords.update({
           data: {
             status: RequestStatus.ERROR,
