@@ -61,8 +61,8 @@ export class GamesController {
   }
 
   @Get('categories')
-  async categories() {
-    return this.games.categories();
+  async categories(@Query('pageSize') pageSize: number) {
+    return this.games.categories(pageSize);
   }
 
   @Post('providers')

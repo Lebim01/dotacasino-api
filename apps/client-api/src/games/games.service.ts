@@ -5,20 +5,6 @@ import { Prisma } from '@prisma/client';
 import { BetService } from '../bet/bet.service';
 import { DOMAINS } from 'libs/shared/src/domains';
 
-// 1) Define el SELECT de forma tipada y reutilizable
-const gameCardSelect = Prisma.validator<Prisma.GameSelect>()({
-  id: true,
-  slug: true,
-  title: true,
-
-  rtp: true,
-  devices: true,
-  tags: true,
-  thumbnailUrl: true,
-  order: true,
-  createdAt: true,
-});
-
 @Injectable()
 export class GamesService {
   constructor(
@@ -40,14 +26,18 @@ export class GamesService {
         },
       };
     }
-    if (q.device) where.devices = { has: q.device };
-    if (q.search) {
-      where.OR = [
-        { title: { contains: q.search, mode: 'insensitive' } },
-        { slug: { contains: q.search, mode: 'insensitive' } },
-        { gameType: { contains: q.search, mode: 'insensitive' } },
-      ];
+
+    if (q.categoryName) {
+      where.categories = {
+        some: {
+          name: {
+            contains: q.categoryName,
+            mode: 'insensitive',
+          },
+        },
+      };
     }
+    if (q.device) where.devices = { has: q.device };
     if (q.search) {
       where.OR = [
         { title: { contains: q.search, mode: 'insensitive' } },
@@ -96,10 +86,10 @@ export class GamesService {
     const hall = DOMAINS[domain];
     const result: any[] = await this.prisma
       .$queryRawUnsafe(`
-        SELECT gp.id, gp.name, COUNT(g.id)::int as game_count
+        SELECT gp.id, gp.name, COUNT(g.id)::int as game_count, gp."imageUrl"
         FROM "GameProvider" gp
         LEFT JOIN "Game" g ON gp.id = g."gameProviderId" AND g.hall = '${hall.id}'
-        GROUP BY gp.id, gp.name
+        GROUP BY gp.id, gp.name, gp."imageUrl"
         ORDER BY game_count DESC
       `,
       );
@@ -139,12 +129,12 @@ export class GamesService {
     }
   }
 
-  async categories() {
+  async categories(take = -1) {
     return this.prisma.category.findMany({
-      take: 5,
+      take: Number(take),
       orderBy: {
-        order: 'desc'
-      }
+        order: 'desc',
+      },
     });
   }
 }
