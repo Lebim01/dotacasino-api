@@ -5,8 +5,13 @@ import { SoftGamingService } from './soft-gaming.service';
 export class SoftGamingController {
   constructor(private readonly softGamingService: SoftGamingService) {}
 
-  @Get('list')
-  list() {
+  @Get('game-list')
+  gamelist() {
+    return this.softGamingService.getGameList();
+  }
+
+  @Get('category-list')
+  categorylist() {
     return this.softGamingService.getGameList();
   }
 }
