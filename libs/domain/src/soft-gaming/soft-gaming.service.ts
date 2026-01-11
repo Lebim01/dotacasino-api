@@ -148,31 +148,31 @@ export class SoftGamingService {
     }
 
     type Params = {
-      LOGIN: string;
-      PASSWORD: string;
-      SYSTEM: string;
-      PAGE: string;
-      USERIP: string;
-      LANGUAGE?: string;
-      USERAUTOCREATE: string;
-      CURRENCY: string;
-      COUNTRY: string;
-      HASH: string;
+      Login: string;
+      Password: string;
+      System: string;
+      Page: string;
+      UserIP: string;
+      Language?: string;
+      UserAutoCreate: string;
+      Currency: string;
+      Country: string;
+      Hash: string;
     }
     const { tid, id } = await this.getTID();
     const USER_PASSWROD = '123987xd'
     const HASH = MD5(`User/AuthHTML/${SERVER_IP}/${tid}/${this.APIKEY}/${userId}/${USER_PASSWROD}/${game.System}/${this.APIPASS}`).toString()
     const params: Params = {
-      USERAUTOCREATE: '1',
-      CURRENCY: 'USD',
-      COUNTRY: 'MX',
-      LANGUAGE: 'es',
-      PAGE: game.PageCode!,
-      PASSWORD: USER_PASSWROD, // fija para el usuario?
-      SYSTEM: game.System,
-      USERIP: userIp,
-      LOGIN: userId,
-      HASH
+      UserAutoCreate: '1',
+      Currency: 'USD',
+      Country: 'MX',
+      Language: 'es',
+      Page: game.PageCode!,
+      Password: USER_PASSWROD, // fija para el usuario?
+      System: game.System,
+      UserIP: userIp,
+      Login: userId,
+      Hash: HASH
     }
     const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/User/AuthHTML`;
     return axios
