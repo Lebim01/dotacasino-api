@@ -36,8 +36,8 @@ export class AuthController {
     description: 'User registered successfully',
     type: RegisterResponseDto,
   })
-  async register(@Body() dto: RegisterDto, @Ip() ip: string) {
-    const user = await this.auth.register(dto, ip);
+  async register(@Body() dto: RegisterDto) {
+    const user = await this.auth.register(dto);
     return { message: 'Registro exitoso', user };
   }
 

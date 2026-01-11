@@ -116,7 +116,7 @@ export class AuthCommonService {
     };
   }
 
-  async register(dto: RegisterDto, ip: string) {
+  async register(dto: RegisterDto) {
     if (!dto.acceptTerms) {
       throw new ConflictException('Debes aceptar los términos y condiciones');
     }
@@ -139,7 +139,7 @@ export class AuthCommonService {
         await this.referralService.attachByCode(user.id, code);
         await this.walletService.createWallet(user.id);
 
-        const resSoft: any = await this.softGaming.addUser(user.id, ip, user.country);
+        const resSoft: any = await this.softGaming.addUser(user.id, dto.ip, user.country);
         let login_userapi = '';
         if (typeof resSoft === 'string' && resSoft.startsWith('1,')) {
           login_userapi = resSoft.split(',')[1];
