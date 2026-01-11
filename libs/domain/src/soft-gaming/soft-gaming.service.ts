@@ -179,7 +179,7 @@ export class SoftGamingService {
     };
     const { tid, id } = await this.getTID();
     const USER_PASSWORD = userPassword;
-    const USER_LOGIN = '15533_' + userId;
+    const USER_LOGIN = userId;
     const HASH = MD5(
       `User/AuthHTML/${SERVER_IP}/${tid}/${this.APIKEY}/${USER_LOGIN}/${USER_PASSWORD}/${game.System}/${this.APIPASS}`,
     ).toString();
