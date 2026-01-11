@@ -46,13 +46,12 @@ export class GamesController {
     @Body() body: any,
     @Param('gameSlug') gameSlug: string,
     @CurrentUser() u: { userId: string },
-    @Ip() ip: string,
   ) {
     return this.games.openGame(
       gameSlug,
       body.domain || 'https://dotacasino-front.vercel.app',
       u?.userId,
-      ip,
+      body.ip
     );
   }
 
