@@ -190,15 +190,10 @@ export class SoftGamingService {
           where: { id },
         });
 
-        try {
-          if (typeof r.data === 'string') {
-            throw r
-          }
-          return r.data
-        } catch (error) {
-          this.logger.error('Error parsing category list JSON', error);
-          return [];
+        if (typeof r.data === 'string') {
+          throw r.data
         }
+        return r.data
       }).catch(async (error) => {
         await this.prisma.softGamingRecords.update({
           data: {
@@ -212,7 +207,7 @@ export class SoftGamingService {
           },
           where: { id },
         });
-        throw error.data
+        throw error
       });
   }
 }
