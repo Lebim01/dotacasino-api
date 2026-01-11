@@ -48,19 +48,19 @@ type ResponseJson = Array<GameJson>;
 async function main() {
   // seed categories
   const raw_categories = fs.readFileSync('categories.response.json', 'utf-8');
-  const categories: Record<string, string> = JSON.parse(raw_categories);
+  const categories: { ID: string, Trans: Record<string, string>, Name: Record<string, string>, Slug: string }[] = JSON.parse(raw_categories);
 
   const categories_map: Record<string, string> = {}
 
-  for (const catId of Object.keys(categories)) {
+  for (const category of categories) {
     const cat = await prisma.category.upsert({
       create: {
-        name: categories[catId],
-        externalId: catId
+        name: category.Name.en,
+        externalId: category.ID
       },
       update: {},
       where: {
-        externalId: catId
+        externalId: category.ID
       }
     })
 

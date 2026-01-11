@@ -1,7 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { ListGamesDto } from './dto/list-games.dto';
 import { PrismaService } from 'libs/db/src/prisma.service';
-import { GameCategory, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { BetService } from '../bet/bet.service';
 import { DOMAINS } from 'libs/shared/src/domains';
 
@@ -27,7 +27,7 @@ export class GamesService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly bet: BetService,
-  ) {}
+  ) { }
 
   async list(q: ListGamesDto) {
     const where: Prisma.GameWhereInput = {
@@ -36,7 +36,13 @@ export class GamesService {
       hall: DOMAINS[q.domain].id,
     };
 
-    if (q.category) where.category = q.category as GameCategory;
+    if (q.category) {
+      where.categories = {
+        some: {
+          id: q.category,
+        },
+      };
+    }
     if (q.device) where.devices = { has: q.device };
     if (q.search) {
       where.OR = [
@@ -71,7 +77,7 @@ export class GamesService {
           id: true,
           slug: true,
           title: true,
-          category: true,
+          categories: true,
           devices: true,
           thumbnailUrl: true,
           enabled: true,
@@ -99,7 +105,7 @@ export class GamesService {
         GROUP BY gp.id, gp.name
         ORDER BY game_count DESC
       `,
-    );
+      );
     return result.filter(r => r.game_count > 0);
   }
 
@@ -137,17 +143,11 @@ export class GamesService {
   }
 
   async categories() {
-    return [
-      'fast_games',
-      'arcade',
-      'crash_games',
-      'roulette',
-      'sport',
-      'live_dealers',
-      'slots',
-      'lottery',
-      'video_poker',
-      'card',
-    ];
+    return this.prisma.category.findMany({
+      take: 5,
+      orderBy: {
+        order: 'desc'
+      }
+    });
   }
 }
