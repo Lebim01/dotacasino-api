@@ -4,8 +4,7 @@ import crypto from 'crypto';
 import { RequestStatus } from '@prisma/client';
 import { MD5 } from 'crypto-js';
 import axios from 'axios';
-import { check, string } from 'zod';
-import is from 'zod/v4/locales/is.cjs';
+
 
 const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
@@ -94,7 +93,21 @@ export class SoftGamingService {
           },
           where: { id },
         });
-        return r.data;
+        const raw = r.data as string;
+        if (raw.startsWith('1,')) {
+          try {
+            const jsonStr = raw.substring(2).trim();
+            const categoriesMap = JSON.parse(jsonStr);
+            return Object.entries(categoriesMap).map(([id, name]) => ({
+              id,
+              name,
+            }));
+          } catch (error) {
+            this.logger.error('Error parsing category list JSON', error);
+            return [];
+          }
+        }
+        return [];
       })
       .catch(() =>
         this.prisma.softGamingRecords.update({
