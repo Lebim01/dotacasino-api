@@ -161,7 +161,7 @@ export class SoftGamingService {
     }
     const { tid, id } = await this.getTID();
     const USER_PASSWORD = '123987xd'
-    const HASH = MD5(`User/AuthHTML/${SERVER_IP}/${tid}/${this.APIKEY}/${userId}/${USER_PASSWORD}/${game.System}/${this.APIPASS}`).toString()
+    const HASH = MD5(`User/AuthHTML/${SERVER_IP}/${tid}/${this.APIKEY}/15533_IwkSiMhFCn4IEeNj6IZz/${USER_PASSWORD}/${game.System}/${this.APIPASS}`).toString()
     const params: Params = {
       UserAutoCreate: '1',
       Currency: 'USD',
@@ -175,7 +175,7 @@ export class SoftGamingService {
       Hash: HASH
     }
     const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/User/AuthHTML?Login=${params.Login}&Password=${params.Password}&System=${params.System}&Page=${params.Page}&UserIP=${params.UserIP}&UserAutoCreate=${params.UserAutoCreate}&Currency=${params.Currency}&TID=${tid}&Hash=${params.Hash}`;
-    console.log(`User/AuthHTML/${SERVER_IP}/${tid}/${this.APIKEY}/${userId}/${USER_PASSWORD}/${game.System}/${this.APIPASS}`)
+    console.log(`User/AuthHTML/${SERVER_IP}/${tid}/${this.APIKEY}/15533_IwkSiMhFCn4IEeNj6IZz/${USER_PASSWORD}/${game.System}/${this.APIPASS}`)
     console.log(url)
     return axios
       .get(url)
