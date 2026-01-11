@@ -150,7 +150,7 @@ export class AuthCommonService {
           data: { login_userapi },
           select: { id: true, email: true, country: true, createdAt: true },
         });
-      });
+      }, { timeout: 60000 });
 
       return this.sanitize(created);
     } catch (error) {

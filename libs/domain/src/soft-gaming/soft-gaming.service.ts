@@ -248,7 +248,6 @@ export class SoftGamingService {
       Hash: HASH,
       Country: userCountry
     }
-    console.log(params, userIp)
     const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/User/Add?Login=${params.Login}&Password=${params.Password}&Currency=${params.Currency || ''}&RegistrationIP=${params.RegistrationIP}&Language=${params.Language || ''}&TID=${tid}&Hash=${params.Hash}&Country=${params.Country}`;
     return axios
       .get(url)
