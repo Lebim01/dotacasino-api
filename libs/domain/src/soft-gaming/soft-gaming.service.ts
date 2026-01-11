@@ -175,6 +175,7 @@ export class SoftGamingService {
       Hash: HASH
     }
     const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/User/AuthHTML?&Login=$DemoUser$&Demo=1&Password=Demo&System=${params.System}&Page=${params.Page}&UserIP=${params.UserIP}&UserAutoCreate=${params.UserAutoCreate}&Currency=${params.Currency}&Hash=${params.Hash}`;
+    console.log(`User/AuthHTML/${SERVER_IP}/${tid}/${this.APIKEY}/${userId}/${USER_PASSWORD}/${game.System}/${this.APIPASS}`)
     console.log(url)
     return axios
       .get(url)
