@@ -177,16 +177,16 @@ export class SoftGamingService {
     };
     const { tid, id } = await this.getTID();
     const USER_PASSWORD = 'Xp9vK2mB5zQ8AbCd';
-    const apiLogin = userId;
+    const USER_LOGIN = '15533_' + userId;
     const HASH = MD5(
-      `User/AuthHTML/${SERVER_IP}/${tid}/${this.APIKEY}/${apiLogin}/${USER_PASSWORD}/${game.System}/${this.APIPASS}`,
+      `User/AuthHTML/${SERVER_IP}/${tid}/${this.APIKEY}/${USER_LOGIN}/${USER_PASSWORD}/${game.System}/${this.APIPASS}`,
     ).toString();
     const params: Params = {
       Page: game.PageCode!,
       Password: USER_PASSWORD,
       System: game.System,
       UserIP: toIPv4(userIp),
-      Login: apiLogin,
+      Login: USER_LOGIN,
       Hash: HASH,
     };
     console.log(params)
