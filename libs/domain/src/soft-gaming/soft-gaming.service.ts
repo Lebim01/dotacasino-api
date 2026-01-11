@@ -170,7 +170,7 @@ export class SoftGamingService {
       Page: game.PageCode!,
       Password: USER_PASSWORD, // fija para el usuario?
       System: game.System,
-      UserIP: userIp,
+      UserIP: '177.230.103.18',
       Login: userId,
       Hash: HASH
     }
