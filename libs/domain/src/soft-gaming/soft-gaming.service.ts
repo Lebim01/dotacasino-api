@@ -78,7 +78,7 @@ export class SoftGamingService {
     const HASH = MD5(
       `Game/Categories/${SERVER_IP}/${tid}/${this.APIKEY}/${this.APIPASS}`,
     ).toString();
-    const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/Game/Categories?TID=${tid}&Hash=${HASH}`;
+    const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/Game/Categories?TID=${tid}&Hash=${HASH}&WithTechnical=1`;
     return axios
       .get(url)
       .then(async (r) => {
