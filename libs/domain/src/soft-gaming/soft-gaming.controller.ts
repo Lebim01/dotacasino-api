@@ -12,6 +12,6 @@ export class SoftGamingController {
 
   @Get('category-list')
   categorylist() {
-    return this.softGamingService.getGameList();
+    return this.softGamingService.getCategoryList();
   }
 }
