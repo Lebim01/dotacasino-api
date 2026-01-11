@@ -175,8 +175,6 @@ export class SoftGamingService {
       Hash: HASH
     }
     const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/User/AuthHTML?Login=${params.Login}&Password=${params.Password}&System=${params.System}&Page=${params.Page}&UserIP=${params.UserIP}&UserAutoCreate=${params.UserAutoCreate}&Currency=${params.Currency}&TID=${tid}&Hash=${params.Hash}`;
-    console.log(`User/AuthHTML/${SERVER_IP}/${tid}/${this.APIKEY}/15533_IwkSiMhFCn4IEeNj6IZz/${USER_PASSWORD}/${game.System}/${this.APIPASS}`)
-    console.log(url)
     return axios
       .get(url)
       .then(async (r) => {
@@ -192,7 +190,7 @@ export class SoftGamingService {
           where: { id },
         });
 
-        if (typeof r.data === 'string') {
+        if (typeof r.data === 'string' && !r.data.startsWith("1,")) {
           throw r.data
         }
         return r.data
