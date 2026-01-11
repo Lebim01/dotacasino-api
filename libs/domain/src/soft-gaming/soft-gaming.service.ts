@@ -155,8 +155,8 @@ export class SoftGamingService {
       UserIP: string;
       Language?: string;
       UserAutoCreate: string;
-      Currency: string;
-      Country: string;
+      Currency?: string;
+      Country?: string;
       Hash: string;
     }
     const { tid, id } = await this.getTID();
@@ -165,8 +165,8 @@ export class SoftGamingService {
     const params: Params = {
       UserAutoCreate: '1',
       Currency: 'USD',
-      Country: 'MX',
-      Language: 'es',
+      //Country: 'MX',
+      //Language: 'es',
       Page: game.PageCode!,
       Password: USER_PASSWROD, // fija para el usuario?
       System: game.System,
