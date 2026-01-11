@@ -194,7 +194,7 @@ export class SoftGamingService {
       Currency: 'USD',
     };
     console.log(params)
-    const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/User/AuthHTML?Login=${params.Login}&Password=${params.Password}&System=${params.System}&Page=${params.Page}&UserIP=${params.UserIP}&TID=${tid}&Hash=${params.Hash}&UserAutoCreate=${params.UserAutoCreate}&Currency=${params.Currency}`;
+    const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/User/AuthHTML?Login=${params.Login}&Password=${params.Password}&System=${params.System}&Page=${params.Page}&UserIP=${params.UserIP}&TID=${tid}&Hash=${params.Hash}`;
     return axios
       .get(url)
       .then(async (r) => {
