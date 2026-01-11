@@ -147,6 +147,7 @@ model Category {
   externalId String?  @unique
   name       String
   games      Game[]
+  order      Int      @default(1)
 }
 
 model Country {

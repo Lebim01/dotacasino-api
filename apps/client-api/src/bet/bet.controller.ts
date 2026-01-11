@@ -29,9 +29,4 @@ export class BetController {
   sessionlog(){
     return this.betService.sessionLogs("290664467");
   }
-
-  @Patch('update-game-list')
-  async updategamelist(){
-    return this.betService.updateList();
-  }
 }

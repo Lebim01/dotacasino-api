@@ -5,7 +5,7 @@ import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class GamesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   async list(q: ListGamesDto) {
     const where: Prisma.GameWhereInput = { enabled: true };
@@ -19,7 +19,11 @@ export class GamesService {
     }
 
     if (q.category) {
-      where.category = q.category as string as any;
+      where.categories = {
+        some: {
+          id: q.category,
+        },
+      };
     }
 
     const skip = (q.page - 1) * q.pageSize;
@@ -35,7 +39,7 @@ export class GamesService {
           id: true,
           slug: true,
           title: true,
-          category: true,
+          categories: true,
           devices: true,
           thumbnailUrl: true,
           show: true,
@@ -73,9 +77,10 @@ export class GamesService {
   }
 
   async categories() {
-    const rows = await this.prisma.$queryRaw<{ category: string }[]>(
-      Prisma.sql`SELECT DISTINCT category FROM "Game" WHERE category IS NOT NULL ORDER BY category`,
-    );
-    return rows.map((r) => r.category);
+    return this.prisma.category.findMany({
+      orderBy: {
+        name: 'asc',
+      },
+    });
   }
 }
