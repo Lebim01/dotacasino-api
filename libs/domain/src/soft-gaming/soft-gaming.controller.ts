@@ -34,4 +34,13 @@ export class SoftGamingController {
   ) {
     return this.softGamingService.getAuthorizationUser(user.userId, gameId, ip);
   }
+
+  @Post('add-user')
+  @UseGuards(JwtAuthGuard)
+  addUser(
+    @CurrentUser() user: { userId: string },
+    @Ip() ip: string,
+  ) {
+    return this.softGamingService.addUser(user.userId, ip);
+  }
 }
