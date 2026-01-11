@@ -174,9 +174,66 @@ export class SoftGamingService {
       Login: userId,
       Hash: HASH
     }
-    const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/User/AuthHTML?&Login=$DemoUser$&Demo=1&Password=Demo&System=${params.System}&Page=${params.Page}&UserIP=${params.UserIP}&UserAutoCreate=${params.UserAutoCreate}&Currency=${params.Currency}&Hash=${params.Hash}`;
+    const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/User/AuthHTML?Login=${params.Login}&Password=${params.Password}&System=${params.System}&Page=${params.Page}&UserIP=${params.UserIP}&UserAutoCreate=${params.UserAutoCreate}&Currency=${params.Currency}&TID=${tid}&Hash=${params.Hash}`;
     console.log(`User/AuthHTML/${SERVER_IP}/${tid}/${this.APIKEY}/${userId}/${USER_PASSWORD}/${game.System}/${this.APIPASS}`)
     console.log(url)
+    return axios
+      .get(url)
+      .then(async (r) => {
+        await this.prisma.softGamingRecords.update({
+          data: {
+            status: RequestStatus.SUCCESS,
+            metadata: {
+              HASH,
+              tid,
+              url,
+            },
+          },
+          where: { id },
+        });
+
+        if (typeof r.data === 'string') {
+          throw r.data
+        }
+        return r.data
+      }).catch(async (error) => {
+        await this.prisma.softGamingRecords.update({
+          data: {
+            status: RequestStatus.ERROR,
+            metadata: {
+              HASH,
+              tid,
+              url,
+              error: error.message,
+            },
+          },
+          where: { id },
+        });
+        throw error
+      });
+  }
+
+  async addUser(userId: string, userIp: string) {
+    type Params = {
+      Login: string;
+      Password: string;
+      RegistrationIP: string;
+      Language?: string;
+      Currency?: string;
+      Hash: string;
+    }
+    const { tid, id } = await this.getTID();
+    const USER_PASSWORD = '123987xd'
+    const HASH = MD5(`User/Add/${SERVER_IP}/${tid}/${this.APIKEY}/${userId}/${USER_PASSWORD}/USD/${this.APIPASS}`).toString()
+    const params: Params = {
+      Currency: 'USD',
+      Language: 'es',
+      Password: USER_PASSWORD, // fija para el usuario?
+      RegistrationIP: userIp,
+      Login: userId,
+      Hash: HASH
+    }
+    const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/User/Add?Login=${params.Login}&Password=${params.Password}&Currency=${params.Currency}&RegistrationIP=${params.RegistrationIP}&Language=${params.Language}&TID=${tid}&Hash=${params.Hash}`;
     return axios
       .get(url)
       .then(async (r) => {
