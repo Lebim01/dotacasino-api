@@ -10,6 +10,7 @@ import { CasinoService } from '@domain/casino/casino.service';
 import { UsersService } from 'apps/client-api/src/users/users.service';
 import { ReferralService } from 'apps/client-api/src/referral/referral.service';
 import { SoftGamingModule } from '@domain/soft-gaming/soft-gaming.module';
+import { SoftGamingService } from '@domain/soft-gaming/soft-gaming.service';
 
 @Module({
   controllers: [AuthController],
@@ -21,6 +22,7 @@ import { SoftGamingModule } from '@domain/soft-gaming/soft-gaming.module';
     UserCommonService,
     DisruptiveService,
     CasinoService,
+    SoftGamingService,
   ],
   exports: [],
   imports: [JwtAuthModule, HttpModule, SoftGamingModule],

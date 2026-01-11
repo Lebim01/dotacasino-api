@@ -10,6 +10,7 @@ import { DisruptiveService } from '@domain/disruptive/disruptive.service';
 import { CasinoService } from '@domain/casino/casino.service';
 import { AuthCommonService } from '@domain/auth/auth.service';
 import { PrismaService } from 'libs/db/src/prisma.service';
+import { SoftGamingService } from '@domain/soft-gaming/soft-gaming.service';
 
 @Module({
   controllers: [AuthController],
@@ -22,6 +23,7 @@ import { PrismaService } from 'libs/db/src/prisma.service';
     DisruptiveService,
     CasinoService,
     AuthCommonService,
+    SoftGamingService,
   ],
   exports: [],
   imports: [JwtAuthModule, HttpModule],
