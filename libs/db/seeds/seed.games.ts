@@ -1,69 +1,85 @@
-import { GameCategory, PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import fs from 'fs';
 
 const prisma = new PrismaClient();
 
-type ResponseJson = {
-  gameList: Array<{
-    "ID": string,
-    "System": string,
-    "PageCode": string,
-    "MobilePageCode": string,
-    "MobileAndroidPageCode": string,
-    "MobileWindowsPageCode": string,
-    "Trans": {
-      "en": string
-    },
-    "Description": {},
-    "ImageURL": string,
-    "Branded": string,
-    "BrandedGG": string,
-    "HasDemo": string,
-    "Freeround": string,
-    "GSort": string,
-    "GSubSort": string,
-    "Status": string,
-    "GameStatus": string,
-    "Categories": string[],
-    "SortPerCategory": {
-      [key: string]: number
-    },
-    "TableID": string,
-    "ExternalCode": string,
-    "MobileExternalCode": string,
-    "AR": string,
-    "MerchantName": string,
-    "Volatility": string,
-    "IsVirtual": string,
-    "WorkingHours": string,
-    "IDCountryRestriction": string,
-    "ImageFullPath": string,
-    "CustomSort": [],
-    "BonusBuy": number,
-    "Megaways": number,
-    "Freespins": number,
-    "FreeBonus": number
-  }>;
-  gameTitles: string[];
-};
+type GameJson = {
+  "ID": string,
+  "System": string,
+  "PageCode": string,
+  "MobilePageCode": string,
+  "MobileAndroidPageCode": string,
+  "MobileWindowsPageCode": string,
+  "Trans": {
+    "en": string
+  },
+  "Description": {},
+  "ImageURL": string,
+  "Branded": string,
+  "BrandedGG": string,
+  "HasDemo": string,
+  "Freeround": string,
+  "GSort": string,
+  "GSubSort": string,
+  "Status": string,
+  "GameStatus": string,
+  "Categories": string[],
+  "SortPerCategory": {
+    [key: string]: number
+  },
+  "TableID": string,
+  "ExternalCode": string,
+  "MobileExternalCode": string,
+  "AR": string,
+  "MerchantName": string,
+  "Volatility": string,
+  "IsVirtual": string,
+  "WorkingHours": string,
+  "IDCountryRestriction": string,
+  "ImageFullPath": string,
+  "CustomSort": [],
+  "BonusBuy": number,
+  "Megaways": number,
+  "Freespins": number,
+  "FreeBonus": number
+}
+type ResponseJson = Array<GameJson>;
 
 async function main() {
-  const raw = fs.readFileSync('soft-games.response.json', 'utf-8');
-  const data: ResponseJson = JSON.parse(raw);
+  // seed categories
+  const raw_categories = fs.readFileSync('categories.response.json', 'utf-8');
+  const categories: Record<string, string> = JSON.parse(raw_categories);
 
-  // Agrupar juegos por proveedor (campo title)
-  const grouped: Record<string, typeof data.gameList> = {};
-  for (const game of data.gameList) {
-    if (!grouped[game.MerchantName]) grouped[game.MerchantName] = [];
-    grouped[game.MerchantName].push(game);
+  const categories_map: Record<string, string> = {}
+
+  for (const catId of Object.keys(categories)) {
+    const cat = await prisma.category.upsert({
+      create: {
+        name: categories[catId],
+        externalId: catId
+      },
+      update: {},
+      where: {
+        externalId: catId
+      }
+    })
+
+    categories_map[cat.externalId as string] = cat.id
   }
 
-  /*for (const [providerName, games] of Object.entries(grouped)) {
-    const code = providerName.toUpperCase().replace(/\s+/g, '_');
+  const raw_games = fs.readFileSync('soft-games.response.json', 'utf-8');
+  const games: ResponseJson = JSON.parse(raw_games);
 
-    const categories = new Set();
-    games.map((g) => categories.add(g.categories));
-    //console.log(categories);
+  // Agrupar juegos por proveedor (campo title)
+  const grouped: Record<string, GameJson[]> = {};
+  for (const game of games) {
+    const providerName = game.MerchantName.trim().toUpperCase()
+    if (!grouped[providerName]) grouped[providerName] = [];
+    grouped[providerName].push(game);
+  }
+
+  for (const [providerName, games] of Object.entries(grouped)) {
+    const code = providerName.toUpperCase().replace(/\s+/g, '_');
 
     // Crear provider
     const provider = await prisma.gameProvider.upsert({
@@ -75,16 +91,21 @@ async function main() {
         platformTypes: [code],
         games: {
           create: games.map((g, index) => ({
-            slug: `${providerName}-${g.id}`.toLowerCase().replace(/\s+/g, '-'),
-            title: g.name,
-            devices: g.device === '2' ? ['DESKTOP', 'MOBILE'] : ['DESKTOP'],
-            tags: g.system_name2?.includes('new') ? ['nuevo'] : [],
-            thumbnailUrl: g.img,
+            slug: `${providerName}-${g.ID}`.toLowerCase().replace(/\s+/g, '-'),
+            title: g.Trans.en,
+            devices: ['DESKTOP', 'MOBILE'],
+            tags: [],
+            thumbnailUrl: g.ImageFullPath,
             order: index,
-            category: (g.categories || null) as GameCategory,
-            betId: g.id,
-            allowDemo: g.demo == '1',
-            width: g.width,
+            categories: {
+              connect: g.Categories.map((id) => categories_map[id])
+                .filter(Boolean)
+                .map((id) => ({ id })),
+            },
+            betId: g.ID,
+            allowDemo: g.HasDemo == '1',
+            hall: 'soft-gaming',
+            width: '1',
           })),
         },
       },
@@ -93,7 +114,7 @@ async function main() {
     console.log(
       `✔ Seeded provider ${provider.name} con ${games.length} juegos`,
     );
-  }*/
+  }
 }
 
 main()

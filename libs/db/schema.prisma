@@ -102,21 +102,6 @@ model LedgerEntry {
   idempotencyKey String?  @unique
 }
 
-enum GameCategory {
-  slots
-  live_dealers
-  fast_games
-  crash_games
-  table_games
-  lottery
-  card
-  roulette
-  video_poker
-  sport_betting
-  arcade
-  sport
-}
-
 model GameProvider {
   id            String   @id @default(uuid())
   code          String   @unique // ej. "AG"
@@ -141,7 +126,7 @@ model Game {
   tags           String[] // ["popular","nuevo"]
   enabled        Boolean       @default(true)
   order          Int           @default(0)
-  category       GameCategory?
+  categories     Category[]
   thumbnailUrl   String?
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
@@ -155,6 +140,13 @@ model Game {
 
   @@unique([hall, betId])
   @@index([enabled])
+}
+
+model Category {
+  id         String   @id @default(uuid())
+  externalId String?  @unique
+  name       String
+  games      Game[]
 }
 
 model Country {
