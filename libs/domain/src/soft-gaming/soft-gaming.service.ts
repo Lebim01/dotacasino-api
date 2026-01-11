@@ -174,6 +174,7 @@ export class SoftGamingService {
       Login: userId,
       Hash: HASH
     }
+    console.log(params)
     const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/User/AuthHTML`;
     return axios
       .get(url, {
@@ -198,6 +199,7 @@ export class SoftGamingService {
           return [];
         }
       }).catch(async (error) => {
+        console.log(error.response.url)
         await this.prisma.softGamingRecords.update({
           data: {
             status: RequestStatus.ERROR,

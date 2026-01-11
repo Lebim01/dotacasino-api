@@ -32,11 +32,6 @@ export class SoftGamingController {
     @CurrentUser() user: { userId: string },
     @Ip() ip: string,
   ) {
-    console.log({
-      gameId,
-      user,
-      ip
-    })
     return this.softGamingService.getAuthorizationUser(user.userId, gameId, ip);
   }
 }
