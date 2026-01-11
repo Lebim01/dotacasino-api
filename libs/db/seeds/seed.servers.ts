@@ -11,6 +11,7 @@ async function main() {
       url: 'http://localhost:3000/',
       enabled: true,
       thumbnailUrl: 'https://storage.googleapis.com/casino-dota-dd5dd/aurum',
+      country: 'MX'
     },
   });
 
@@ -23,6 +24,7 @@ async function main() {
       enabled: true,
       thumbnailUrl:
         'https://storage.googleapis.com/casino-dota-dd5dd/lynxbet.png',
+      country: 'MX'
     },
   });
 
@@ -35,6 +37,7 @@ async function main() {
       enabled: true,
       thumbnailUrl:
         'https://storage.googleapis.com/casino-dota-dd5dd/vortex.png',
+      country: 'MX'
     },
   });
 
@@ -47,6 +50,7 @@ async function main() {
       enabled: true,
       thumbnailUrl:
         'https://storage.googleapis.com/casino-dota-dd5dd/crimson%20ace.png',
+      country: 'MX'
     },
   });
 
@@ -59,6 +63,7 @@ async function main() {
       enabled: true,
       thumbnailUrl:
         'https://storage.googleapis.com/casino-dota-dd5dd/neon%20spin.png',
+      country: 'MX'
     },
   });
 

@@ -76,9 +76,9 @@ export class SoftGamingService {
   async getCategoryList() {
     const { tid, id } = await this.getTID();
     const HASH = MD5(
-      `Categories/List/${SERVER_IP}/${tid}/${this.APIKEY}/${this.APIPASS}`,
+      `Game/Categories/${SERVER_IP}/${tid}/${this.APIKEY}/${this.APIPASS}`,
     ).toString();
-    const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/Categories/List?TID=${tid}&Hash=${HASH}`;
+    const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/Game/Categories?TID=${tid}&Hash=${HASH}`;
     return axios
       .get(url)
       .then(async (r) => {
@@ -100,7 +100,7 @@ export class SoftGamingService {
             const categoriesMap = JSON.parse(jsonStr);
             return Object.entries(categoriesMap).map(([id, name]) => ({
               id,
-              name,
+              name: name as string,
             }));
           } catch (error) {
             this.logger.error('Error parsing category list JSON', error);
@@ -109,19 +109,41 @@ export class SoftGamingService {
         }
         return [];
       })
-      .catch(() =>
-        this.prisma.softGamingRecords.update({
+      .catch(async (error) => {
+        await this.prisma.softGamingRecords.update({
           data: {
             status: RequestStatus.ERROR,
             metadata: {
               HASH,
               tid,
               url,
+              error: error.message,
             },
           },
           where: { id },
-        }),
-      );
+        });
+        return [];
+      });
+  }
+
+  async syncCategories() {
+    const list = (await this.getCategoryList()) as Array<{
+      id: string;
+      name: string;
+    }>;
+    if (!list || list.length === 0) return { count: 0 };
+
+    for (const cat of list) {
+      await (this.prisma as any).category.upsert({
+        where: { externalId: cat.id },
+        update: { name: cat.name },
+        create: {
+          externalId: cat.id,
+          name: cat.name,
+        },
+      });
+    }
+    return { count: list.length };
   }
 
   async getAuthorizationUser(userId: string, gameId: string, userIp: string) {

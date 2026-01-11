@@ -14,4 +14,9 @@ export class SoftGamingController {
   categorylist() {
     return this.softGamingService.getCategoryList();
   }
+
+  @Get('sync-categories')
+  syncCategories() {
+    return this.softGamingService.syncCategories();
+  }
 }
