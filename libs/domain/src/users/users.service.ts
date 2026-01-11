@@ -104,8 +104,10 @@ export class UserCommonService {
           firebaseId: res.id,
           displayName,
           sponsorCode,
+          login_userapi: res.id,
+          password_userapi: Math.random().toString(36).substring(2, 12),
         },
-        select: { id: true, email: true, country: true, createdAt: true },
+        select: { id: true, email: true, country: true, createdAt: true, password_userapi: true },
       });
     } catch (err: any) {
       if (err?.code === 'P2002' && err?.meta?.target?.includes('email')) {

@@ -139,7 +139,7 @@ export class AuthCommonService {
         await this.referralService.attachByCode(user.id, code);
         await this.walletService.createWallet(user.id);
 
-        const resSoft: any = await this.softGaming.addUser(user.id, dto.ip, user.country);
+        const resSoft: any = await this.softGaming.addUser(user.id, dto.ip, user.country, user.password_userapi!);
         let login_userapi = '';
         if (typeof resSoft === 'string' && resSoft.startsWith('1,')) {
           login_userapi = resSoft.split(',')[1];

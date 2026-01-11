@@ -35,27 +35,28 @@ enum KycDocStatus {
 }
 
 model User {
-  id            String    @id @default(uuid())
-  email         String    @unique
-  firstName     String    @default("")
-  lastName      String    @default("")
-  country       String
-  kycStatus     KycStatus @default(PENDING)
-  wallets       Wallet[]
-  createdAt     DateTime  @default(now())
-  passwordHash  String
-  roles         String[]  @default(["user"])
-  firebaseId    String    @default("")
-  sponsorId     String?
-  refCodeL      String?   @unique @db.VarChar(16)
-  refCodeR      String?   @unique @db.VarChar(16)
+  id               String    @id @default(uuid())
+  email            String    @unique
+  firstName        String    @default("")
+  lastName         String    @default("")
+  country          String
+  kycStatus        KycStatus @default(PENDING)
+  wallets          Wallet[]
+  createdAt        DateTime  @default(now())
+  passwordHash     String
+  roles            String[]  @default(["user"])
+  firebaseId       String    @default("")
+  sponsorId        String?
+  refCodeL         String?   @unique @db.VarChar(16)
+  refCodeR         String?   @unique @db.VarChar(16)
   // ---- Perfil ----
-  displayName   String?
-  phone         String?
-  language      String?
-  avatarUrl     String?
-  sponsorCode   String?
-  login_userapi String?
+  displayName      String?
+  phone            String?
+  language         String?
+  avatarUrl        String?
+  sponsorCode      String?
+  login_userapi    String?
+  password_userapi String?
 
   // --Pays
   stdMexId String?

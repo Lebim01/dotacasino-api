@@ -32,7 +32,7 @@ export class SoftGamingController {
     @CurrentUser() user: { userId: string },
     @Ip() ip: string,
   ) {
-    return this.softGamingService.getAuthorizationUser(user.userId, gameId, ip);
+    return this.softGamingService.getAuthorizationUser(user.userId, gameId, ip, '123987xd');
   }
 
   @Post('add-user')
@@ -40,6 +40,6 @@ export class SoftGamingController {
     @CurrentUser() user: { userId: string },
     @Ip() ip: string,
   ) {
-    return this.softGamingService.addUser(user.userId, ip, 'MX');
+    return this.softGamingService.addUser(user.userId, ip, 'MX', '123987xd');
   }
 }
