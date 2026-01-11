@@ -173,6 +173,6 @@ export class SoftGamingService {
     return axios
       .get(url, {
         params,
-      });
+      }).then(r => r.data);
   }
 }
