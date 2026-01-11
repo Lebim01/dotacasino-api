@@ -19,9 +19,6 @@ const gameCardSelect = Prisma.validator<Prisma.GameSelect>()({
   createdAt: true,
 });
 
-// 2) Deriva el tipo **correcto** del payload (incluye provider)
-type GameCard = Prisma.GameGetPayload<{ select: typeof gameCardSelect }>;
-
 @Injectable()
 export class GamesService {
   constructor(
