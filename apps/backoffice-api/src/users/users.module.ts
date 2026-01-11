@@ -16,8 +16,8 @@ import { WalletService } from '@domain/wallet/wallet.service';
   imports: [
     ConfigModule.forRoot({ envFilePath: '.env' }),
     JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: process.env.JWT_EXPIRES_IN || '2d' },
+      secret: process.env.JWT_SECRET as any,
+      signOptions: { expiresIn: process.env.JWT_EXPIRES_IN || '2d' } as any,
     }),
     MailerModule,
   ],
@@ -33,4 +33,4 @@ import { WalletService } from '@domain/wallet/wallet.service';
     AuthAcademyService,
   ],
 })
-export class UsersModule {}
+export class UsersModule { }
