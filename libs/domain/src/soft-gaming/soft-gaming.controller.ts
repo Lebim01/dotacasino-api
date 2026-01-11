@@ -36,7 +36,6 @@ export class SoftGamingController {
   }
 
   @Post('add-user')
-  @UseGuards(JwtAuthGuard)
   addUser(
     @CurrentUser() user: { userId: string },
     @Ip() ip: string,
