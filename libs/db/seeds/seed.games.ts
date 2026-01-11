@@ -41,79 +41,135 @@ type GameJson = {
   "BonusBuy": number,
   "Megaways": number,
   "Freespins": number,
-  "FreeBonus": number
+  "FreeBonus": number,
+  "SubSystem"?: string,
+  "LowRtpUrl"?: string | null,
+  "LowRtpMobileUrl"?: string | null,
+  "LowRtpUrlExternal"?: string | null,
+  "LowRtpMobileUrlExternal"?: string | null
 }
 type ResponseJson = Array<GameJson>;
 
 async function main() {
-  // seed categories
+  // 1) Seed categories
   const raw_categories = fs.readFileSync('categories.response.json', 'utf-8');
-  const categories: { ID: string, Trans: Record<string, string>, Name: Record<string, string>, Slug: string }[] = JSON.parse(raw_categories);
+  const categories: {
+    ID: string;
+    Trans: Record<string, string>;
+    Name: Record<string, string>;
+    Slug: string;
+  }[] = JSON.parse(raw_categories);
 
-  const categories_map: Record<string, string> = {}
+  const categories_map: Record<string, string> = {};
 
   for (const category of categories) {
     const cat = await prisma.category.upsert({
       create: {
         name: category.Name.en,
-        externalId: category.ID
+        externalId: category.ID,
       },
       update: {},
       where: {
-        externalId: category.ID
-      }
-    })
-
-    categories_map[cat.externalId as string] = cat.id
+        externalId: category.ID,
+      },
+    });
+    categories_map[cat.externalId as string] = cat.id;
   }
 
+  // 2) Seed merchants (providers)
+  const raw_merchants = fs.readFileSync('merchants-response.json', 'utf-8');
+  const merchants: Record<
+    string,
+    { ID: string; Name: string; Alias: string; Image: string }
+  > = JSON.parse(raw_merchants);
+
+  const providers_map: Record<string, string> = {};
+
+  for (const merchant of Object.values(merchants)) {
+    const code = merchant.Alias.toUpperCase().replace(/\s+/g, '_');
+    const provider = await prisma.gameProvider.upsert({
+      where: { externalId: merchant.ID },
+      update: {
+        name: merchant.Alias,
+        imageUrl: `https://theverybestcasino.com${merchant.Image}`,
+        code,
+      },
+      create: {
+        externalId: merchant.ID,
+        name: merchant.Alias,
+        imageUrl: `https://theverybestcasino.com${merchant.Image}`,
+        code,
+        platformTypes: [code],
+      },
+    });
+    providers_map[merchant.ID] = provider.id;
+  }
+
+  // 3) Seed games
   const raw_games = fs.readFileSync('soft-games.response.json', 'utf-8');
   const games: ResponseJson = JSON.parse(raw_games);
 
-  // Agrupar juegos por proveedor (campo title)
-  const grouped: Record<string, GameJson[]> = {};
-  for (const game of games) {
-    const providerName = game.MerchantName.trim().toUpperCase()
-    if (!grouped[providerName]) grouped[providerName] = [];
-    grouped[providerName].push(game);
-  }
+  for (const g of games) {
+    const providerId = g.SubSystem || g.System;
+    const prismaProviderId = providers_map[providerId];
 
-  for (const [providerName, games] of Object.entries(grouped)) {
-    const code = providerName.toUpperCase().replace(/\s+/g, '_');
+    if (!prismaProviderId) {
+      console.warn(
+        `⚠️ Provider with externalId ${providerId} not found in merchants-response.json`,
+      );
+      continue;
+    }
 
-    // Crear provider
-    const provider = await prisma.gameProvider.upsert({
-      where: { code },
-      update: {},
-      create: {
-        code,
-        name: providerName,
-        platformTypes: [code],
-        games: {
-          create: games.map((g, index) => ({
-            slug: `${providerName}-${g.ID}`.toLowerCase().replace(/\s+/g, '-'),
-            title: g.Trans.en,
-            devices: ['DESKTOP', 'MOBILE'],
-            tags: [],
-            thumbnailUrl: g.ImageFullPath,
-            order: index,
-            categories: {
-              connect: g.Categories.map((id) => categories_map[id])
-                .filter(Boolean)
-                .map((id) => ({ id })),
-            },
-            betId: g.ID,
-            allowDemo: g.HasDemo == '1',
-            hall: 'soft-gaming',
-            width: '1',
-          })),
+    const provider = await prisma.gameProvider.findUnique({
+      where: { id: prismaProviderId },
+    });
+    const providerName = provider?.name || 'UNKNOWN';
+
+    await prisma.game.upsert({
+      where: { hall_betId: { hall: 'soft-gaming', betId: g.ID } },
+      update: {
+        title: g.Trans.en,
+        thumbnailUrl: g.ImageFullPath,
+        gameProviderId: prismaProviderId,
+        categories: {
+          set: [], // Clear previous
+          connect: g.Categories.map((catExtId) => ({ externalId: catExtId })).filter(
+            (c) => categories_map[c.externalId!],
+          ),
         },
+        PageCode: g.PageCode,
+        LowRtpUrl: g.LowRtpUrl,
+        LowRtpMobileUrl: g.LowRtpMobileUrl,
+        LowRtpUrlExternal: g.LowRtpUrlExternal,
+        LowRtpMobileUrlExternal: g.LowRtpMobileUrlExternal,
+      },
+      create: {
+        slug: `${providerName}-${g.ID}`.toLowerCase().replace(/\s+/g, '-'),
+        title: g.Trans.en,
+        devices: ['DESKTOP', 'MOBILE'],
+        tags: [],
+        thumbnailUrl: g.ImageFullPath,
+        order: 0,
+        categories: {
+          connect: g.Categories.map((catExtId) => ({ externalId: catExtId })).filter(
+            (c) => categories_map[c.externalId!],
+          ),
+        },
+        betId: g.ID,
+        allowDemo: g.HasDemo == '1',
+        hall: 'soft-gaming',
+        width: '1',
+        gameProviderId: prismaProviderId,
+        System: g.System,
+        PageCode: g.PageCode,
+        LowRtpUrl: g.LowRtpUrl,
+        LowRtpMobileUrl: g.LowRtpMobileUrl,
+        LowRtpUrlExternal: g.LowRtpUrlExternal,
+        LowRtpMobileUrlExternal: g.LowRtpMobileUrlExternal,
       },
     });
 
-    console.log(
-      `✔ Seeded provider ${provider.name} con ${games.length} juegos`,
-    );
+    console.log(`✔ Seeded game ${g.Trans.en} for provider ${providerName}`);
   }
 }
 

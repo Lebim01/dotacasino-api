@@ -39,9 +39,9 @@ export class SoftGamingService {
   async getGameList() {
     const { tid, id } = await this.getTID();
     const HASH = MD5(
-      `Game/FullList/${SERVER_IP}/${tid}/${this.APIKEY}/${this.APIPASS}`,
+      `Game/List/${SERVER_IP}/${tid}/${this.APIKEY}/${this.APIPASS}`,
     ).toString();
-    const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/Game/FullList?TID=${tid}&Hash=${HASH}`;
+    const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/Game/List?TID=${tid}&Hash=${HASH}`;
     return axios
       .get(url)
       .then(async (r) => {
@@ -142,25 +142,30 @@ export class SoftGamingService {
     const game = await this.prisma.game.findFirst({
       where: { id: gameId },
     });
+    if (!game) {
+      this.logger.error(`Game not found: ${gameId}`);
+      return null;
+    }
+
     type Params = {
-      LOGIN: string; //user’s login in API
-      PASSWORD: string; //user’s password in API
-      SYSTEM: string; //the target merchant account. Should be checked via Game/FullList in "ProviderID" or "ID" value in "merchants" part.
-      PAGE: string; //page code for redirection (can be found in the Game/List API call response)
-      USERIP: string; //IP address of user – valid IPv4 (e.g. 12.34.56.78) or valid IPv6 address
-      LANGUAGE?: string
+      LOGIN: string;
+      PASSWORD: string;
+      SYSTEM: string;
+      PAGE: string;
+      USERIP: string;
+      LANGUAGE?: string;
       USERAUTOCREATE: string;
       CURRENCY: string;
-      COUNTRY: string; // ISO 2 or 3 symbol code.
+      COUNTRY: string;
     }
     const params: Params = {
       USERAUTOCREATE: '1',
       CURRENCY: 'USD',
       COUNTRY: 'MX',
       LANGUAGE: 'es',
-      PAGE: '1',
+      PAGE: game.PageCode!,
       PASSWORD: '123987xd', // fija para el usuario?
-      SYSTEM: '1',
+      SYSTEM: game.System,
       USERIP: userIp,
       LOGIN: userId,
     }

@@ -13,13 +13,20 @@ export class ListGamesDto {
   search?: string;
 
   @ApiProperty({
-    description: 'Game category',
+    description: 'Game category ID',
     required: false,
-    enum: ['LIVE', 'EGAME', 'TABLE', 'OTHER'],
   })
   @IsOptional()
   @IsString()
-  category?: 'LIVE' | 'EGAME' | 'TABLE' | 'OTHER';
+  category?: string;
+
+  @ApiProperty({
+    description: 'Game category name (case insensitive)',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  categoryName?: string;
 
   @ApiProperty({
     description: 'Provider',

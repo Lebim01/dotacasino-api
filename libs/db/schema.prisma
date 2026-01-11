@@ -104,7 +104,8 @@ model LedgerEntry {
 
 model GameProvider {
   id            String   @id @default(uuid())
-  code          String   @unique // ej. "AG"
+  code          String?  @unique
+  externalId    String?  @unique
   name          String // ej. "Asia Gaming"
   platformTypes String[]
   apiKey        String? // si aplica
@@ -115,39 +116,45 @@ model GameProvider {
 }
 
 model Game {
-  id             String        @id @default(uuid())
-  hall           String
-  betId          String
-  slug           String        @unique
-  title          String
-  gameType       String? // ej. "BAC", "DT", "ROU" (Live); o vacío para lobby
-  rtp            Decimal?      @db.Decimal(5, 2)
-  devices        String[] // ["DESKTOP","MOBILE"]
-  tags           String[] // ["popular","nuevo"]
-  enabled        Boolean       @default(true)
-  order          Int           @default(0)
-  categories     Category[]
-  thumbnailUrl   String?
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
-  GameProvider   GameProvider? @relation(fields: [gameProviderId], references: [id])
-  gameProviderId String?
-  sessions       BetSession[]
-  allowDemo      Boolean       @default(false)
-  width          String        @default("0")
-  show           Boolean       @default(true)
-  priority       Int           @default(1)
+  id                      String        @id @default(uuid())
+  hall                    String
+  betId                   String
+  slug                    String        @unique
+  title                   String
+  gameType                String? // ej. "BAC", "DT", "ROU" (Live); o vacío para lobby
+  rtp                     Decimal?      @db.Decimal(5, 2)
+  devices                 String[] // ["DESKTOP","MOBILE"]
+  tags                    String[] // ["popular","nuevo"]
+  enabled                 Boolean       @default(true)
+  order                   Int           @default(0)
+  categories              Category[]
+  thumbnailUrl            String?
+  createdAt               DateTime      @default(now())
+  updatedAt               DateTime      @updatedAt
+  GameProvider            GameProvider? @relation(fields: [gameProviderId], references: [id])
+  gameProviderId          String?
+  System                  String        @default("")
+  sessions                BetSession[]
+  allowDemo               Boolean       @default(false)
+  width                   String        @default("0")
+  show                    Boolean       @default(true)
+  priority                Int           @default(1)
+  PageCode                String?
+  LowRtpUrl               String?
+  LowRtpMobileUrl         String?
+  LowRtpUrlExternal       String?
+  LowRtpMobileUrlExternal String?
 
   @@unique([hall, betId])
   @@index([enabled])
 }
 
 model Category {
-  id         String   @id @default(uuid())
-  externalId String?  @unique
+  id         String  @id @default(uuid())
+  externalId String? @unique
   name       String
   games      Game[]
-  order      Int      @default(1)
+  order      Int     @default(1)
 }
 
 model Country {
