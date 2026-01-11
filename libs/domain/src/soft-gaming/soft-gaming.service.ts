@@ -226,7 +226,7 @@ export class SoftGamingService {
       });
   }
 
-  async addUser(userId: string, userIp: string, userCountry) {
+  async addUser(userId: string, userIp: string, userCountry: string) {
     type Params = {
       Login: string;
       Password: string;
@@ -248,7 +248,7 @@ export class SoftGamingService {
       Hash: HASH,
       Country: userCountry
     }
-    console.log(params)
+    console.log(params, userIp)
     const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/User/Add?Login=${params.Login}&Password=${params.Password}&Currency=${params.Currency || ''}&RegistrationIP=${params.RegistrationIP}&Language=${params.Language || ''}&TID=${tid}&Hash=${params.Hash}&Country=${params.Country}`;
     return axios
       .get(url)
