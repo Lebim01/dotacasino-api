@@ -155,8 +155,8 @@ export class SoftGamingService {
       UserIP: string;
       Language?: string;
       UserAutoCreate: string;
-      Currency: string;
-      Country: string;
+      Currency?: string;
+      Country?: string;
       Hash: string;
     }
     const { tid, id } = await this.getTID();
@@ -165,8 +165,8 @@ export class SoftGamingService {
     const params: Params = {
       UserAutoCreate: '1',
       Currency: 'USD',
-      Country: 'MX',
-      Language: 'es',
+      //Country: 'MX',
+      //Language: 'es',
       Page: game.PageCode!,
       Password: USER_PASSWROD, // fija para el usuario?
       System: game.System,
@@ -174,12 +174,10 @@ export class SoftGamingService {
       Login: userId,
       Hash: HASH
     }
-    console.log(params)
-    const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/User/AuthHTML`;
+    const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/User/AuthHTML?&Login=${params.Login}&Password=${params.Password}&System=${params.System}&Page=${params.Page}&UserIP=${params.UserIP}&UserAutoCreate=${params.UserAutoCreate}&Currency=${params.Currency}&Hash=${params.Hash}`;
     return axios
-      .get(url, {
-        params,
-      }).then(async (r) => {
+      .get(url)
+      .then(async (r) => {
         await this.prisma.softGamingRecords.update({
           data: {
             status: RequestStatus.SUCCESS,
