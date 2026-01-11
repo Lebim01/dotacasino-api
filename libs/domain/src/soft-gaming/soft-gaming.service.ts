@@ -191,8 +191,8 @@ export class SoftGamingService {
         });
 
         try {
-          if (typeof r.data === 'string' && r.data.startsWith("15,")) {
-            throw 'Wrong hash authorization'
+          if (typeof r.data === 'string') {
+            throw r
           }
           return r.data
         } catch (error) {
@@ -212,7 +212,7 @@ export class SoftGamingService {
           },
           where: { id },
         });
-        throw error
+        throw error.data
       });
   }
 }
