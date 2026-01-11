@@ -7,5 +7,6 @@ import { SoftGamingService } from './soft-gaming.service';
   providers: [PrismaService, SoftGamingService],
   controllers: [SoftGamingController],
   imports: [],
+  exports: [SoftGamingService],
 })
 export class SoftGamingModule {}

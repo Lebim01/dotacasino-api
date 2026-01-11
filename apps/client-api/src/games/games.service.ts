@@ -4,12 +4,14 @@ import { PrismaService } from 'libs/db/src/prisma.service';
 import { Prisma } from '@prisma/client';
 import { BetService } from '../bet/bet.service';
 import { DOMAINS } from 'libs/shared/src/domains';
+import { SoftGamingService } from 'libs/domain/src/soft-gaming/soft-gaming.service';
 
 @Injectable()
 export class GamesService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly bet: BetService,
+    private readonly softGaming: SoftGamingService,
   ) { }
 
   async list(q: ListGamesDto) {
@@ -96,7 +98,7 @@ export class GamesService {
     return result.filter(r => r.game_count > 0);
   }
 
-  async openGame(gameSlug: string, domain: string, userId: string) {
+  async openGame(gameSlug: string, domain: string, userId: string, ip: string) {
     const game = await this.prisma.game.findFirst({
       where: {
         slug: {
@@ -110,23 +112,12 @@ export class GamesService {
       throw new HttpException('Not found', 401);
     }
 
-    const response = await this.bet.openGame(game.betId, domain, userId);
-
-    if (response.status == 'success') {
-      await this.prisma.betSession.create({
-        data: {
-          hall: DOMAINS[domain].id,
-          sessionId: response.content.gameRes.sessionId,
-          gameId: game.id,
-          userId,
-        },
-      });
-
-      return { ...response, game };
-    } else {
-      console.log(response);
-      return response;
-    }
+    const response = await this.softGaming.getAuthorizationUser(
+      userId,
+      game.id,
+      ip,
+    );
+    return { status: 'success', html: response, game };
   }
 
   async categories(take = -1) {
