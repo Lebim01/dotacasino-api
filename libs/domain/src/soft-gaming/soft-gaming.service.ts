@@ -192,7 +192,7 @@ export class SoftGamingService {
 
         try {
           if (typeof r.data === 'string' && r.data.startsWith("15,")) {
-            throw new Error("Wrong hash authorization")
+            throw 'Wrong hash authorization'
           }
           return r.data
         } catch (error) {
