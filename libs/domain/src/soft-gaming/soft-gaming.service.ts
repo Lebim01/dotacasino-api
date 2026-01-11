@@ -174,10 +174,12 @@ export class SoftGamingService {
       Language?: string;
       Country?: string;
       Hash: string;
+      Currency: string;
+      UserAutoCreate: string;
     };
     const { tid, id } = await this.getTID();
     const USER_PASSWORD = 'Xp9vK2mB5zQ8AbCd';
-    const USER_LOGIN = '15533_' + userId;
+    const USER_LOGIN = userId;
     const HASH = MD5(
       `User/AuthHTML/${SERVER_IP}/${tid}/${this.APIKEY}/${USER_LOGIN}/${USER_PASSWORD}/${game.System}/${this.APIPASS}`,
     ).toString();
@@ -188,6 +190,8 @@ export class SoftGamingService {
       UserIP: toIPv4(userIp),
       Login: USER_LOGIN,
       Hash: HASH,
+      UserAutoCreate: '1',
+      Currency: 'USD',
     };
     console.log(params)
     const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/User/AuthHTML?Login=${params.Login}&Password=${params.Password}&System=${params.System}&Page=${params.Page}&UserIP=${params.UserIP}&TID=${tid}&Hash=${params.Hash}`;
