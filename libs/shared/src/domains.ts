@@ -8,7 +8,7 @@ const HALL_AMERICA = {
   continent: 'eur',
 };
 const HALL_COREA = {
-  id: '943276',
+  id: 'soft-gaming-asia',
   key: 'fa0TvtMPkofAfyX1RBilCVMsO',
   api: 'https://asiaapi.net/API/',
   lang: 'ko',
