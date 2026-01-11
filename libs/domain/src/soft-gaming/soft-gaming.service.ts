@@ -157,22 +157,60 @@ export class SoftGamingService {
       USERAUTOCREATE: string;
       CURRENCY: string;
       COUNTRY: string;
+      HASH: string;
     }
+    const { tid, id } = await this.getTID();
+    const USER_PASSWROD = '123987xd'
+    const HASH = MD5(`User/AuthHTML/${SERVER_IP}/${tid}/${this.APIKEY}/${userId}/${USER_PASSWROD}/${game.System}/${this.APIPASS}`).toString()
     const params: Params = {
       USERAUTOCREATE: '1',
       CURRENCY: 'USD',
       COUNTRY: 'MX',
       LANGUAGE: 'es',
       PAGE: game.PageCode!,
-      PASSWORD: '123987xd', // fija para el usuario?
+      PASSWORD: USER_PASSWROD, // fija para el usuario?
       SYSTEM: game.System,
       USERIP: userIp,
       LOGIN: userId,
+      HASH
     }
     const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/User/AuthHTML`;
     return axios
       .get(url, {
         params,
-      }).then(r => r.data);
+      }).then(async (r) => {
+        await this.prisma.softGamingRecords.update({
+          data: {
+            status: RequestStatus.SUCCESS,
+            metadata: {
+              HASH,
+              tid,
+              url,
+            },
+          },
+          where: { id },
+        });
+
+        try {
+          return r.data
+        } catch (error) {
+          this.logger.error('Error parsing category list JSON', error);
+          return [];
+        }
+      }).catch(async (error) => {
+        await this.prisma.softGamingRecords.update({
+          data: {
+            status: RequestStatus.ERROR,
+            metadata: {
+              HASH,
+              tid,
+              url,
+              error: error.message,
+            },
+          },
+          where: { id },
+        });
+        throw error
+      });
   }
 }
