@@ -40,6 +40,6 @@ export class SoftGamingController {
     @CurrentUser() user: { userId: string },
     @Ip() ip: string,
   ) {
-    return this.softGamingService.addUser(user.userId, ip);
+    return this.softGamingService.addUser(user.userId, ip, 'MX');
   }
 }
