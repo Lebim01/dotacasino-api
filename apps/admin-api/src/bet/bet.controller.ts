@@ -4,7 +4,8 @@ import { Controller, Post, Body, Get, Options, Res } from '@nestjs/common';
 import { PrismaService } from 'libs/db/src/prisma.service';
 import Decimal from 'decimal.js';
 import dayjs from 'dayjs';
-import { md5 } from './utils';
+import { md5, generateHmacResponse } from './utils';
+import { ConfigService } from '@nestjs/config';
 
 const generateHash = (session: string, dateTime: string, credit: number) => {
   return md5(session + dateTime + session + credit);
@@ -13,9 +14,7 @@ const generateHash = (session: string, dateTime: string, credit: number) => {
 @Controller('bet')
 export class BetController {
   constructor(
-    private readonly walletService: WalletService,
-    private readonly userService: UserCommonService,
-    private readonly prismaService: PrismaService,
+    private readonly configService: ConfigService,
   ) { }
 
   @Options()
@@ -31,9 +30,13 @@ export class BetController {
   @Post('')
   async webhook(@Body() body: any) {
     if (body.type === 'ping') {
-      return {
+      const responseBody = {
         status: 'OK',
-        hmac: generateHash(body.session, body.datetime, body.credit),
+      };
+      const secretKey = this.configService.getOrThrow<string>('SOFTGAMING_HMACSECRET');
+      return {
+        ...responseBody,
+        hmac: generateHmacResponse(responseBody, secretKey),
       };
     }
   }
