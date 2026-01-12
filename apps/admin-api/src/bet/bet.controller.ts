@@ -74,6 +74,23 @@ export class BetController {
         hmac: generateHmacResponse(responseBody, secretKey),
       };
     }
+
+    // Validate User existence for types that require it
+    if (body.userid && (body.type === 'balance' || body.type === 'debit' || body.type === 'credit')) {
+      const user = await this.prismaService.user.findUnique({
+        where: { id: body.userid },
+      });
+
+      if (!user) {
+        const responseBody = {
+          error: 'Invalid userid',
+        };
+        return {
+          ...responseBody,
+          hmac: generateHmacResponse(responseBody, secretKey),
+        };
+      }
+    }
     if (body.type === 'balance') {
       const balance = await this.walletService.getBalance(body.userid);
       const responseBody = {
