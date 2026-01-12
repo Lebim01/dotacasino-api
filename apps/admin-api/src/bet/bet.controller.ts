@@ -165,7 +165,7 @@ export class BetController {
           userId: body.userid,
           amount: new Decimal(body.amount),
           reason: isCancel ? 'BET_CANCEL' : 'BET_WIN',
-          idempotencyKey: body.i_actionid?.toString(),
+          idempotencyKey: isCancel ? `cancel_${body.i_actionid}` : body.i_actionid?.toString(),
           meta: {
             tid: body.tid,
             gameId: body.i_gameid,
