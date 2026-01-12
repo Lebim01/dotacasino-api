@@ -91,6 +91,21 @@ export class BetController {
         };
       }
     }
+
+    // Validate Currency
+    if (body.currency && (body.type === 'balance' || body.type === 'debit' || body.type === 'credit')) {
+      if (body.currency !== 'USD') {
+        const balance = await this.walletService.getBalance(body.userid);
+        const responseBody = {
+          error: 'Invalid currency',
+          balance: balance.toFixed(2),
+        };
+        return {
+          ...responseBody,
+          hmac: generateHmacResponse(responseBody, secretKey),
+        };
+      }
+    }
     if (body.type === 'balance') {
       const balance = await this.walletService.getBalance(body.userid);
       const responseBody = {
