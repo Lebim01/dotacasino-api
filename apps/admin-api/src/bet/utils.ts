@@ -763,7 +763,7 @@ export const generateHmacResponse = (requestBody: any, secretKey: string): strin
   const base = { ...requestBody };
   delete base.hmac;
 
-  if ('actions' in base && Array.isArray(base.actions)) {
+  if ('actions' in base) {
     let actionsStr = '';
     for (const action of base.actions) {
       Object.keys(action)
