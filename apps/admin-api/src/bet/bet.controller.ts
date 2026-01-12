@@ -120,16 +120,18 @@ export class BetController {
 
     if (body.type === 'debit') {
       try {
+        const isCancel = body.subtype === 'cancel';
         const balance = await this.walletService.debit({
           userId: body.userid,
           amount: new Decimal(body.amount),
-          reason: 'BET_PLACE',
-          idempotencyKey: body.i_actionid?.toString(),
+          reason: isCancel ? 'BET_CANCEL' : 'BET_PLACE',
+          idempotencyKey: isCancel ? `cancel_${body.i_actionid}` : body.i_actionid?.toString(),
           meta: {
             tid: body.tid,
             gameId: body.i_gameid,
             gameDesc: body.i_gamedesc,
             actionId: body.i_actionid,
+            subtype: body.subtype,
           },
         });
 
