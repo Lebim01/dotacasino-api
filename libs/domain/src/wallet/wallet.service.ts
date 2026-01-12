@@ -86,9 +86,14 @@ export class WalletService {
     if (input.idempotencyKey) {
       const prev = await p.ledgerEntry.findUnique({
         where: { idempotencyKey: input.idempotencyKey },
-        select: { balanceAfter: true },
+        select: { balanceAfter: true, amount: true },
       });
-      if (prev?.balanceAfter != null) return new Decimal(prev.balanceAfter);
+      if (prev && prev.amount !== null) {
+        if (!new Decimal(prev.amount).equals(amount)) {
+          throw new Error('Inconsistent idempotency: amount mismatch');
+        }
+        return new Decimal(prev.balanceAfter!);
+      }
     }
 
     const apply = async (client: Prisma.TransactionClient) => {
@@ -145,9 +150,14 @@ export class WalletService {
     if (input.idempotencyKey) {
       const prev = await p.ledgerEntry.findUnique({
         where: { idempotencyKey: input.idempotencyKey },
-        select: { balanceAfter: true },
+        select: { balanceAfter: true, amount: true },
       });
-      if (prev?.balanceAfter != null) return new Decimal(prev.balanceAfter);
+      if (prev && prev.amount !== null) {
+        if (!new Decimal(prev.amount).abs().equals(amount)) {
+          throw new Error('Inconsistent idempotency: amount mismatch');
+        }
+        return new Decimal(prev.balanceAfter!);
+      }
     }
 
     const apply = async (client: Prisma.TransactionClient) => {

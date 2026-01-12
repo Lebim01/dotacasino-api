@@ -80,8 +80,11 @@ export class BetController {
         };
       } catch (error: any) {
         const balance = await this.walletService.getBalance(body.userid);
+        const errorMsg = error?.message === 'Fondos insuficientes' ? 'INSUFFICIENT_FUNDS' : 
+                         error?.message === 'Inconsistent idempotency: amount mismatch' ? 'Transaction Failed' : 
+                         'ERROR';
         const responseBody = {
-          error: error?.message === 'Fondos insuficientes' ? 'INSUFFICIENT_FUNDS' : 'ERROR',
+          error: errorMsg,
           balance: balance.toFixed(2),
         };
         return {
