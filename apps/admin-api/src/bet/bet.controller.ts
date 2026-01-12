@@ -20,12 +20,12 @@ export class BetController {
 
   @Get('')
   async hello() {
-    return 'Hello';
+    return 'Hello GET';
   }
 
   @Post('')
   async webhook(@Body() body: any) {
     console.log(body)
-    return 'Hello 123';
+    return 'Hello POST';
   }
 }
