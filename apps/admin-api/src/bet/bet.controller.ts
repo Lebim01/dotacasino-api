@@ -81,9 +81,8 @@ export class BetController {
       } catch (error: any) {
         const balance = await this.walletService.getBalance(body.userid);
         const responseBody = {
-          status: error?.message === 'Fondos insuficientes' ? 'FAIL' : 'ERROR',
+          error: error?.message === 'Fondos insuficientes' ? 'INSUFFICIENT_FUNDS' : 'ERROR',
           balance: balance.toFixed(2),
-          error: error?.message || 'Unknown error',
         };
         return {
           ...responseBody,
