@@ -161,29 +161,28 @@ export class WalletService {
 
       const newBal = current.minus(amount);
 
-      await client.wallet.update({
-        where: { id: wallet.id },
-        data: { balance: newBal },
-      });
-
-      await db
-        .collection('users')
-        .doc(input.userId)
-        .update({
-          balance: firestore.FieldValue.increment(amount.toNumber() * -1),
-        });
-
-      // Guardamos el movimiento como monto negativo para claridad contable
-      await client.ledgerEntry.create({
-        data: {
-          walletId: wallet.id,
-          kind: input.reason,
-          amount: amount.negated(), // negativo
-          meta: input.meta ?? {},
-          idempotencyKey: input.idempotencyKey ?? null,
-          balanceAfter: newBal,
-        },
-      });
+      await Promise.all([
+        client.wallet.update({
+          where: { id: wallet.id },
+          data: { balance: newBal },
+        }),
+        db
+          .collection('users')
+          .doc(input.userId)
+          .update({
+            balance: firestore.FieldValue.increment(amount.toNumber() * -1),
+          }),
+        client.ledgerEntry.create({
+          data: {
+            walletId: wallet.id,
+            kind: input.reason,
+            amount: amount.negated(), // negativo
+            meta: input.meta ?? {},
+            idempotencyKey: input.idempotencyKey ?? null,
+            balanceAfter: newBal,
+          },
+        }),
+      ])
 
       return newBal;
     };
