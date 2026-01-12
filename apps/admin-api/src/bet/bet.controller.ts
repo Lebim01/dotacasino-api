@@ -29,11 +29,24 @@ export class BetController {
 
   @Post('')
   async webhook(@Body() body: any) {
+    const secretKey = this.configService.getOrThrow<string>('SOFTGAMING_HMACSECRET');
     if (body.type === 'ping') {
-      const secretKey = this.configService.getOrThrow<string>('SOFTGAMING_HMACSECRET');
-      return {
+      const responseBody = {
         status: 'OK',
-        hmac: generateHmacResponse({ status: 'OK' }, secretKey),
+      }
+      return {
+        ...responseBody,
+        hmac: generateHmacResponse(responseBody, secretKey),
+      };
+    }
+    if (body.type === 'balance') {
+      const responseBody = {
+        status: 'OK',
+        balance: '100.00'
+      }
+      return {
+        ...responseBody,
+        hmac: generateHmacResponse(responseBody, secretKey),
       };
     }
   }
