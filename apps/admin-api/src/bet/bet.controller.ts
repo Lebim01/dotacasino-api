@@ -33,6 +33,37 @@ export class BetController {
   @Post('')
   async webhook(@Body() body: any) {
     const secretKey = this.configService.getOrThrow<string>('SOFTGAMING_HMACSECRET');
+
+    // Validate TID consistency: A TID must always belong to the same Action ID
+    if (body.tid && body.i_actionid && (body.type === 'debit' || body.type === 'credit')) {
+      const tidStr = body.tid.toString();
+      const actionIdStr = body.i_actionid.toString();
+
+      const existingTransaction = await this.prismaService.ledgerEntry.findFirst({
+        where: {
+          meta: {
+            path: ['tid'],
+            equals: tidStr,
+          },
+        },
+      });
+
+      if (existingTransaction) {
+        const meta = existingTransaction.meta as any;
+        if (meta.actionId !== actionIdStr) {
+          const balance = await this.walletService.getBalance(body.userid);
+          const responseBody = {
+            error: 'Transaction Failed',
+            balance: balance.toFixed(2),
+          };
+          return {
+            ...responseBody,
+            hmac: generateHmacResponse(responseBody, secretKey),
+          };
+        }
+      }
+    }
+
     if (body.type === 'ping') {
       const responseBody = {
         status: 'OK',
@@ -80,9 +111,9 @@ export class BetController {
         };
       } catch (error: any) {
         const balance = await this.walletService.getBalance(body.userid);
-        const errorMsg = error?.message === 'Fondos insuficientes' ? 'INSUFFICIENT_FUNDS' : 
-                         error?.message === 'Inconsistent idempotency: amount mismatch' ? 'Transaction Failed' : 
-                         'ERROR';
+        const errorMsg = error?.message === 'Fondos insuficientes' ? 'INSUFFICIENT_FUNDS' :
+          error?.message === 'Inconsistent idempotency: amount mismatch' ? 'Transaction Failed' :
+            'ERROR';
         const responseBody = {
           error: errorMsg,
           balance: balance.toFixed(2),
