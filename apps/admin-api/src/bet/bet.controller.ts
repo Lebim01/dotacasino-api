@@ -36,7 +36,7 @@ export class BetController {
       const secretKey = this.configService.getOrThrow<string>('SOFTGAMING_HMACSECRET');
       return {
         ...responseBody,
-        hmac: generateHmacResponse(responseBody, secretKey),
+        hmac: generateHmacResponse(body, secretKey),
       };
     }
   }
