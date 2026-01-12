@@ -30,7 +30,11 @@ export class BetController {
 
   @Post('')
   async webhook(@Body() body: any) {
-    console.log(body)
-    return 'Hello POST';
+    if (body.type === 'ping') {
+      return {
+        status: 'OK',
+        hmac: generateHash(body.session, body.datetime, body.credit),
+      };
+    }
   }
 }
