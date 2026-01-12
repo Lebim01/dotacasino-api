@@ -60,7 +60,7 @@ export class BetController {
           userId: body.userid,
           amount: new Decimal(body.amount),
           reason: 'BET_PLACE',
-          idempotencyKey: body.tid?.toString() || body.i_actionid?.toString(),
+          idempotencyKey: body.i_actionid?.toString(),
           meta: {
             tid: body.tid,
             gameId: body.i_gameid,
@@ -96,7 +96,7 @@ export class BetController {
         userId: body.userid,
         amount: new Decimal(body.amount),
         reason: 'BET_WIN',
-        idempotencyKey: body.tid?.toString() || body.i_actionid?.toString(),
+        idempotencyKey: body.i_actionid?.toString(),
         meta: {
           tid: body.tid,
           gameId: body.i_gameid,
