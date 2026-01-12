@@ -36,21 +36,22 @@ export class BetController {
 
     // Validate TID consistency: A TID must always belong to the same Action ID
     if (body.tid && body.i_actionid && (body.type === 'debit' || body.type === 'credit')) {
-      const tidStr = body.tid.toString();
       const actionIdStr = body.i_actionid.toString();
 
+      // Search for any ledger entry that has this tid in its meta
+      // We check both number and string because Prisma JSON filtering is type-sensitive
       const existingTransaction = await this.prismaService.ledgerEntry.findFirst({
         where: {
-          meta: {
-            path: ['tid'],
-            equals: tidStr,
-          },
+          OR: [
+            { meta: { path: ['tid'], equals: body.tid } },
+            { meta: { path: ['tid'], equals: body.tid.toString() } },
+          ],
         },
       });
 
       if (existingTransaction) {
         const meta = existingTransaction.meta as any;
-        if (meta.actionId !== actionIdStr) {
+        if (meta.actionId?.toString() !== actionIdStr) {
           const balance = await this.walletService.getBalance(body.userid);
           const responseBody = {
             error: 'Transaction Failed',
@@ -126,28 +127,42 @@ export class BetController {
     }
 
     if (body.type === 'credit') {
-      const balance = await this.walletService.credit({
-        userId: body.userid,
-        amount: new Decimal(body.amount),
-        reason: 'BET_WIN',
-        idempotencyKey: body.i_actionid?.toString(),
-        meta: {
-          tid: body.tid,
-          gameId: body.i_gameid,
-          gameDesc: body.i_gamedesc,
-          actionId: body.i_actionid,
-        },
-      });
+      try {
+        const balance = await this.walletService.credit({
+          userId: body.userid,
+          amount: new Decimal(body.amount),
+          reason: 'BET_WIN',
+          idempotencyKey: body.i_actionid?.toString(),
+          meta: {
+            tid: body.tid,
+            gameId: body.i_gameid,
+            gameDesc: body.i_gamedesc,
+            actionId: body.i_actionid,
+          },
+        });
 
-      const responseBody = {
-        status: 'OK',
-        balance: balance.toFixed(2),
-        tid: body.tid,
-      };
-      return {
-        ...responseBody,
-        hmac: generateHmacResponse(responseBody, secretKey),
-      };
+        const responseBody = {
+          status: 'OK',
+          balance: balance.toFixed(2),
+          tid: body.tid,
+        };
+        return {
+          ...responseBody,
+          hmac: generateHmacResponse(responseBody, secretKey),
+        };
+      } catch (error: any) {
+        const balance = await this.walletService.getBalance(body.userid);
+        const errorMsg = error?.message === 'Inconsistent idempotency: amount mismatch' ? 'Transaction Failed' :
+          'ERROR';
+        const responseBody = {
+          error: errorMsg,
+          balance: balance.toFixed(2),
+        };
+        return {
+          ...responseBody,
+          hmac: generateHmacResponse(responseBody, secretKey),
+        };
+      }
     }
   }
 }
