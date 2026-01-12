@@ -26,6 +26,6 @@ export class BetController {
   @Post('')
   async webhook(@Body() body: any) {
     console.log(body)
-    return 'Hello';
+    return 'Hello 123';
   }
 }
