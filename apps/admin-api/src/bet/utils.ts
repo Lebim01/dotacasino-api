@@ -775,8 +775,6 @@ export const generateHmacResponse = (requestBody: any, secretKey: string): strin
     base.actions = actionsStr;
   }
 
-  console.log(base)
-
   const hash = crypto.createHash('sha256');
   const hmacKey = hash.update(secretKey).digest();
   const hmacInstance = crypto.createHmac('sha256', hmacKey);
