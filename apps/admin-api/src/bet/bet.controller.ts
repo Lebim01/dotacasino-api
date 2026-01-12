@@ -1,6 +1,6 @@
 import { UserCommonService } from '@domain/users/users.service';
 import { WalletService } from '@domain/wallet/wallet.service';
-import { Controller, Post, Body, Get } from '@nestjs/common';
+import { Controller, Post, Body, Get, Options, Res } from '@nestjs/common';
 import { PrismaService } from 'libs/db/src/prisma.service';
 import Decimal from 'decimal.js';
 import dayjs from 'dayjs';
@@ -17,6 +17,11 @@ export class BetController {
     private readonly userService: UserCommonService,
     private readonly prismaService: PrismaService,
   ) { }
+
+  @Options()
+  preflight(@Res() res: Response) {
+    return ''
+  }
 
   @Get('')
   async hello() {
