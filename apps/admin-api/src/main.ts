@@ -10,11 +10,6 @@ import { json } from 'express';
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
 
-  app.use((req, _res, next) => {
-    console.log(`[IN] ${req.method} ${req.originalUrl}`);
-    next();
-  });
-
   const prisma = app.get(PrismaService);
   await prisma.enableShutdownHooks(app);
 

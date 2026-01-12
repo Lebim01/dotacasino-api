@@ -24,7 +24,7 @@ export type DebitInput = {
 
 @Injectable()
 export class WalletService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   async createWallet(userId: string) {
     try {
@@ -95,28 +95,31 @@ export class WalletService {
       const wallet = await this.getOrCreateWallet(input.userId, client);
       const newBal = new Decimal(wallet.balance).plus(amount);
 
-      await client.wallet.update({
-        where: { id: wallet.id },
-        data: { balance: newBal },
-      });
-
-      await db
-        .collection('users')
-        .doc(input.userId)
-        .update({
-          balance: firestore.FieldValue.increment(amount.toNumber()),
-        });
-
-      await client.ledgerEntry.create({
-        data: {
-          walletId: wallet.id,
-          kind: input.reason,
-          amount, // positivo
-          meta: input.meta ?? {},
-          idempotencyKey: input.idempotencyKey ?? null,
-          balanceAfter: newBal,
-        },
-      });
+      await Promise.all([
+        // update wallet new bal
+        client.wallet.update({
+          where: { id: wallet.id },
+          data: { balance: newBal },
+        }),
+        // update user balance
+        db
+          .collection('users')
+          .doc(input.userId)
+          .update({
+            balance: firestore.FieldValue.increment(amount.toNumber()),
+          }),
+        // create ledger entry
+        client.ledgerEntry.create({
+          data: {
+            walletId: wallet.id,
+            kind: input.reason,
+            amount, // positivo
+            meta: input.meta ?? {},
+            idempotencyKey: input.idempotencyKey ?? null,
+            balanceAfter: newBal,
+          },
+        }),
+      ]);
 
       return newBal;
     };
