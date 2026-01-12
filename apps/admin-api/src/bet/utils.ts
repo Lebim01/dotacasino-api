@@ -1,3 +1,5 @@
+import * as crypto from 'crypto';
+
 export const md5 =  (_0x174B4) => {
   var _0x16B6C = function (_0x176AC, _0x17784) {
     var _0x176F4, _0x177CC, _0x1773C, _0x17814, _0x17664;
@@ -755,4 +757,34 @@ export const md5 =  (_0x174B4) => {
     _0x17544(_0x16BFC) +
     _0x17544(_0x16CD4);
   return _0x174FC.toLowerCase();
+};
+
+export const generateHmacResponse = (requestBody: any, secretKey: string): string => {
+  const base = { ...requestBody };
+  delete base.hmac;
+
+  if ('actions' in base && Array.isArray(base.actions)) {
+    let actionsStr = '';
+    for (const action of base.actions) {
+      Object.keys(action)
+        .sort()
+        .forEach((key) => {
+          actionsStr += action[key];
+        });
+    }
+    base.actions = actionsStr;
+  }
+
+  const hash = crypto.createHash('sha256');
+  const hmacKey = hash.update(secretKey).digest();
+  const hmacInstance = crypto.createHmac('sha256', hmacKey);
+
+  let hmacBase = '';
+  Object.keys(base)
+    .sort()
+    .forEach((key) => {
+      hmacBase += base[key];
+    });
+
+  return hmacInstance.update(hmacBase).digest('hex');
 };
