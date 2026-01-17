@@ -193,7 +193,7 @@ export class SoftGamingService {
       UserAutoCreate: '1',
       Currency: 'USD',
     };
-    const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/User/AuthHTML?Login=${params.Login}&Password=${params.Password}&System=${params.System}&Page=${params.Page}&UserIP=${params.UserIP}&TID=${tid}&Hash=${params.Hash}&Demo=1`;
+    const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/User/AuthHTML?Login=${params.Login}&Password=${params.Password}&System=${params.System}&Page=${params.Page}&UserIP=${params.UserIP}&TID=${tid}&Hash=${params.Hash}`;
     return axios
       .get(url)
       .then(async (r) => {
