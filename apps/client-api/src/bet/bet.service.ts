@@ -51,23 +51,11 @@ export class BetService {
 
   async openGame(gameId: string, domain: string, userId: string) {
     const hall = DOMAINS[domain]
-    console.log({
-      ...this.params,
-      cmd: 'openGame',
-      domain,
-      exitUrl: `https://${domain}/exit`,
-      language: hall.lang,
-      continent: hall.continent,
-      login: userId,
-      gameId,
-      //cdnUrl: `${domain}/resources`,
-      demo: '0',
-    })
     const { data } = await firstValueFrom(
       this.api.post<OpenGameApiResponse, OpenGameDto>('openGame/', {
         ...this.params,
         cmd: 'openGame',
-        domain: 'https://dotamx.com',
+        domain: `https://${domain}`,
         exitUrl: `https://${domain}/exit`,
         language: 'en',
         continent: hall.continent,
