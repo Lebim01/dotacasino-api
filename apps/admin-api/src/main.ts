@@ -16,6 +16,9 @@ async function bootstrap() {
   app.enableCors({
     origin: new RegExp(process.env.CORS_REGEX ?? '.*'),
     credentials: true,
+    methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    optionsSuccessStatus: 204,
   });
   // Opcional: restringir por IP en reverse proxy
   await app.listen(

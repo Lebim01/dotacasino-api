@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-APP_DIR="/var/www/app"
+APP_DIR="/var/www/app-old"
 
 # Servicios systemd (ajusta si tus nombres difieren)
 SVC_ADMIN="nest-admin"
@@ -18,12 +18,11 @@ yarn install --frozen-lockfile || yarn install
 echo "==> Build (admin-api -> client-api -> backoffice-api)"
 yarn nest build admin-api
 yarn nest build client-api
-yarn nest build backoffice-api
 
 echo "==> Reiniciando servicios"
-sudo systemctl restart "$SVC_ADMIN" "$SVC_CLIENT" "$SVC_BACKOFFICE"
+sudo systemctl restart "$SVC_ADMIN-tbs" "$SVC_CLIENT-tbs"
 
 echo "==> Status"
-sudo systemctl --no-pager --full status "$SVC_ADMIN" "$SVC_CLIENT" "$SVC_BACKOFFICE"
+sudo systemctl --no-pager --full status "$SVC_ADMIN-tbs" "$SVC_CLIENT-tbs"
 
 echo "✅ Deploy completo"
