@@ -42,6 +42,7 @@ export class Tbs2apiController {
       }
 
       if (body.cmd == 'writeBet') {
+        console.log(body);
         const payload = {
           bet: new Decimal(body.bet),
           win: new Decimal(body.win),
