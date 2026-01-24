@@ -354,3 +354,9 @@ model SoftGamingRecords {
   metadata  Json?
   createdAt DateTime      @default(now())
 }
+model SoftgamingWebhookLog {
+  id           String   @id @default(cuid())
+  requestBody  Json
+  responseBody Json
+  createdAt    DateTime @default(now())
+}

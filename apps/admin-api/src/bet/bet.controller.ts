@@ -33,9 +33,23 @@ export class BetController {
 
   @Post('')
   async webhook(@Body() body: any) {
-    const secretKey = this.configService.getOrThrow<string>('SOFTGAMING_HMACSECRET');
+    const response = await this.processWebhook(body);
 
-    console.log(body)
+    // Logging is performed asynchronously to minimize response latency
+    this.prismaService.softgamingWebhookLog.create({
+      data: {
+        requestBody: body,
+        responseBody: response as any,
+      },
+    }).catch((err) => {
+      console.error('Failed to log Softgaming webhook:', err);
+    });
+
+    return response;
+  }
+
+  private async processWebhook(body: any) {
+    const secretKey = this.configService.getOrThrow<string>('SOFTGAMING_HMACSECRET');
 
     // Validate TID consistency: A TID must always belong to the same Action ID
     if (body.tid && body.i_actionid && (body.type === 'debit' || body.type === 'credit')) {
@@ -203,5 +217,16 @@ export class BetController {
         };
       }
     }
+
+    const responseBody = {
+      error: 'Invalid Request',
+    };
+    return {
+      ...responseBody,
+      hmac: generateHmacResponse(responseBody, secretKey),
+    };
   }
 }
+
+
+
