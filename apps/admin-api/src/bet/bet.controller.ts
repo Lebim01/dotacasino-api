@@ -27,12 +27,15 @@ export class BetController {
 
   @Get('')
   async hello() {
+    console.log('Hello GET');
     return 'Hello GET';
   }
 
   @Post('')
   async webhook(@Body() body: any) {
     const secretKey = this.configService.getOrThrow<string>('SOFTGAMING_HMACSECRET');
+
+    console.log(body)
 
     // Validate TID consistency: A TID must always belong to the same Action ID
     if (body.tid && body.i_actionid && (body.type === 'debit' || body.type === 'credit')) {
