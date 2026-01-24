@@ -155,6 +155,7 @@ export class BetController {
         const responseBody = {
           status: 'OK',
           balance: balance.toFixed(2),
+          tid: body.tid,
         };
         return {
           ...responseBody,
