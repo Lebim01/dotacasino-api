@@ -195,9 +195,7 @@ export class WalletService {
     }
 
     const apply = async (client: Prisma.TransactionClient) => {
-      const startFetch = Date.now();
       const wallet = await this.getOrCreateWallet(input.userId, client);
-      this.logger.log(`Fetch wallet: ${Date.now() - startFetch}ms`, 'WalletService.debit');
 
       const current = new Decimal(wallet.balance);
       if (current.lt(amount)) {
@@ -207,7 +205,6 @@ export class WalletService {
       const newBal = current.minus(amount);
 
       // 2. Transacción de DB: Solo operaciones SQL (muy rápidas)
-      const startSql = Date.now();
       await Promise.all([
         client.wallet.update({
           where: { id: wallet.id },
@@ -225,7 +222,6 @@ export class WalletService {
           },
         }),
       ]);
-      this.logger.log(`SQL Update + Ledger: ${Date.now() - startSql}ms`, 'WalletService.debit');
 
       return newBal;
     };
