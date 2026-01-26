@@ -159,8 +159,8 @@ export class BetController {
 
     // Validate Debit
     if (body.type === 'debit') {
+      const start = Date.now();
       try {
-        console.time('validate-debit');
         const isCancel = body.subtype === 'cancel';
         const balance = await this.walletService.debit({
           userId: body.userid,
@@ -199,7 +199,8 @@ export class BetController {
           hmac: generateHmacResponse(responseBody, secretKey),
         };
       } finally {
-        console.timeEnd('validate-debit');
+        const end = Date.now();
+        console.log(`validate-debit: ${end - start}ms`);
       }
     }
 
