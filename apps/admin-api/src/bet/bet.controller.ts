@@ -158,10 +158,8 @@ export class BetController {
     }
 
     // Validate Debit
-    if(body.type == 'debit') {
-      console.time('validate-debit-' + body.tid);
-    }
     if (body.type === 'debit') {
+      const start = Date.now();
       try {
         const isCancel = body.subtype === 'cancel';
         const balance = await this.walletService.debit({
@@ -200,10 +198,10 @@ export class BetController {
           ...responseBody,
           hmac: generateHmacResponse(responseBody, secretKey),
         };
+      } finally {
+        const end = Date.now();
+        console.log(`validate-debit: ${end - start}ms`);
       }
-    }
-    if(body.type == 'debit') {
-      console.timeEnd('validate-debit-' + body.tid);
     }
 
     if (body.type === 'credit') {
