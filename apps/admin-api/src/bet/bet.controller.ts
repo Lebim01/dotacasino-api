@@ -34,7 +34,7 @@ export class BetController {
   @Post('')
   async webhook(@Body() body: any) {
     console.log('webhook recived type =>', body.type);
-    console.time('time');
+    console.time('webhook');
     const response = await this.processWebhook(body);
 
     // Logging is performed asynchronously to minimize response latency
