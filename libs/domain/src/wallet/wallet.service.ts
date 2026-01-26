@@ -54,6 +54,7 @@ export class WalletService {
     const cachedId = this.walletIdCache.get(userId);
     
     if (cachedId) {
+      this.logger.debug(`Wallet found in cache for ${userId}: ${cachedId}`);
       // El findUnique por ID (Primary Key) es casi instantáneo en Postgres
       const wallet = await client.wallet.findUnique({
         where: { id: cachedId },
@@ -114,8 +115,6 @@ export class WalletService {
     const amount = new Decimal(input.amount);
     if (amount.lte(0)) throw new Error('El monto de crédito debe ser > 0');
 
-    const p = tx ?? this.prisma;
-
     const apply = async (client: Prisma.TransactionClient) => {
       const wallet = await this.getOrCreateWallet(input.userId, client);
       const newBal = new Decimal(wallet.balance).plus(amount);
@@ -163,8 +162,6 @@ export class WalletService {
   ): Promise<Decimal> {
     const amount = new Decimal(input.amount);
     if (amount.lte(0)) throw new Error('El monto de débito debe ser > 0');
-
-    const p = tx ?? this.prisma;
 
     const apply = async (client: Prisma.TransactionClient) => {
       const wallet = await this.getOrCreateWallet(input.userId, client);
