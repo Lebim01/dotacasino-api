@@ -1,11 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { firestore } from 'firebase-admin';
 import { db } from 'apps/backoffice-api/src/firebase/admin';
 import Decimal from 'decimal.js';
 import { PrismaService } from 'libs/db/src/prisma.service';
 import { CURRENCY } from 'libs/shared/src/currency';
-import { logTime } from 'libs/shared/src/log';
 
 export type CreditInput = {
   userId: string;
@@ -26,6 +25,10 @@ export type DebitInput = {
 
 @Injectable()
 export class WalletService {
+  private readonly logger = new Logger(WalletService.name, {
+    timestamp: true,
+  });
+
   constructor(private readonly prisma: PrismaService) { }
 
   async createWallet(userId: string) {
@@ -149,7 +152,6 @@ export class WalletService {
     const p = tx ?? this.prisma;
 
     // 1. Idempotencia: Verificación rápida
-    const now = Date.now();
     if (input.idempotencyKey) {
       const prev = await p.ledgerEntry.findUnique({
         where: { idempotencyKey: input.idempotencyKey },
@@ -162,10 +164,12 @@ export class WalletService {
         return new Decimal(prev.balanceAfter!);
       }
     }
-    console.log(`validate-idempotency: ${Date.now() - now} ms`);
 
     const apply = async (client: Prisma.TransactionClient) => {
+      const startTotal = Date.now();
+      const startFetch = Date.now();
       const wallet = await this.getOrCreateWallet(input.userId, client);
+      this.logger.log(`Fetch wallet: ${Date.now() - startFetch}ms`, 'WalletService.debit');
 
       const current = new Decimal(wallet.balance);
       if (current.lt(amount)) {
@@ -175,10 +179,11 @@ export class WalletService {
       const newBal = current.minus(amount);
 
       // 2. Transacción de DB: Solo operaciones SQL (muy rápidas)
+      const startSql = Date.now();
       await Promise.all([
         client.wallet.update({
           where: { id: wallet.id },
-          data: { balance: newBal },
+          data: { balance: { decrement: amount } }, // Cambio a decremento atómico
         }),
         client.ledgerEntry.create({
           data: {
@@ -192,13 +197,13 @@ export class WalletService {
           },
         }),
       ]);
+      this.logger.log(`SQL Update + Ledger: ${Date.now() - startSql}ms`, 'WalletService.debit');
+      this.logger.log(`Total inside apply: ${Date.now() - startTotal}ms`, 'WalletService.debit');
 
       return newBal;
     };
 
-    const now2 = Date.now();
     const finalBal = tx ? await apply(tx) : await this.prisma.$transaction(async (client) => apply(client));
-    console.log(`apply-transaction: ${Date.now() - now2} ms`);
 
     // 3. Sincronización Firestore: Fuera de la transacción de DB para máxima velocidad.
     // Usamos 'no await' si quieres responder instantáneamente al cliente,
