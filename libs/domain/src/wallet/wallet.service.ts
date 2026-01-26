@@ -81,10 +81,25 @@ export class WalletService {
    * Si no existe, retorna 0 sin crearla (ajusta a tus necesidades).
    */
   async getBalance(userId: string): Promise<Decimal> {
-    const wallet = await this.prisma.wallet.findFirst({
-      where: { userId, currency: CURRENCY },
-      select: { balance: true },
+    const cachedId = this.walletIdCache.get(userId);
+
+    if (cachedId) {
+      const wallet = await this.prisma.wallet.findUnique({
+        where: { id: cachedId },
+        select: { balance: true },
+      });
+      return new Decimal(wallet?.balance ?? 0);
+    }
+
+    const wallet = await this.prisma.wallet.findUnique({
+      where: { userId_currency: { userId, currency: CURRENCY } },
+      select: { id: true, balance: true },
     });
+
+    if (wallet) {
+      this.walletIdCache.set(userId, wallet.id);
+    }
+
     return new Decimal(wallet?.balance ?? 0);
   }
 
@@ -180,7 +195,6 @@ export class WalletService {
     }
 
     const apply = async (client: Prisma.TransactionClient) => {
-      const startTotal = Date.now();
       const startFetch = Date.now();
       const wallet = await this.getOrCreateWallet(input.userId, client);
       this.logger.log(`Fetch wallet: ${Date.now() - startFetch}ms`, 'WalletService.debit');
@@ -212,7 +226,6 @@ export class WalletService {
         }),
       ]);
       this.logger.log(`SQL Update + Ledger: ${Date.now() - startSql}ms`, 'WalletService.debit');
-      this.logger.log(`Total inside apply: ${Date.now() - startTotal}ms`, 'WalletService.debit');
 
       return newBal;
     };
