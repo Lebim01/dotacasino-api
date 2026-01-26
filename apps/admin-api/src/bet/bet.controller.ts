@@ -56,6 +56,9 @@ export class BetController {
     const secretKey = this.configService.getOrThrow<string>('SOFTGAMING_HMACSECRET');
 
     // Validate Idempotency (i_actionid) and TID consistency
+    if(body.type == 'debit') {
+      console.time('validate-idempotency');
+    }
     if (body.i_actionid && (body.type === 'debit' || body.type === 'credit')) {
       const actionIdStr = body.i_actionid.toString();
       const idempotencyKey = body.subtype === 'cancel' ? `cancel_${actionIdStr}` : actionIdStr;
@@ -99,6 +102,9 @@ export class BetController {
           return { ...responseBody, hmac: generateHmacResponse(responseBody, secretKey) };
         }
       }
+    }
+    if(body.type == 'debit') {
+      console.timeEnd('validate-idempotency');
     }
 
     if (body.type === 'ping') {
