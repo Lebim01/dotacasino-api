@@ -56,6 +56,9 @@ export class BetController {
     const secretKey = this.configService.getOrThrow<string>('SOFTGAMING_HMACSECRET');
 
     // Validate TID consistency: A TID must always belong to the same Action ID
+    if(body.type == 'debit') {
+      console.time('validate-tid');
+    }
     if (body.tid && body.i_actionid && (body.type === 'debit' || body.type === 'credit')) {
       const actionIdStr = body.i_actionid.toString();
 
@@ -85,6 +88,9 @@ export class BetController {
         }
       }
     }
+    if(body.type == 'debit') {
+      console.timeEnd('validate-tid');
+    }
 
     if (body.type === 'ping') {
       const responseBody = {
@@ -97,6 +103,9 @@ export class BetController {
     }
 
     // Validate User existence for types that require it
+    if(body.type == 'debit') {
+      console.time('validate-user');
+    }
     if (body.userid && (body.type === 'balance' || body.type === 'debit' || body.type === 'credit')) {
       const user = await this.prismaService.user.findUnique({
         where: { id: body.userid },
@@ -112,8 +121,14 @@ export class BetController {
         };
       }
     }
+    if(body.type == 'debit') {
+      console.timeEnd('validate-user');
+    }
 
     // Validate Currency
+    if(body.type == 'debit') {
+      console.time('validate-currency');
+    }
     if (body.currency && (body.type === 'balance' || body.type === 'debit' || body.type === 'credit')) {
       if (body.currency !== 'USD') {
         const balance = await this.walletService.getBalance(body.userid);
@@ -127,6 +142,9 @@ export class BetController {
         };
       }
     }
+    if(body.type == 'debit') {
+      console.timeEnd('validate-currency');
+    }
     if (body.type === 'balance') {
       const balance = await this.walletService.getBalance(body.userid);
       const responseBody = {
@@ -139,6 +157,10 @@ export class BetController {
       };
     }
 
+    // Validate Debit
+    if(body.type == 'debit') {
+      console.time('validate-debit');
+    }
     if (body.type === 'debit') {
       try {
         const isCancel = body.subtype === 'cancel';
@@ -179,6 +201,9 @@ export class BetController {
           hmac: generateHmacResponse(responseBody, secretKey),
         };
       }
+    }
+    if(body.type == 'debit') {
+      console.timeEnd('validate-debit');
     }
 
     if (body.type === 'credit') {
