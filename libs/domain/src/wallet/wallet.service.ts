@@ -116,20 +116,6 @@ export class WalletService {
 
     const p = tx ?? this.prisma;
 
-    // Idempotencia
-    if (input.idempotencyKey) {
-      const prev = await p.ledgerEntry.findUnique({
-        where: { idempotencyKey: input.idempotencyKey },
-        select: { balanceAfter: true, amount: true },
-      });
-      if (prev && prev.amount !== null) {
-        if (!new Decimal(prev.amount).equals(amount)) {
-          throw new Error('Inconsistent idempotency: amount mismatch');
-        }
-        return new Decimal(prev.balanceAfter!);
-      }
-    }
-
     const apply = async (client: Prisma.TransactionClient) => {
       const wallet = await this.getOrCreateWallet(input.userId, client);
       const newBal = new Decimal(wallet.balance).plus(amount);
@@ -179,20 +165,6 @@ export class WalletService {
     if (amount.lte(0)) throw new Error('El monto de débito debe ser > 0');
 
     const p = tx ?? this.prisma;
-
-    // 1. Idempotencia: Verificación rápida
-    if (input.idempotencyKey) {
-      const prev = await p.ledgerEntry.findUnique({
-        where: { idempotencyKey: input.idempotencyKey },
-        select: { balanceAfter: true, amount: true },
-      });
-      if (prev && prev.amount !== null) {
-        if (!new Decimal(prev.amount).abs().equals(amount)) {
-          throw new Error('Inconsistent idempotency: amount mismatch');
-        }
-        return new Decimal(prev.balanceAfter!);
-      }
-    }
 
     const apply = async (client: Prisma.TransactionClient) => {
       const wallet = await this.getOrCreateWallet(input.userId, client);

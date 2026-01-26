@@ -55,38 +55,50 @@ export class BetController {
   private async processWebhook(body: any) {
     const secretKey = this.configService.getOrThrow<string>('SOFTGAMING_HMACSECRET');
 
-    // Validate TID consistency: A TID must always belong to the same Action ID
-    if(body.type == 'debit') {
-      console.time('validate-tid');
-    }
-    if (body.tid && body.i_actionid && (body.type === 'debit' || body.type === 'credit')) {
+    // Validate Idempotency (i_actionid) and TID consistency
+    if (body.i_actionid && (body.type === 'debit' || body.type === 'credit')) {
       const actionIdStr = body.i_actionid.toString();
+      const idempotencyKey = body.subtype === 'cancel' ? `cancel_${actionIdStr}` : actionIdStr;
 
-      // Search for any ledger entry that has this tid in its meta
-      // We check both number and string because Prisma JSON filtering is type-sensitive
-      const existingTransaction = await this.prismaService.ledgerEntry.findFirst({
+      const existingEntry = await this.prismaService.ledgerEntry.findFirst({
         where: {
-          tid: body.tid?.toString(),
+          OR: [
+            { idempotencyKey },
+            body.tid ? { tid: body.tid.toString() } : {}
+          ].filter(o => Object.keys(o).length > 0)
         },
+        select: { idempotencyKey: true, tid: true, meta: true, balanceAfter: true, amount: true }
       });
 
-      if (existingTransaction) {
-        const meta = existingTransaction.meta as any;
+      if (existingEntry) {
+        // 1. Caso: El i_actionid ya existe (Idempotencia pura)
+        if (existingEntry.idempotencyKey === idempotencyKey) {
+          // Validamos que el monto sea el mismo (consistencia)
+          const amount = new Decimal(body.amount);
+          const prevAmount = new Decimal(existingEntry.amount || 0).abs();
+          
+          if (!prevAmount.equals(amount)) {
+            const balance = await this.walletService.getBalance(body.userid);
+            const responseBody = { error: 'Transaction Failed', balance: balance.toFixed(2) };
+            return { ...responseBody, hmac: generateHmacResponse(responseBody, secretKey) };
+          }
+
+          const responseBody = {
+            status: 'OK',
+            balance: new Decimal(existingEntry.balanceAfter || 0).toFixed(2),
+            tid: body.tid || existingEntry.tid
+          };
+          return { ...responseBody, hmac: generateHmacResponse(responseBody, secretKey) };
+        }
+
+        // 2. Caso: El TID ya existe pero con otro actionId (Inconsistencia de Softgaming)
+        const meta = existingEntry.meta as any;
         if (meta.actionId?.toString() !== actionIdStr) {
           const balance = await this.walletService.getBalance(body.userid);
-          const responseBody = {
-            error: 'Transaction Failed',
-            balance: balance.toFixed(2),
-          };
-          return {
-            ...responseBody,
-            hmac: generateHmacResponse(responseBody, secretKey),
-          };
+          const responseBody = { error: 'Transaction Failed', balance: balance.toFixed(2) };
+          return { ...responseBody, hmac: generateHmacResponse(responseBody, secretKey) };
         }
       }
-    }
-    if(body.type == 'debit') {
-      console.timeEnd('validate-tid');
     }
 
     if (body.type === 'ping') {
