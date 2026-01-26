@@ -43,14 +43,14 @@ export class WalletService {
    */
   private async getOrCreateWallet(
     userId: string,
-    db: Prisma.TransactionClient | PrismaService,
+    client: Prisma.TransactionClient | PrismaService,
   ) {
-    let wallet = await db.wallet.findFirst({
-      where: { userId, currency: CURRENCY },
+    let wallet = await client.wallet.findUnique({
+      where: { userId_currency: { userId, currency: CURRENCY } },
       select: { id: true, balance: true },
     });
     if (!wallet) {
-      wallet = await db.wallet.create({
+      wallet = await client.wallet.create({
         data: { userId, currency: CURRENCY, balance: 0 },
         select: { id: true, balance: true },
       });
@@ -147,7 +147,7 @@ export class WalletService {
 
     const p = tx ?? this.prisma;
 
-    // Idempotencia
+    // 1. Idempotencia: Verificación rápida
     if (input.idempotencyKey) {
       const prev = await p.ledgerEntry.findUnique({
         where: { idempotencyKey: input.idempotencyKey },
@@ -162,7 +162,6 @@ export class WalletService {
     }
 
     const apply = async (client: Prisma.TransactionClient) => {
-      // Leemos siempre dentro de la tx para evitar estados obsoletos
       const wallet = await this.getOrCreateWallet(input.userId, client);
 
       const current = new Decimal(wallet.balance);
@@ -172,35 +171,49 @@ export class WalletService {
 
       const newBal = current.minus(amount);
 
+      // 2. Transacción de DB: Solo operaciones SQL (muy rápidas)
       await Promise.all([
         client.wallet.update({
           where: { id: wallet.id },
           data: { balance: newBal },
         }),
-        db
-          .collection('users')
-          .doc(input.userId)
-          .update({
-            balance: firestore.FieldValue.increment(amount.toNumber() * -1),
-          }),
         client.ledgerEntry.create({
           data: {
             walletId: wallet.id,
             kind: input.reason,
-            amount: amount.negated(), // negativo
+            amount: amount.negated(),
             meta: input.meta ?? {},
             idempotencyKey: input.idempotencyKey ?? null,
             balanceAfter: newBal,
             tid: input.tid ?? null,
           },
         }),
-      ])
+      ]);
 
       return newBal;
     };
 
-    if (tx) return apply(tx);
-    return await this.prisma.$transaction(async (client) => apply(client));
+    const finalBal = tx ? await apply(tx) : await this.prisma.$transaction(async (client) => apply(client));
+
+    // 3. Sincronización Firestore: Fuera de la transacción de DB para máxima velocidad.
+    // Usamos 'no await' si quieres responder instantáneamente al cliente,
+    // o 'await' aquí para que la respuesta sea segura pero sin bloquear la DB.
+    this.syncFirestoreBalance(input.userId, amount.negated());
+
+    return finalBal;
+  }
+
+  /**
+   * Sincroniza el balance en Firestore de forma asíncrona.
+   */
+  private async syncFirestoreBalance(userId: string, amount: Decimal) {
+    try {
+      await db.collection('users').doc(userId).update({
+        balance: firestore.FieldValue.increment(amount.toNumber()),
+      });
+    } catch (err) {
+      console.error(`[WalletService] Error syncing Firestore balance for ${userId}:`, err);
+    }
   }
 
   async getPendingAmount(userid: string) {
