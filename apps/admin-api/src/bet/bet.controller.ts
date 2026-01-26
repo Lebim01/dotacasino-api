@@ -66,7 +66,7 @@ export class BetController {
       // We check both number and string because Prisma JSON filtering is type-sensitive
       const existingTransaction = await this.prismaService.ledgerEntry.findFirst({
         where: {
-          tid: body.tid,
+          tid: body.tid?.toString(),
         },
       });
 
