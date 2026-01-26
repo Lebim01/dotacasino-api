@@ -20,6 +20,7 @@ export type DebitInput = {
   reason: string; // 'BET_PLACE' | 'WITHDRAW' | 'FEE' | ...
   meta?: Record<string, any>;
   idempotencyKey?: string; // evita duplicados
+  tid?: string; // evita duplicados
 };
 
 @Injectable()
@@ -190,6 +191,7 @@ export class WalletService {
             meta: input.meta ?? {},
             idempotencyKey: input.idempotencyKey ?? null,
             balanceAfter: newBal,
+            tid: input.tid ?? null,
           },
         }),
       ])
