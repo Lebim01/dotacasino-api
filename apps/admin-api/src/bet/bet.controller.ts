@@ -159,7 +159,7 @@ export class BetController {
 
     // Validate Debit
     if(body.type == 'debit') {
-      console.time('validate-debit');
+      console.time('validate-debit-' + body.tid);
     }
     if (body.type === 'debit') {
       try {
@@ -203,7 +203,7 @@ export class BetController {
       }
     }
     if(body.type == 'debit') {
-      console.timeEnd('validate-debit');
+      console.timeEnd('validate-debit-' + body.tid);
     }
 
     if (body.type === 'credit') {
