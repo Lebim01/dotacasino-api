@@ -28,6 +28,7 @@ export class WalletService {
   private readonly logger = new Logger(WalletService.name, {
     timestamp: true,
   });
+  private readonly walletIdCache = new Map<string, string>(); // userId -> walletId cache
 
   constructor(private readonly prisma: PrismaService) { }
 
@@ -49,16 +50,29 @@ export class WalletService {
     userId: string,
     client: Prisma.TransactionClient | PrismaService,
   ) {
-    let wallet = await client.wallet.findUnique({
-      where: { userId_currency: { userId, currency: CURRENCY } },
-      select: { id: true, balance: true },
-    });
-    if (!wallet) {
-      wallet = await client.wallet.create({
-        data: { userId, currency: CURRENCY, balance: 0 },
+    // 1. Intentar obtener el ID desde el caché para evitar búsquedas complejas
+    const cachedId = this.walletIdCache.get(userId);
+    
+    if (cachedId) {
+      // El findUnique por ID (Primary Key) es casi instantáneo en Postgres
+      const wallet = await client.wallet.findUnique({
+        where: { id: cachedId },
         select: { id: true, balance: true },
       });
+      if (wallet) return wallet;
     }
+
+    // 2. Si no hay caché o no se encontró, usar upsert atómico (1 solo round-trip a la DB)
+    const wallet = await client.wallet.upsert({
+      where: { userId_currency: { userId, currency: CURRENCY } },
+      update: {}, // No cambiamos nada si ya existe
+      create: { userId, currency: CURRENCY, balance: 0 },
+      select: { id: true, balance: true },
+    });
+
+    // 3. Poblar caché para futuras peticiones
+    this.walletIdCache.set(userId, wallet.id);
+    
     return wallet;
   }
 
