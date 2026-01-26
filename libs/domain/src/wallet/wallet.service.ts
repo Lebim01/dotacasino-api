@@ -149,7 +149,7 @@ export class WalletService {
     const p = tx ?? this.prisma;
 
     // 1. Idempotencia: Verificación rápida
-    const logEnd1 = logTime('validate-idempotency');
+    const now = Date.now();
     if (input.idempotencyKey) {
       const prev = await p.ledgerEntry.findUnique({
         where: { idempotencyKey: input.idempotencyKey },
@@ -162,9 +162,8 @@ export class WalletService {
         return new Decimal(prev.balanceAfter!);
       }
     }
-    logEnd1();
+    console.log(`validate-idempotency: ${Date.now() - now} ms`);
 
-    const logEnd2 = logTime('apply-transaction');
     const apply = async (client: Prisma.TransactionClient) => {
       const wallet = await this.getOrCreateWallet(input.userId, client);
 
@@ -197,8 +196,9 @@ export class WalletService {
       return newBal;
     };
 
+    const now2 = Date.now();
     const finalBal = tx ? await apply(tx) : await this.prisma.$transaction(async (client) => apply(client));
-    logEnd2();
+    console.log(`apply-transaction: ${Date.now() - now2} ms`);
 
     // 3. Sincronización Firestore: Fuera de la transacción de DB para máxima velocidad.
     // Usamos 'no await' si quieres responder instantáneamente al cliente,
