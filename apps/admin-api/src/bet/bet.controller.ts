@@ -55,58 +55,6 @@ export class BetController {
   private async processWebhook(body: any) {
     const secretKey = this.configService.getOrThrow<string>('SOFTGAMING_HMACSECRET');
 
-    // Validate Idempotency (i_actionid) and TID consistency
-    if(body.type == 'debit') {
-      console.time('validate-idempotency');
-    }
-    if (body.i_actionid && (body.type === 'debit' || body.type === 'credit')) {
-      const actionIdStr = body.i_actionid.toString();
-      const idempotencyKey = body.subtype === 'cancel' ? `cancel_${actionIdStr}` : actionIdStr;
-
-      const existingEntry = await this.prismaService.ledgerEntry.findFirst({
-        where: {
-          OR: [
-            { idempotencyKey },
-            body.tid ? { tid: body.tid.toString() } : {}
-          ].filter(o => Object.keys(o).length > 0)
-        },
-        select: { idempotencyKey: true, tid: true, meta: true, balanceAfter: true, amount: true }
-      });
-
-      if (existingEntry) {
-        // 1. Caso: El i_actionid ya existe (Idempotencia pura)
-        if (existingEntry.idempotencyKey === idempotencyKey) {
-          // Validamos que el monto sea el mismo (consistencia)
-          const amount = new Decimal(body.amount);
-          const prevAmount = new Decimal(existingEntry.amount || 0).abs();
-          
-          if (!prevAmount.equals(amount)) {
-            const balance = await this.walletService.getBalance(body.userid);
-            const responseBody = { error: 'Transaction Failed', balance: balance.toFixed(2) };
-            return { ...responseBody, hmac: generateHmacResponse(responseBody, secretKey) };
-          }
-
-          const responseBody = {
-            status: 'OK',
-            balance: new Decimal(existingEntry.balanceAfter || 0).toFixed(2),
-            tid: body.tid || existingEntry.tid
-          };
-          return { ...responseBody, hmac: generateHmacResponse(responseBody, secretKey) };
-        }
-
-        // 2. Caso: El TID ya existe pero con otro actionId (Inconsistencia de Softgaming)
-        const meta = existingEntry.meta as any;
-        if (meta.actionId?.toString() !== actionIdStr) {
-          const balance = await this.walletService.getBalance(body.userid);
-          const responseBody = { error: 'Transaction Failed', balance: balance.toFixed(2) };
-          return { ...responseBody, hmac: generateHmacResponse(responseBody, secretKey) };
-        }
-      }
-    }
-    if(body.type == 'debit') {
-      console.timeEnd('validate-idempotency');
-    }
-
     if (body.type === 'ping') {
       const responseBody = {
         status: 'OK',
@@ -117,49 +65,77 @@ export class BetController {
       };
     }
 
-    // Validate User existence for types that require it
-    if(body.type == 'debit') {
-      console.time('validate-user');
-    }
-    if (body.userid && (body.type === 'balance' || body.type === 'debit' || body.type === 'credit')) {
-      const user = await this.prismaService.user.findUnique({
-        where: { id: body.userid },
-      });
+    // 1. Disparar validaciones en paralelo para ganar tiempo
+    const [existingEntry, user] = await Promise.all([
+      // Consulta de Idempotencia y TID
+      (body.i_actionid && (body.type === 'debit' || body.type === 'credit'))
+        ? this.prismaService.ledgerEntry.findFirst({
+          where: {
+            OR: [
+              { idempotencyKey: body.subtype === 'cancel' ? `cancel_${body.i_actionid}` : body.i_actionid.toString() },
+              body.tid ? { tid: body.tid.toString() } : {}
+            ].filter(o => Object.keys(o).length > 0)
+          },
+          select: { idempotencyKey: true, tid: true, meta: true, balanceAfter: true, amount: true }
+        })
+        : Promise.resolve(null),
 
-      if (!user) {
+      // Consulta de existencia de Usuario
+      (body.userid && (body.type === 'balance' || body.type === 'debit' || body.type === 'credit'))
+        ? this.prismaService.user.findUnique({
+          where: { id: body.userid },
+          select: { id: true }
+        })
+        : Promise.resolve({ id: body.userid }) // Mock si no es necesario validar
+    ]);
+
+    // 2. Procesar resultado de Idempotencia (Retorno temprano)
+    if (existingEntry) {
+      const actionIdStr = body.i_actionid?.toString();
+      const idempotencyKey = body.subtype === 'cancel' ? `cancel_${actionIdStr}` : actionIdStr;
+
+      if (existingEntry.idempotencyKey === idempotencyKey) {
+        const amount = new Decimal(body.amount || 0);
+        const prevAmount = new Decimal(existingEntry.amount || 0).abs();
+        
+        if (!prevAmount.equals(amount)) {
+          const balance = await this.walletService.getBalance(body.userid);
+          const responseBody = { error: 'Transaction Failed', balance: balance.toFixed(2) };
+          return { ...responseBody, hmac: generateHmacResponse(responseBody, secretKey) };
+        }
+
         const responseBody = {
-          error: 'Invalid userid',
+          status: 'OK',
+          balance: new Decimal(existingEntry.balanceAfter || 0).toFixed(2),
+          tid: body.tid || existingEntry.tid
         };
-        return {
-          ...responseBody,
-          hmac: generateHmacResponse(responseBody, secretKey),
-        };
+        return { ...responseBody, hmac: generateHmacResponse(responseBody, secretKey) };
+      }
+
+      // Consistencia de TID
+      const meta = existingEntry.meta as any;
+      if (meta?.actionId?.toString() !== actionIdStr) {
+        const balance = await this.walletService.getBalance(body.userid);
+        const responseBody = { error: 'Transaction Failed', balance: balance.toFixed(2) };
+        return { ...responseBody, hmac: generateHmacResponse(responseBody, secretKey) };
       }
     }
-    if(body.type == 'debit') {
-      console.timeEnd('validate-user');
+
+    // 3. Procesar validación de Usuario
+    if (!user && (body.type === 'balance' || body.type === 'debit' || body.type === 'credit')) {
+      const responseBody = { error: 'Invalid userid' };
+      return { ...responseBody, hmac: generateHmacResponse(responseBody, secretKey) };
     }
 
-    // Validate Currency
-    if(body.type == 'debit') {
-      console.time('validate-currency');
-    }
+    // 4. Validar Moneda
     if (body.currency && (body.type === 'balance' || body.type === 'debit' || body.type === 'credit')) {
       if (body.currency !== 'USD') {
         const balance = await this.walletService.getBalance(body.userid);
-        const responseBody = {
-          error: 'Invalid currency',
-          balance: balance.toFixed(2),
-        };
-        return {
-          ...responseBody,
-          hmac: generateHmacResponse(responseBody, secretKey),
-        };
+        const responseBody = { error: 'Invalid currency', balance: balance.toFixed(2) };
+        return { ...responseBody, hmac: generateHmacResponse(responseBody, secretKey) };
       }
     }
-    if(body.type == 'debit') {
-      console.timeEnd('validate-currency');
-    }
+
     if (body.type === 'balance') {
       const balance = await this.walletService.getBalance(body.userid);
       const responseBody = {
@@ -174,7 +150,6 @@ export class BetController {
 
     // Validate Debit
     if (body.type === 'debit') {
-      const start = Date.now();
       try {
         const isCancel = body.subtype === 'cancel';
         const balance = await this.walletService.debit({
@@ -214,10 +189,7 @@ export class BetController {
           ...responseBody,
           hmac: generateHmacResponse(responseBody, secretKey),
         };
-      } finally {
-        const end = Date.now();
-        console.log(`validate-debit: ${end - start}ms`);
-      }
+      } 
     }
 
     if (body.type === 'credit') {
