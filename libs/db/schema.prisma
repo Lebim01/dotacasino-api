@@ -102,6 +102,10 @@ model LedgerEntry {
 
   balanceAfter   Decimal? // snapshot de saldo post-movimiento (opcional)
   idempotencyKey String?  @unique
+  tid            String?  @unique
+
+  @@index([tid])
+  @@index([idempotencyKey])
 }
 
 model GameProvider {

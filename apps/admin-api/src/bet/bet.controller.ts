@@ -66,10 +66,7 @@ export class BetController {
       // We check both number and string because Prisma JSON filtering is type-sensitive
       const existingTransaction = await this.prismaService.ledgerEntry.findFirst({
         where: {
-          OR: [
-            { meta: { path: ['tid'], equals: body.tid } },
-            { meta: { path: ['tid'], equals: body.tid.toString() } },
-          ],
+          tid: body.tid,
         },
       });
 
@@ -167,6 +164,7 @@ export class BetController {
           amount: new Decimal(body.amount),
           reason: isCancel ? 'BET_CANCEL' : 'BET_PLACE',
           idempotencyKey: isCancel ? `cancel_${body.i_actionid}` : body.i_actionid?.toString(),
+          tid: body.tid,
           meta: {
             tid: body.tid,
             gameId: body.i_gameid,
