@@ -54,7 +54,6 @@ export class WalletService {
     const cachedId = this.walletIdCache.get(userId);
     
     if (cachedId) {
-      this.logger.debug(`Wallet found in cache for ${userId}: ${cachedId}`);
       // El findUnique por ID (Primary Key) es casi instantáneo en Postgres
       const wallet = await client.wallet.findUnique({
         where: { id: cachedId },
