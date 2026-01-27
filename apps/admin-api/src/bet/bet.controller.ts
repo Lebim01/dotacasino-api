@@ -1,6 +1,6 @@
 import { UserCommonService } from '@domain/users/users.service';
 import { WalletService } from '@domain/wallet/wallet.service';
-import { Controller, Post, Body, Get, Options, Res } from '@nestjs/common';
+import { Controller, Post, Body, Get, Options, Res, HttpCode, HttpStatus } from '@nestjs/common';
 import { PrismaService } from 'libs/db/src/prisma.service';
 import Decimal from 'decimal.js';
 import dayjs from 'dayjs';
@@ -32,6 +32,7 @@ export class BetController {
   }
 
   @Post('')
+  @HttpCode(HttpStatus.OK)
   async webhook(@Body() body: any) {
     console.log('webhook recived type =>', body.type);
     console.time('webhook');
