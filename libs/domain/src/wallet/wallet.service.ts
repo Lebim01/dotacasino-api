@@ -186,7 +186,7 @@ export class WalletService {
             meta: input.meta ?? {},
             idempotencyKey: input.idempotencyKey ?? null,
             balanceAfter: newBal,
-            tid: input.tid ?? null,
+            tid: input.tid?.toString() ?? null,
           },
         }),
       ]);

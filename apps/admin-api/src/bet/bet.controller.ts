@@ -174,7 +174,7 @@ export class BetController {
             subtype: body.subtype,
           },
         });
-
+        
         const responseBody = {
           status: 'OK',
           balance: balance.toFixed(2),
@@ -185,6 +185,7 @@ export class BetController {
           hmac: generateHmacResponse(responseBody, secretKey),
         };
       } catch (error: any) {
+        console.log(error)
         const balance = await this.walletService.getBalance(body.userid);
         const errorMsg = error?.message === 'Fondos insuficientes' ? 'INSUFFICIENT_FUNDS' :
           error?.message === 'Inconsistent idempotency: amount mismatch' ? 'Transaction Failed' :

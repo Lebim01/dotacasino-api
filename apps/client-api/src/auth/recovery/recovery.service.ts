@@ -7,7 +7,6 @@ import {
 import { MailerService } from '../../mailer/mailer.service';
 import * as argon2 from 'argon2';
 import { randomBytes } from 'crypto';
-import * as argon from 'argon2';
 import { PrismaService } from 'libs/db/src/prisma.service';
 
 const TTL_MINUTES = Number(process.env.RECOVERY_TTL_MIN ?? 30);
@@ -85,7 +84,7 @@ export class RecoveryService {
     if (rec.expiresAt <= new Date())
       throw new UnauthorizedException('Token expirado');
 
-    const ok = await argon.verify(rec.tokenHash, rt);
+    const ok = await argon2.verify(rec.tokenHash, rt);
     if (!ok) throw new UnauthorizedException('Token inválido');
 
     return { ok: true };
@@ -108,7 +107,7 @@ export class RecoveryService {
     if (rec.expiresAt <= new Date())
       throw new UnauthorizedException('Token expirado');
 
-    const ok = await argon.verify(rec.tokenHash, rt);
+    const ok = await argon2.verify(rec.tokenHash, rt);
     if (!ok) throw new UnauthorizedException('Token inválido');
 
     // Cambiar password + marcar usado + revocar RTs en una transacción
