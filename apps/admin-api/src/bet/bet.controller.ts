@@ -35,7 +35,6 @@ export class BetController {
   @HttpCode(HttpStatus.OK)
   async webhook(@Body() body: any) {
     console.log('webhook recived type =>', body.type);
-    console.time('webhook');
     const response = await this.processWebhook(body);
 
     // Logging is performed asynchronously to minimize response latency
@@ -47,8 +46,6 @@ export class BetController {
     }).catch((err) => {
       console.error('Failed to log Softgaming webhook:', err);
     });
-
-    console.timeEnd('webhook');
 
     return response;
   }
@@ -174,7 +171,7 @@ export class BetController {
             subtype: body.subtype,
           },
         });
-        
+
         const responseBody = {
           status: 'OK',
           balance: balance.toFixed(2),
