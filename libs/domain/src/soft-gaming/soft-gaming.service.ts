@@ -84,6 +84,43 @@ export class SoftGamingService {
       );
   }
 
+  async getGameFullList() {
+    const { tid, id } = await this.getTID();
+    const HASH = MD5(
+      `Game/FullList/${SERVER_IP}/${tid}/${this.APIKEY}/${this.APIPASS}`,
+    ).toString();
+    const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/Game/FullList?TID=${tid}&Hash=${HASH}`;
+    return axios
+      .get(url)
+      .then(async (r) => {
+        await this.prisma.softGamingRecords.update({
+          data: {
+            status: RequestStatus.SUCCESS,
+            metadata: {
+              HASH,
+              tid,
+              url,
+            },
+          },
+          where: { id },
+        });
+        return r.data;
+      })
+      .catch(() =>
+        this.prisma.softGamingRecords.update({
+          data: {
+            status: RequestStatus.ERROR,
+            metadata: {
+              HASH,
+              tid,
+              url,
+            },
+          },
+          where: { id },
+        }),
+      );
+  }
+
   async getCategoryList() {
     const { tid, id } = await this.getTID();
     const HASH = MD5(
