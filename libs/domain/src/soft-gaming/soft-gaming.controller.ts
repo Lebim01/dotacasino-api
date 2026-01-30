@@ -24,6 +24,16 @@ export class SoftGamingController {
     return this.softGamingService.syncCategories();
   }
 
+  @Get('sync-merchants')
+  syncMerchants() {
+    return this.softGamingService.syncMerchants();
+  }
+
+  @Get('sync-games')
+  syncGames() {
+    return this.softGamingService.syncGames();
+  }
+
   @Post('open-game')
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)

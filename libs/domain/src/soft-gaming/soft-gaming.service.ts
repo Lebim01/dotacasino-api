@@ -285,7 +285,208 @@ export class SoftGamingService {
           },
           where: { id },
         });
-        throw error
+        throw error;
       });
+  }
+
+  async getMerchantList() {
+    const { tid, id } = await this.getTID();
+    const HASH = MD5(
+      `Game/Merchants/${SERVER_IP}/${tid}/${this.APIKEY}/${this.APIPASS}`,
+    ).toString();
+    const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/Game/Merchants?TID=${tid}&Hash=${HASH}`;
+    return axios
+      .get(url)
+      .then(async (r) => {
+        await this.prisma.softGamingRecords.update({
+          data: {
+            status: RequestStatus.SUCCESS,
+            metadata: {
+              HASH,
+              tid,
+              url,
+            },
+          },
+          where: { id },
+        });
+        return r.data;
+      })
+      .catch(async (error) => {
+        await this.prisma.softGamingRecords.update({
+          data: {
+            status: RequestStatus.ERROR,
+            metadata: {
+              HASH,
+              tid,
+              url,
+              error: error.message,
+            },
+          },
+          where: { id },
+        });
+        return [];
+      });
+  }
+
+  async syncMerchants() {
+    const merchants = await this.getMerchantList();
+    if (!merchants || typeof merchants !== 'object') return { count: 0 };
+
+    const merchantArray = Object.values(merchants) as Array<{
+      ID: string;
+      Name: string;
+      Alias: string;
+      Image: string;
+    }>;
+
+    for (const merchant of merchantArray) {
+      const code = merchant.Alias.toUpperCase().replace(/\s+/g, '_');
+      await this.prisma.gameProvider.upsert({
+        where: { externalId: merchant.ID },
+        update: {
+          name: merchant.Alias,
+          imageUrl: `https://theverybestcasino.com${merchant.Image}`,
+          code,
+        },
+        create: {
+          externalId: merchant.ID,
+          name: merchant.Alias,
+          imageUrl: `https://theverybestcasino.com${merchant.Image}`,
+          code,
+          platformTypes: [code],
+        },
+      });
+    }
+    return { count: merchantArray.length };
+  }
+
+  async syncGames() {
+    // 1. Ensure categories are synced
+    const categories = (await this.getCategoryList()) as Array<{
+      id: string;
+      name: string;
+    }>;
+
+    const categoryMap: Record<string, string> = {};
+    for (const cat of categories) {
+      const dbCat = await (this.prisma as any).category.upsert({
+        where: { externalId: cat.id },
+        update: { name: cat.name },
+        create: {
+          externalId: cat.id,
+          name: cat.name,
+        },
+      });
+      categoryMap[cat.id] = dbCat.id;
+    }
+
+    // 2. Ensure merchants (providers) are synced
+    const merchants = await this.getMerchantList();
+    const merchantMap: Record<string, string> = {};
+    if (merchants && typeof merchants === 'object') {
+      const merchantArray = Object.values(merchants) as Array<{
+        ID: string;
+        Name: string;
+        Alias: string;
+      }>;
+      for (const m of merchantArray) {
+        const code = m.Alias.toUpperCase().replace(/\s+/g, '_');
+        const provider = await this.prisma.gameProvider.upsert({
+          where: { externalId: m.ID },
+          update: { name: m.Alias, code },
+          create: {
+            externalId: m.ID,
+            name: m.Alias,
+            code,
+            platformTypes: [code],
+          },
+        });
+        merchantMap[m.ID] = provider.id;
+        merchantMap[m.Alias] = provider.id; // Also map by alias just in case
+      }
+    }
+
+    // 3. Fetch and sync games
+    const games = (await this.getGameList()) as Array<{
+      ID: string;
+      System: string;
+      PageCode: string;
+      Trans: { en: string };
+      ImageFullPath: string;
+      HasDemo: string;
+      Categories: string[];
+      SubSystem?: string;
+      LowRtpUrl?: string;
+      LowRtpMobileUrl?: string;
+      LowRtpUrlExternal?: string;
+      LowRtpMobileUrlExternal?: string;
+    }>;
+
+    if (!games || !Array.isArray(games)) return { count: 0 };
+
+    let syncedCount = 0;
+    for (const g of games) {
+      const providerExternalId = g.SubSystem || g.System;
+      const gameProviderId = merchantMap[providerExternalId];
+
+      if (!gameProviderId) {
+        this.logger.warn(
+          `Provider not found for game ${g.ID} (System: ${g.System}, SubSystem: ${g.SubSystem})`,
+        );
+        continue;
+      }
+
+      const provider = await this.prisma.gameProvider.findUnique({
+        where: { id: gameProviderId },
+      });
+      const providerName = provider?.name || 'UNKNOWN';
+
+      await this.prisma.game.upsert({
+        where: { hall_betId: { hall: 'soft-gaming', betId: g.ID } },
+        update: {
+          title: g.Trans.en,
+          thumbnailUrl: g.ImageFullPath,
+          gameProviderId,
+          categories: {
+            set: [],
+            connect: g.Categories.map((catId) => ({ externalId: catId })).filter(
+              (c) => categoryMap[c.externalId!],
+            ),
+          },
+          PageCode: g.PageCode,
+          LowRtpUrl: g.LowRtpUrl,
+          LowRtpMobileUrl: g.LowRtpMobileUrl,
+          LowRtpUrlExternal: g.LowRtpUrlExternal,
+          LowRtpMobileUrlExternal: g.LowRtpMobileUrlExternal,
+        },
+        create: {
+          slug: `${providerName}-${g.ID}`.toLowerCase().replace(/\s+/g, '-'),
+          title: g.Trans.en,
+          devices: ['DESKTOP', 'MOBILE'],
+          tags: [],
+          thumbnailUrl: g.ImageFullPath,
+          order: 0,
+          categories: {
+            connect: g.Categories.map((catId) => ({ externalId: catId })).filter(
+              (c) => categoryMap[c.externalId!],
+            ),
+          },
+          betId: g.ID,
+          allowDemo: g.HasDemo === '1',
+          hall: 'soft-gaming',
+          width: '1',
+          gameProviderId,
+          System: g.System,
+          PageCode: g.PageCode,
+          LowRtpUrl: g.LowRtpUrl,
+          LowRtpMobileUrl: g.LowRtpMobileUrl,
+          LowRtpUrlExternal: g.LowRtpUrlExternal,
+          LowRtpMobileUrlExternal: g.LowRtpMobileUrlExternal,
+        },
+      });
+      syncedCount++;
+    }
+
+    return { count: syncedCount };
   }
 }
