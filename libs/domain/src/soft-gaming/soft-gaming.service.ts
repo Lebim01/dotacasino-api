@@ -247,6 +247,7 @@ export class SoftGamingService {
         });
 
         if (typeof r.data === 'string' && !r.data.startsWith("1,")) {
+          console.log(r.data);
           throw r.data
         }
         return r.data
