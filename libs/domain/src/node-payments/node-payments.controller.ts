@@ -1,5 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { DepositsService } from 'src/deposits/deposits.service';
+//import { DepositsService } from 'src/deposits/deposits.service';
 
 type PayloadDeposit = {
   event: 'deposit';
@@ -14,14 +14,14 @@ type PayloadDeposit = {
 
 @Controller('node-payments')
 export class NodePaymentsController {
-  constructor(private readonly depositsService: DepositsService) {}
-
   @Post('webhook')
   async webhook(@Body() body: PayloadDeposit) {
     if (body.event == 'deposit') {
-      await this.depositsService.handleDepositConfirmed({
+      console.log('webhook')
+      console.log(body)
+      /*await this.depositsService.handleDepositConfirmed({
         address: body.data.tokenAddress,
-      });
+      });*/
     }
   }
 }

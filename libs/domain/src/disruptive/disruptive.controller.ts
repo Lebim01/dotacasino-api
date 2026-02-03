@@ -305,6 +305,6 @@ export class DisruptiveController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(USER_ROLES.ADMIN)
   getwithdrawcasino() {
-    return this.nodePaymentsService.getWithdrawList(null); // NodePaymentsService.getWithdrawList expects userId or maybe I should add getWithdrawListAdmin
+    return this.nodePaymentsService.getWithdrawListAdmin();
   }
 }

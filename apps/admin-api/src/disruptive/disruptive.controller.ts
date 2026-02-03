@@ -7,7 +7,7 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { DisruptiveService } from './disruptive.service';
+import { NodePaymentsService } from '@domain/node-payments/node-payments.service';
 import {
   ApproveWithdraw,
   CompleteTransactionDisruptiveCasinoDto,
@@ -23,7 +23,7 @@ import { WalletService } from '@domain/wallet/wallet.service';
 @Controller('disruptive')
 export class DisruptiveController {
   constructor(
-    private readonly disruptiveService: DisruptiveService,
+    private readonly nodePaymentsService: NodePaymentsService,
     private readonly walletService: WalletService,
   ) {}
 
@@ -60,18 +60,18 @@ export class DisruptiveController {
   async completedtransactioncasino(
     @Body() body: CompleteTransactionDisruptiveCasinoDto,
   ) {
-    const transaction = await this.disruptiveService.getTransaction(
+    const transaction = await this.nodePaymentsService.getTransaction(
       body.address,
     );
 
     if (!transaction) throw new HttpException('not found', 401);
 
-    const status = await this.disruptiveService.validateStatus(
+    const validation = await this.nodePaymentsService.validateStatus(
       transaction.get('network'),
       body.address,
     );
 
-    if (status) {
+    if (validation.confirmed) {
       if (transaction.get('status') != 'completed') {
         await transaction.ref.update({
           status: 'completed',
@@ -96,6 +96,6 @@ export class DisruptiveController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(USER_ROLES.ADMIN)
   async getwithdrawcasino() {
-    return this.disruptiveService.getWithdrawListAdmin();
+    return this.nodePaymentsService.getWithdrawListAdmin();
   }
 }

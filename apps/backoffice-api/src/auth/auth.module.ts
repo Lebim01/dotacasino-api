@@ -14,6 +14,7 @@ import { WalletService } from '@domain/wallet/wallet.service';
 import { ReferralService } from 'apps/client-api/src/referral/referral.service';
 import { JwtAuthModule } from '@security/jwt.module';
 import { SoftGamingService } from '@domain/soft-gaming/soft-gaming.service';
+import { NodePaymentsService } from '@domain/node-payments/node-payments.service';
 
 @Module({
   imports: [JwtAuthModule, MailerModule],
@@ -29,7 +30,8 @@ import { SoftGamingService } from '@domain/soft-gaming/soft-gaming.service';
     UserCommonService,
     WalletService,
     ReferralService,
-    SoftGamingService
+    SoftGamingService,
+    NodePaymentsService
   ],
   controllers: [AuthController],
 })

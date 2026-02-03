@@ -328,4 +328,51 @@ export class NodePaymentsService {
       console.error('error', error);
     }
   }
+
+  async getWithdrawListAdmin() {
+    const docs = await db
+      .collection('casino-transactions')
+      .where('type', '==', 'withdraw')
+      .where('status', '==', 'pending')
+      .get();
+
+    return docs.docs.map((r: any) => ({
+      id: r.id,
+      address: r.get('address'),
+      amount: r.get('amount'),
+      created_at: r.get('created_at')?.toDate()?.toISOString() || '',
+      userid: r.get('userid'),
+    }));
+  }
+
+  async createDepositTransaction(
+    user_id: string,
+    amount: number,
+    network: Networks = 'BSC',
+  ) {
+    try {
+      const response = await this.createAddress(network, user_id, amount);
+      const { address, expires_at, qrcode_url } = response;
+
+      await db.collection('disruptive-academy').add({
+        user_id,
+        amount,
+        expires_at,
+        address,
+        qrcode_url,
+        network,
+        created_at: new Date(),
+        status: 'pending',
+        type: 'deposit',
+      });
+
+      await db.collection('users').doc(user_id).update({
+        topup_link_disruptive: address,
+      });
+
+      return { qrcode_url, address, expires_at, amount };
+    } catch (error) {
+      console.error('error', error);
+    }
+  }
 }
