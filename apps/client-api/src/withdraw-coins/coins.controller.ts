@@ -3,14 +3,14 @@ import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@security/jwt.guard';
 import { CurrentUser } from '@security/current-user.decorator';
 import { RequestDTO } from './dto/withdraw.dto';
-import { DisruptiveService } from '@domain/disruptive/disruptive.service';
+import { NodePaymentsService } from '@domain/node-payments/node-payments.service';
 import { WalletService } from '@domain/wallet/wallet.service';
 
 @ApiTags('Withdraw Coins')
 @Controller('withdraw-coins')
 export class WithdrawCoinsController {
   constructor(
-    private readonly disruptiveService: DisruptiveService,
+    private readonly nodePaymentsService: NodePaymentsService,
     private readonly walletService: WalletService,
   ) {}
 
@@ -19,7 +19,7 @@ export class WithdrawCoinsController {
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get history' })
   getlist(@CurrentUser() user: { userId: string }) {
-    return this.disruptiveService.getWithdrawList(user.userId);
+    return this.nodePaymentsService.getWithdrawList(user.userId);
   }
 
   @Post('create')
@@ -34,7 +34,7 @@ export class WithdrawCoinsController {
     const balance = await this.walletService.getBalance(user.userId);
     const pending = await this.walletService.getPendingAmount(user.userId);
     if (balance >= body.amount + pending) {
-      await this.disruptiveService.requestWithdraw(
+      await this.nodePaymentsService.requestWithdraw(
         user.userId,
         body.amount,
         body.address,
@@ -56,6 +56,6 @@ export class WithdrawCoinsController {
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Cancel current' })
   async deleteqr(@CurrentUser() user: { userId: string }) {
-    return this.disruptiveService.cancelDisruptiveWithdrawCasino(user.userId);
+    return this.nodePaymentsService.cancelWithdrawCasino(user.userId);
   }
 }

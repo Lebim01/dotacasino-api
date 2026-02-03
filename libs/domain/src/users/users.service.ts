@@ -14,9 +14,9 @@ import { Memberships } from 'apps/backoffice-api/src/types';
 import { MEMBERSHIP_PRICES } from 'apps/backoffice-api/src/constants';
 import { db } from 'apps/backoffice-api/src/firebase/admin';
 import {
-  DisruptiveService,
+  NodePaymentsService,
   Networks,
-} from '@domain/disruptive/disruptive.service';
+} from '@domain/node-payments/node-payments.service';
 import { USER_ROLES } from 'apps/backoffice-api/src/auth/auth.constants';
 
 function generateDisplayName() {
@@ -41,7 +41,7 @@ export class UserCommonService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly authAcademy: AuthAcademyService,
-    private readonly disruptiveService: DisruptiveService,
+    private readonly nodePaymentsService: NodePaymentsService,
   ) {}
 
   async getUserById(id: string) {
@@ -151,7 +151,7 @@ export class UserCommonService {
         MEMBERSHIP_PRICES[membership_type] -
         MEMBERSHIP_PRICES[user.get('membership') as Memberships];
 
-      await this.disruptiveService.createMembership(
+      await this.nodePaymentsService.createMembershipTransaction(
         id_user,
         membership_type,
         network,
@@ -159,12 +159,12 @@ export class UserCommonService {
         true,
       );
     } else {
-      await this.disruptiveService.createMembership(
+      await this.nodePaymentsService.createMembershipTransaction(
         id_user,
         membership_type,
         network,
         amount,
-        true,
+        false,
       );
     }
   }

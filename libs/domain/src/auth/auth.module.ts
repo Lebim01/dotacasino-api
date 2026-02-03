@@ -5,7 +5,7 @@ import { JwtAuthModule } from '@security/jwt.module';
 import { HttpModule } from '@nestjs/axios';
 import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
 import { UserCommonService } from '@domain/users/users.service';
-import { DisruptiveService } from '@domain/disruptive/disruptive.service';
+import { NodePaymentsService } from '@domain/node-payments/node-payments.service';
 import { CasinoService } from '@domain/casino/casino.service';
 import { UsersService } from 'apps/client-api/src/users/users.service';
 import { ReferralService } from 'apps/client-api/src/referral/referral.service';
@@ -20,7 +20,7 @@ import { SoftGamingService } from '@domain/soft-gaming/soft-gaming.service';
     ReferralService,
     AuthAcademyService,
     UserCommonService,
-    DisruptiveService,
+    NodePaymentsService,
     CasinoService,
     SoftGamingService,
   ],

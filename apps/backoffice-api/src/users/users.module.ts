@@ -6,7 +6,7 @@ import { MailerModule } from '../mailer/mailer.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
-import { DisruptiveService } from '@domain/disruptive/disruptive.service';
+import { NodePaymentsService } from '@domain/node-payments/node-payments.service';
 import { JwtStrategy } from '@security/jwt.strategy';
 import { UserCommonService } from '@domain/users/users.service';
 import { PrismaService } from 'libs/db/src/prisma.service';
@@ -27,7 +27,7 @@ import { WalletService } from '@domain/wallet/wallet.service';
     UsersService,
     AuthService,
     JwtStrategy,
-    DisruptiveService,
+    NodePaymentsService,
     UserCommonService,
     WalletService,
     AuthAcademyService,
