@@ -3,7 +3,7 @@ import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { MembershipsService } from './memberships.service';
 import { CurrentUser } from '@security/current-user.decorator';
 import { UserCommonService } from '@domain/users/users.service';
-import { NETWORKS } from '@domain/disruptive/disruptive.service';
+import { NETWORKS } from '@domain/node-payments/node-payments.service';
 import { JwtAuthGuard } from '@security/jwt.guard';
 
 @ApiTags('Memberships')
