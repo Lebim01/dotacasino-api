@@ -3,7 +3,7 @@ import { ListGamesDto } from './dto/list-games.dto';
 import { PrismaService } from 'libs/db/src/prisma.service';
 import { Prisma } from '@prisma/client';
 import { BetService } from '../bet/bet.service';
-import { DOMAINS } from 'libs/shared/src/domains';
+import { DOMAINS, DOMAINS_BY_COUNTRY } from 'libs/shared/src/domains';
 import { SoftGamingService } from 'libs/domain/src/soft-gaming/soft-gaming.service';
 
 @Injectable()
@@ -20,6 +20,10 @@ export class GamesService {
       show: true,
       hall: DOMAINS[q.domain].id,
     };
+
+    if(q.domain && DOMAINS_BY_COUNTRY[q.domain]) {
+      q.country = DOMAINS_BY_COUNTRY[q.domain];
+    }
 
     if (q.category) {
       where.categories = {
