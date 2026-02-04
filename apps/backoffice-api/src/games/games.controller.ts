@@ -25,4 +25,9 @@ export class GamesController {
   async changeshow(@Param('id') id: string, @Body() body) {
     return this.gamesService.changeshow(id, body.show);
   }
+
+  @Post('update-provider-restrictions/:id')
+  async updateRestrictions(@Param('id') id: string, @Body() body: { countryCodes: string[] }) {
+    return this.gamesService.updateProviderRestrictions(id, body.countryCodes);
+  }
 }

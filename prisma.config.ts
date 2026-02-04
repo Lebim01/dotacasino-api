@@ -4,6 +4,10 @@ import { defineConfig } from 'prisma/config';
 
 export default defineConfig({
   schema: path.join('libs', 'db', 'schema.prisma'),
+  // @ts-ignore
+  db: {
+    url: process.env.DATABASE_URL,
+  },
   migrations: {
     path: path.join('libs', 'db', 'migrations'),
     seed: 'ts-node libs/db/seeds/seed.ts',

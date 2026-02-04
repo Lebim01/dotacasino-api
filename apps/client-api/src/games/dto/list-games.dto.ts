@@ -88,4 +88,12 @@ export class ListGamesDto {
   @IsString()
   @IsNotEmpty()
   domain: string = '';
+
+  @ApiProperty({
+    description: 'Country code (ISO 2 characters)',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  country?: string;
 }
