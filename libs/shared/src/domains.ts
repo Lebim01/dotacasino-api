@@ -15,6 +15,11 @@ const HALL_COREA = {
   continent: 'asia',
 };
 
+export const DOMAINS_BY_COUNTRY = {
+  'dotamx.com': 'MX',
+  'dotakorea.com': 'KR',
+}
+
 export const DOMAINS = {
   'dotamx.com': HALL_AMERICA,
   'dotacasino-front.vercel.app': HALL_AMERICA,
