@@ -19,9 +19,6 @@ export class NodePaymentsController {
     if (body.event == 'deposit') {
       console.log('webhook')
       console.log(body)
-      /*await this.depositsService.handleDepositConfirmed({
-        address: body.data.tokenAddress,
-      });*/
     }
   }
 }
