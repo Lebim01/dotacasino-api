@@ -5,10 +5,11 @@ import { HttpModule } from '@nestjs/axios';
 import { FxService } from '@domain/fx/fx.service';
 import { UsersService } from 'apps/client-api/src/users/users.service';
 import { PrismaService } from 'libs/db/src/prisma.service';
+import { NodePaymentsService } from '@domain/node-payments/node-payments.service';
 
 @Module({
   imports: [HttpModule],
   controllers: [DepositsController],
-  providers: [StdMexService, FxService, UsersService, PrismaService],
+  providers: [StdMexService, FxService, UsersService, PrismaService, NodePaymentsService],
 })
 export class DepositsModule {}
