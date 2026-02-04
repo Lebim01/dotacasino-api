@@ -83,4 +83,25 @@ export class GamesService {
       },
     });
   }
+
+  async updateProviderRestrictions(providerId: string, countryCodes: string[]) {
+    const countries = await this.prisma.country.findMany({
+      where: {
+        code: {
+          in: countryCodes,
+        },
+      },
+    });
+
+    return this.prisma.gameProvider.update({
+      where: {
+        id: providerId,
+      },
+      data: {
+        restrictedCountries: {
+          set: countries.map((c) => ({ id: c.id })),
+        },
+      },
+    });
+  }
 }

@@ -68,7 +68,7 @@ export class GamesController {
   }
 
   @Post('providers')
-  async providers(@Body() body) {
-    return this.games.providers(body.domain);
+  async providers(@Body() body: { domain: string; country?: string }) {
+    return this.games.providers(body.domain, body.country);
   }
 }
