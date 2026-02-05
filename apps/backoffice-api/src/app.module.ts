@@ -58,7 +58,6 @@ import { BondsModule } from './bonds/bonds.module';
     CountriesModule,
     AcademyModule,
     SignalsModule,
-    DisruptiveModule,
     NodePaymentsModule,
     CasinoModule,
     WalletModule,
@@ -67,8 +66,9 @@ import { BondsModule } from './bonds/bonds.module';
     ReportsCasinoModule,
     AuthAcademyModule,
     BondsModule,
+    NodePaymentsModule
   ],
-  controllers: [AppController, DisruptiveController],
+  controllers: [AppController],
   providers: [AppService, NodePaymentsService, PrismaService, CasinoService],
 })
 export class AppModule {}

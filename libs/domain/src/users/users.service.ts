@@ -182,6 +182,7 @@ export class UserCommonService {
         status: txn.get('payment_status'),
         expires_at: txn.get('expires_at'),
         qrcode_url: txn.get('qrcode_url'),
+        network: txn.get('network'),
         status_text: null,
       };
     }
