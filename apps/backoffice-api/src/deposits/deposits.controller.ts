@@ -22,7 +22,7 @@ export class DepositsController {
     if (!body.txn_id) throw new Error('INVALID');
 
     const txn = await db
-      .collection('disruptive-academy')
+      .collection('node-payments')
       .doc(body.txn_id)
       .get();
 

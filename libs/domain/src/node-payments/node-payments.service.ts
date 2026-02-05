@@ -105,8 +105,8 @@ export class NodePaymentsService {
         cancelledAt: response.data.cancelledAt,
         createdAt: response.data.createdAt,
       };
-    } catch (error) {
-      console.error('Error validating deposit status:', error);
+    } catch (error: any) {
+      console.error('Error validating deposit status:', error.response.data);
       return {
         confirmed: false,
         status: 'PENDING' as const,
@@ -125,10 +125,12 @@ export class NodePaymentsService {
     }
   }
 
-  async getTransactionCasino(userid: string) {
+  async getTransactionCasino(user_id: string) {
     const docs = await db
-      .collection('disruptive-casino')
-      .where('userid', '==', userid)
+      .collection('node-payments')
+      .where('user_id', '==', user_id)
+      .where('type', '==', 'casino')
+      .where('category', '==', 'deposit')
       .where('status', '==', 'pending')
       .get();
 
@@ -137,15 +139,15 @@ export class NodePaymentsService {
 
   async createTransactionCasino(
     network: Networks,
-    userid: string,
+    user_id: string,
     amount: number,
   ) {
     try {
-      const response = await this.createAddress(network, userid, amount);
+      const response = await this.createAddress(network, user_id, amount);
       const { address, expires_at, qrcode_url } = response;
 
-      const doc = await db.collection('disruptive-casino').add({
-        userid,
+      await db.collection('node-payments').add({
+        user_id,
         amount,
         expires_at,
         address,
@@ -153,15 +155,8 @@ export class NodePaymentsService {
         network,
         created_at: new Date(),
         status: 'pending',
-      });
-
-      await db.collection('casino-transactions').doc(doc.id).set({
-        type: 'deposit',
-        status: 'pending',
-        created_at: new Date(),
-        amount,
-        userid,
-        address,
+        type: 'casino',
+        category: 'deposit',
       });
 
       return { qrcode_url, address, expires_at, amount };
@@ -170,10 +165,12 @@ export class NodePaymentsService {
     }
   }
 
-  async cancelTransactionCasino(userid: string) {
+  async cancelTransactionCasino(user_id: string) {
     const res = await db
-      .collection('disruptive-casino')
-      .where('userid', '==', userid)
+      .collection('node-payments')
+      .where('user_id', '==', user_id)
+      .where('type', '==', 'casino')
+      .where('category', '==', 'deposit')
       .where('status', '==', 'pending')
       .get()
       .then((r: any) => (r.empty ? null : r.docs[0]));
@@ -183,28 +180,24 @@ export class NodePaymentsService {
         status: 'cancelled',
         cancel_at: new Date(),
       });
-
-      await db.collection('casino-transactions').doc(res.id).update({
-        status: 'cancelled',
-        cancel_at: new Date(),
-      });
     }
   }
 
   async getTransaction(address: string) {
     const transaction = await db
-      .collection('disruptive-casino')
+      .collection('node-payments')
       .where('address', '==', address)
       .get()
       .then((r: any) => (r.empty ? null : r.docs[0]));
     return transaction;
   }
 
-  async getWithdrawList(userid: string) {
+  async getWithdrawList(user_id: string) {
     const docs = await db
-      .collection('casino-transactions')
-      .where('userid', '==', userid)
-      .where('type', '==', 'withdraw')
+      .collection('node-payments')
+      .where('user_id', '==', user_id)
+      .where('type', '==', 'casino')
+      .where('category', '==', 'withdraw')
       .get();
 
     return docs.docs.map((r: any) => ({
@@ -212,16 +205,17 @@ export class NodePaymentsService {
       address: r.get('address'),
       amount: r.get('amount'),
       created_at: r.get('created_at')?.toDate()?.toISOString() || '',
-      userid: r.get('userid'),
+      user_id: r.get('user_id'),
       status: r.get('status'),
     }));
   }
 
-  async requestWithdraw(userid: string, amount: number, address: string) {
+  async requestWithdraw(user_id: string, amount: number, address: string) {
     const doc = await db
-      .collection('casino-transactions')
-      .where('userid', '==', userid)
-      .where('type', '==', 'withdraw')
+      .collection('node-payments')
+      .where('user_id', '==', user_id)
+      .where('type', '==', 'casino')
+      .where('category', '==', 'withdraw')
       .where('status', '==', 'pending')
       .get()
       .then((r: any) => (r.empty ? null : r.docs[0]));
@@ -231,22 +225,24 @@ export class NodePaymentsService {
         amount: (doc.data().amount || 0) + amount,
       });
     } else {
-      await db.collection('casino-transactions').add({
-        type: 'withdraw',
+      await db.collection('node-payments').add({
+        type: 'casino',
+        category: 'withdraw',
         status: 'pending',
         created_at: new Date(),
-        userid,
+        user_id,
         amount,
         address,
       });
     }
   }
 
-  async cancelWithdrawCasino(userid: string) {
+  async cancelWithdrawCasino(user_id: string) {
     const doc = await db
-      .collection('casino-transactions')
-      .where('userid', '==', userid)
-      .where('type', '==', 'withdraw')
+      .collection('node-payments')
+      .where('user_id', '==', user_id)
+      .where('type', '==', 'casino')
+      .where('category', '==', 'withdraw')
       .where('status', '==', 'pending')
       .get()
       .then((r: any) => (r.empty ? null : r.docs[0]));
@@ -284,8 +280,9 @@ export class NodePaymentsService {
 
   async getTransactionAcademy(address: string) {
     const transaction = await db
-      .collection('disruptive-academy')
+      .collection('node-payments')
       .where('address', '==', address)
+      .where('type', '==', 'academy')
       .where('status', '==', 'pending')
       .get()
       .then((r: any) => (r.empty ? null : r.docs[0]));
@@ -303,7 +300,7 @@ export class NodePaymentsService {
       const response = await this.createAddress(network, user_id, amount);
       const { address, expires_at, qrcode_url } = response;
 
-      const res = await db.collection('disruptive-academy').add({
+      const res = await db.collection('node-payments').add({
         user_id,
         membership_type,
         amount,
@@ -313,7 +310,8 @@ export class NodePaymentsService {
         network,
         created_at: new Date(),
         status: 'pending',
-        type: 'membership',
+        type: 'academy',
+        category: 'membership',
         payment_status: 'pending',
         process_status: 'pending',
         is_upgrade,
@@ -331,8 +329,9 @@ export class NodePaymentsService {
 
   async getWithdrawListAdmin() {
     const docs = await db
-      .collection('casino-transactions')
-      .where('type', '==', 'withdraw')
+      .collection('node-payments')
+      .where('type', '==', 'casino')
+      .where('category', '==', 'withdraw')
       .where('status', '==', 'pending')
       .get();
 
@@ -341,7 +340,7 @@ export class NodePaymentsService {
       address: r.get('address'),
       amount: r.get('amount'),
       created_at: r.get('created_at')?.toDate()?.toISOString() || '',
-      userid: r.get('userid'),
+      user_id: r.get('user_id'),
     }));
   }
 
@@ -354,7 +353,7 @@ export class NodePaymentsService {
       const response = await this.createAddress(network, user_id, amount);
       const { address, expires_at, qrcode_url } = response;
 
-      await db.collection('disruptive-academy').add({
+      await db.collection('node-payments').add({
         user_id,
         amount,
         expires_at,
@@ -363,7 +362,8 @@ export class NodePaymentsService {
         network,
         created_at: new Date(),
         status: 'pending',
-        type: 'deposit',
+        type: 'academy',
+        category: 'deposit',
       });
 
       await db.collection('users').doc(user_id).update({

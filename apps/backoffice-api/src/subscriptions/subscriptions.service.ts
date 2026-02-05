@@ -96,7 +96,7 @@ export class SubscriptionsService {
 
     if (txn_id) {
       const transaction = await db
-        .collection('disruptive-academy')
+        .collection('node-payments')
         .doc(txn_id)
         .get();
       is_upgrade = transaction.get('is_upgrade') || false;

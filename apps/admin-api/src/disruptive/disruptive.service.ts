@@ -22,10 +22,12 @@ const NETWORKS_ADDRESS: Record<Networks, string> = {
 
 @Injectable()
 export class DisruptiveService {
-  async getTransactionCasino(userid: string) {
+  async getTransactionCasino(user_id: string) {
     const docs = await db
-      .collection('disruptive-casino')
-      .where('userid', '==', userid)
+      .collection('node-payments')
+      .where('user_id', '==', user_id)
+      .where('type', '==', 'casino')
+      .where('category', '==', 'deposit')
       .where('status', '==', 'pending')
       .get();
 
@@ -117,8 +119,9 @@ export class DisruptiveService {
 
   async getWithdrawListAdmin() {
     const docs = await db
-      .collection('casino-transactions')
-      .where('type', '==', 'withdraw')
+      .collection('node-payments')
+      .where('type', '==', 'casino')
+      .where('category', '==', 'withdraw')
       .where('status', '==', 'pending')
       .get();
 
@@ -127,13 +130,13 @@ export class DisruptiveService {
       address: r.get('address'),
       amount: r.get('amount'),
       created_at: dateToString(r.get('created_at')),
-      userid: r.get('userid'),
+      user_id: r.get('user_id'),
     }));
   }
 
   async getTransaction(address: string) {
     const transaction = await db
-      .collection('disruptive-casino')
+      .collection('node-payments')
       .where('address', '==', address)
       .where('status', '==', 'pending')
       .get()

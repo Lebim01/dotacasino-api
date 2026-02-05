@@ -295,19 +295,19 @@ export class ReportsService {
     const query =
       page > 1
         ? db
-            .collection('disruptive-academy')
+            .collection('node-payments')
             .orderBy('created_at', 'desc')
             .offset((page - 1) * limit)
             .limit(limit)
         : db
-            .collection('disruptive-academy')
+            .collection('node-payments')
             .orderBy('created_at', 'desc')
             .limit(limit);
 
     const snap = await query.get();
 
     const totalRecords = await db
-      .collection('disruptive-academy')
+      .collection('node-payments')
       .count()
       .get();
 
