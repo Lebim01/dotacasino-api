@@ -3,16 +3,39 @@ import { StdMexWebhookDto } from '@domain/stdmex/dto/webhook.dto';
 import { StdMexService } from '@domain/stdmex/stdmex.service';
 import { google } from '@google-cloud/tasks/build/protos/protos';
 import { Controller, Headers, Post, Body, Logger, HttpException } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiProperty, ApiTags } from '@nestjs/swagger';
 import { addToQueue, getPathQueue } from 'apps/backoffice-api/src/googletask/utils';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class NodePaymentsWebhookDto {
+  @ApiProperty()
+  @IsString()
   txHash!: string;
+
+  @ApiProperty()
+  @IsString()
   tokenAddress!: string;
+
+  @ApiProperty()
+  @IsNumber()
   amount!: number;
+
+  @ApiProperty()
+  @IsString()
   network!: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
   receiverAddress!: string;
+
+  @ApiProperty()
+  @IsNumber()
   commission?: number;
+
+  @ApiProperty()
+  @IsNumber()
+  @IsOptional()
   netAmount?: number;
 }
 
@@ -38,7 +61,6 @@ export class DepositsController {
 
   @Post('node-payments/webhook')
   async nodePaymentsWebhook(
-    @Headers('authorization') authorization: string | undefined,
     @Body() body: NodePaymentsWebhookDto,
   ) {
     const transaction = await this.nodePayments.getTransaction(
@@ -52,7 +74,7 @@ export class DepositsController {
       body.tokenAddress,
     );
 
-    if (validation.confirmed) {
+    if (validation.confirmed && transaction.get('type') === 'casino') {
       type Method = 'POST';
       const task: google.cloud.tasks.v2.ITask = {
         httpRequest: {
@@ -73,6 +95,26 @@ export class DepositsController {
         },
       };
       await addToQueue(task, getPathQueue('disruptive-complete'));
+    }
+
+    if(validation.confirmed && transaction.get('type') === 'academy') {
+      type Method = 'POST';
+          const task: google.cloud.tasks.v2.ITask = {
+            httpRequest: {
+              httpMethod: 'POST' as Method,
+              url: `${process.env.API_URL}/subscriptions/ipn`,
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: Buffer.from(
+                JSON.stringify({
+                  txn_id: transaction.id,
+                }),
+              ),
+            },
+          };
+      
+          await addToQueue(task, getPathQueue('active-user-membership'));
     }
 
     return validation.confirmed ? transaction.get('status') : 'NO';

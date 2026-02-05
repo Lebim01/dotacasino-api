@@ -61,23 +61,19 @@ export class DisruptiveController {
   async completedtransactiondeposit(
     @Body() body: CompleteTransactionDisruptiveCasinoDto,
   ) {
-    // This was DisruptiveService.completedDeposit(body.address)
-    // DisruptiveService.completedDeposit calls sendActiveDeposit and updates status.
-    // I should probably add these to NodePaymentsService too.
     const res = await db
-      .collection('disruptive-academy')
+      .collection('node-payments')
       .where('address', '==', body.address)
+      .where('type', '==', 'academy')
       .where('status', '==', 'pending')
       .get()
       .then((r: any) => (r.empty ? null : r.docs[0]));
 
     if (res) {
-      // Logic from DisruptiveService
       await res.ref.update({
         status: 'completed',
         completed_at: new Date(),
       });
-      // Skip sendActiveDeposit for now or implement it in NodePaymentsService
     }
     return 'OK';
   }
@@ -87,8 +83,9 @@ export class DisruptiveController {
     @Body() body: CompleteTransactionDisruptiveCasinoDto,
   ) {
     const res = await db
-      .collection('disruptive-academy')
+      .collection('node-payments')
       .where('address', '==', body.address)
+      .where('type', '==', 'academy')
       .where('status', '==', 'pending')
       .get()
       .then((r: any) => (r.empty ? null : r.docs[0]));
@@ -169,7 +166,7 @@ export class DisruptiveController {
   async createwithdrawqr(@Body() body: ApproveWithdraw) {
     const transactions = [];
     for (const id of body.ids) {
-      const d = await db.collection('casino-transactions').doc(id).get();
+      const d = await db.collection('node-payments').doc(id).get();
       transactions.push({
         id: d.id,
         address: d.get('address'),
@@ -193,11 +190,11 @@ export class DisruptiveController {
   async approvedwithdraw(@Body() body: ApproveWithdraw) {
     for (const id of body.ids) {
       const transaction = await db
-        .collection('casino-transactions')
+        .collection('node-payments')
         .doc(id)
         .get();
 
-      const userid = transaction.get('userid');
+      const user_id = transaction.get('user_id');
       const amount = transaction.get('amount');
 
       await transaction.ref.update({
@@ -208,7 +205,7 @@ export class DisruptiveController {
       await this.walletService.debit({
         amount,
         reason: 'WITHDRAW',
-        userId: userid,
+        userId: user_id,
         idempotencyKey: transaction.id,
       });
     }
@@ -255,7 +252,7 @@ export class DisruptiveController {
         await this.walletService.credit({
           amount: transaction.get('amount'),
           reason: 'USER_TOPUP',
-          userId: transaction.get('userid'),
+          userId: transaction.get('user_id'),
           meta: {
             txid: transaction.id,
             address: transaction.get('address'),

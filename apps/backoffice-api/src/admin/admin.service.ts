@@ -242,7 +242,7 @@ export class AdminService {
   }
 
   async disruptiveProcessTransaction(txn_id: string) {
-    const transaction = await db.collection('disruptive').doc(txn_id).get();
+    const transaction = await db.collection('node-payments').doc(txn_id).get();
 
     if (!transaction.exists) throw new Error('not found');
 
@@ -275,7 +275,7 @@ export class AdminService {
   }
 
   async disruptiveProcessTransactionWithoutVolumen(txn_id: string) {
-    const transaction = await db.collection('disruptive-academy').doc(txn_id).get();
+    const transaction = await db.collection('node-payments').doc(txn_id).get();
 
     if (!transaction.exists) throw new Error('not found');
 

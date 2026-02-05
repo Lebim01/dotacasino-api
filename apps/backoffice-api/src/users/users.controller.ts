@@ -170,7 +170,7 @@ export class UsersController {
     await this.commonUserService.createMembershipQR(
       user.userId,
       body.membership_type,
-      body.network || 'BSC',
+      body.network,
     );
 
     return this.commonUserService.getQRMembership(user.userId);

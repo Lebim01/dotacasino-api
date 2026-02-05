@@ -174,7 +174,7 @@ export class UserCommonService {
     const txn_id = user.get('membership_link_disruptive');
 
     if (txn_id) {
-      const txn = await db.collection('disruptive-academy').doc(txn_id).get();
+      const txn = await db.collection('node-payments').doc(txn_id).get();
       return {
         address: txn.get('address'),
         amount: txn.get('amount'),
@@ -182,6 +182,7 @@ export class UserCommonService {
         status: txn.get('payment_status'),
         expires_at: txn.get('expires_at'),
         qrcode_url: txn.get('qrcode_url'),
+        network: txn.get('network'),
         status_text: null,
       };
     }
@@ -194,7 +195,7 @@ export class UserCommonService {
     const txn_id = user.get('membership_link_disruptive');
 
     if (txn_id) {
-      await db.collection('disruptive-academy').doc(txn_id).delete();
+      await db.collection('node-payments').doc(txn_id).delete();
       return 'OK';
     }
 

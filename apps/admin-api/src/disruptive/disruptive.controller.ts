@@ -34,11 +34,11 @@ export class DisruptiveController {
   async approvedwithdraw(@Body() body: ApproveWithdraw) {
     for (const id of body.ids) {
       const transaction = await db
-        .collection('casino-transactions')
+        .collection('node-payments')
         .doc(id)
         .get();
 
-      const userid = transaction.get('userid');
+      const user_id = transaction.get('user_id');
       const amount = transaction.get('amount');
 
       await transaction.ref.update({
@@ -50,7 +50,7 @@ export class DisruptiveController {
       await this.walletService.debit({
         amount,
         reason: 'withdraw',
-        userId: userid,
+        userId: user_id,
         idempotencyKey: transaction.id,
       });
     }
@@ -82,7 +82,7 @@ export class DisruptiveController {
         await this.walletService.credit({
           amount: transaction.get('amount'),
           reason: 'recharge',
-          userId: transaction.get('userid'),
+          userId: transaction.get('user_id'),
           idempotencyKey: transaction.id,
         });
       }
