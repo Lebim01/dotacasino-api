@@ -335,42 +335,8 @@ export class SoftGamingService {
   }
 
   async getMerchantList() {
-    const { tid, id } = await this.getTID();
-    const HASH = MD5(
-      `Game/Merchants/${SERVER_IP}/${tid}/${this.APIKEY}/${this.APIPASS}`,
-    ).toString();
-    const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/Game/Merchants?TID=${tid}&Hash=${HASH}`;
-    return axios
-      .get(url)
-      .then(async (r) => {
-        await this.prisma.softGamingRecords.update({
-          data: {
-            status: RequestStatus.SUCCESS,
-            metadata: {
-              HASH,
-              tid,
-              url,
-            },
-          },
-          where: { id },
-        });
-        return r.data;
-      })
-      .catch(async (error) => {
-        await this.prisma.softGamingRecords.update({
-          data: {
-            status: RequestStatus.ERROR,
-            metadata: {
-              HASH,
-              tid,
-              url,
-              error: error.message,
-            },
-          },
-          where: { id },
-        });
-        return [];
-      });
+    const response = await this.getGameFullList().then(r => r.merchants)
+    return response
   }
 
   async syncMerchants() {
