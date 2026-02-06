@@ -372,56 +372,35 @@ export class SoftGamingService {
   }
 
   async syncGames() {
-    // 1. Ensure categories are synced
-    const categories = (await this.getCategoryList()) as Array<{
-      ID: string;
-      Trans: { en: string; ru?: string };
-      Tags: string[];
-      Name: { en: string; ru?: string };
-      CSort: string;
-      CSubSort: string;
-      Slug: string;
-      CustomSort: Record<string, any>;
-      IsTechnical: string;
-    }>;
+    // 1. Get categories from database
+    const categories = await (this.prisma as any).category.findMany({
+      select: {
+        id: true,
+        externalId: true,
+      },
+    });
 
     const categoryMap: Record<string, string> = {};
     for (const cat of categories) {
-      const dbCat = await (this.prisma as any).category.upsert({
-        where: { externalId: cat.ID },
-        update: { name: cat.Name.en || cat.Trans.en },
-        create: {
-          externalId: cat.ID,
-          name: cat.Name.en || cat.Trans.en,
-        },
-      });
-      categoryMap[cat.ID] = dbCat.id;
+      categoryMap[cat.externalId] = cat.id;
     }
 
-    // 2. Ensure merchants (providers) are synced
-    const merchants = await this.getMerchantList();
+    // 2. Get merchants (providers) from database
+    const providers = await this.prisma.gameProvider.findMany({
+      select: {
+        id: true,
+        externalId: true,
+        name: true,
+      },
+    });
+
     const merchantMap: Record<string, string> = {};
-    if (merchants && typeof merchants === 'object') {
-      const merchantArray = Object.values(merchants) as Array<{
-        ID: string;
-        Name: string;
-        Alias: string;
-      }>;
-      for (const m of merchantArray) {
-        const code = m.Alias.toUpperCase().replace(/\s+/g, '_');
-        const provider = await this.prisma.gameProvider.upsert({
-          where: { externalId: m.ID },
-          update: { name: m.Alias, code },
-          create: {
-            externalId: m.ID,
-            name: m.Alias,
-            code,
-            platformTypes: [code],
-          },
-        });
-        merchantMap[m.ID] = provider.id;
-        merchantMap[m.Alias] = provider.id; // Also map by alias just in case
+    for (const provider of providers) {
+      if (provider.externalId) {
+        merchantMap[provider.externalId] = provider.id;
       }
+      // Also map by name for SubSystem lookups
+      merchantMap[provider.name] = provider.id;
     }
 
     // 3. Fetch and sync games
