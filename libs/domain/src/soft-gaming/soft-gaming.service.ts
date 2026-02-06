@@ -168,18 +168,25 @@ export class SoftGamingService {
 
   async syncCategories() {
     const list = (await this.getCategoryList()) as Array<{
-      id: string;
-      name: string;
+      ID: string;
+      Trans: { en: string; ru?: string };
+      Tags: string[];
+      Name: { en: string; ru?: string };
+      CSort: string;
+      CSubSort: string;
+      Slug: string;
+      CustomSort: Record<string, any>;
+      IsTechnical: string;
     }>;
     if (!list || list.length === 0) return { count: 0 };
 
     for (const cat of list) {
       await (this.prisma as any).category.upsert({
-        where: { externalId: cat.id },
-        update: { name: cat.name },
+        where: { externalId: cat.ID },
+        update: { name: cat.Name.en || cat.Trans.en },
         create: {
-          externalId: cat.id,
-          name: cat.name,
+          externalId: cat.ID,
+          name: cat.Name.en || cat.Trans.en,
         },
       });
     }
@@ -401,21 +408,28 @@ export class SoftGamingService {
   async syncGames() {
     // 1. Ensure categories are synced
     const categories = (await this.getCategoryList()) as Array<{
-      id: string;
-      name: string;
+      ID: string;
+      Trans: { en: string; ru?: string };
+      Tags: string[];
+      Name: { en: string; ru?: string };
+      CSort: string;
+      CSubSort: string;
+      Slug: string;
+      CustomSort: Record<string, any>;
+      IsTechnical: string;
     }>;
 
     const categoryMap: Record<string, string> = {};
     for (const cat of categories) {
       const dbCat = await (this.prisma as any).category.upsert({
-        where: { externalId: cat.id },
-        update: { name: cat.name },
+        where: { externalId: cat.ID },
+        update: { name: cat.Name.en || cat.Trans.en },
         create: {
-          externalId: cat.id,
-          name: cat.name,
+          externalId: cat.ID,
+          name: cat.Name.en || cat.Trans.en,
         },
       });
-      categoryMap[cat.id] = dbCat.id;
+      categoryMap[cat.ID] = dbCat.id;
     }
 
     // 2. Ensure merchants (providers) are synced
