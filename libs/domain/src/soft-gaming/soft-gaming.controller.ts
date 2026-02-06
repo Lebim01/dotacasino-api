@@ -24,6 +24,11 @@ export class SoftGamingController {
     return this.softGamingService.getCategoryList();
   }
 
+  @Get('merchant-list')
+  merchantlist() {
+    return this.softGamingService.getMerchantList();
+  }
+
   @Get('sync-categories')
   syncCategories() {
     return this.softGamingService.syncCategories();
