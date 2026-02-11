@@ -118,6 +118,7 @@ export class AuthCommonService {
 
   async register(dto: RegisterDto) {
     if (!dto.acceptTerms) {
+      console.log('Debes aceptar los términos y condiciones');
       throw new ConflictException('Debes aceptar los términos y condiciones');
     }
 

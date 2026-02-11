@@ -233,7 +233,7 @@ export class AuthAcademyService {
     const task: google.cloud.tasks.v2.ITask = {
       httpRequest: {
         httpMethod: 'POST' as Method,
-        url: process.env.API_URL + `/auth-binary/assignBinaryPosition`,
+        url: `https://backoffice-api-1039762081728.us-central1.run.app/auth-binary/assignBinaryPosition`,
         body: Buffer.from(JSON.stringify(body)),
         headers: {
           'Content-Type': 'application/json',

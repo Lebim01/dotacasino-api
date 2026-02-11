@@ -110,6 +110,7 @@ export class UserCommonService {
         select: { id: true, email: true, country: true, createdAt: true, password_userapi: true },
       });
     } catch (err: any) {
+      console.error(err)
       if (err?.code === 'P2002' && err?.meta?.target?.includes('email')) {
         throw new ConflictException('El email ya está registrado');
       }
