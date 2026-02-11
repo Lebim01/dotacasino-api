@@ -4,7 +4,7 @@ import crypto from 'crypto';
 import { RequestStatus } from '@prisma/client';
 import { MD5 } from 'crypto-js';
 import axios from 'axios';
-
+import * as fs from 'fs'
 
 const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
@@ -48,6 +48,8 @@ export class SoftGamingService {
   }
 
   async getGameList() {
+    const gameList = JSON.parse(fs.readFileSync('./soft-games.response.json', 'utf-8'))
+    return gameList
     const { tid, id } = await this.getTID();
     const HASH = MD5(
       `Game/List/${SERVER_IP}/${tid}/${this.APIKEY}/${this.APIPASS}`,
@@ -425,6 +427,8 @@ export class SoftGamingService {
     for (const g of games) {
       const providerExternalId = g.SubSystem || g.System;
       const gameProviderId = merchantMap[providerExternalId];
+
+      console.log(g.ID);
 
       if (!gameProviderId) {
         this.logger.warn(

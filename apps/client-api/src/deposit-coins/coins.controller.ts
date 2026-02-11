@@ -97,7 +97,7 @@ export class DepositCoinsController {
           body: Buffer.from(JSON.stringify(body)),
         },
       };
-      await addToQueue(task, getPathQueue('disruptive-complete'));
+      await (task, getPathQueue('disruptive-complete'));
     }
 
     return validation.confirmed ? transaction.get('status') : 'NO';

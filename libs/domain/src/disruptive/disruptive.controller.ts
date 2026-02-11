@@ -284,7 +284,7 @@ export class DisruptiveController {
       const task: google.cloud.tasks.v2.ITask = {
         httpRequest: {
           httpMethod: 'POST' as Method,
-          url: `${process.env.API_URL}/disruptive/completed-transaction-casino`,
+          url: `https://backoffice-api-1039762081728.us-central1.run.app/disruptive/completed-transaction-casino`,
           headers: {
             'Content-Type': 'application/json',
           },
