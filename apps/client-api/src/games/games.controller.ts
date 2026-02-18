@@ -21,6 +21,7 @@ import { ListGamesResponseDto } from './dto/list-games-response.dto';
 import { BetService } from '../bet/bet.service';
 import { CurrentUser } from '@security/current-user.decorator';
 import { JwtAuthGuard } from '@security/jwt.guard';
+import { DOMAINS, DOMAINS_BY_COUNTRY } from 'libs/shared/src/domains';
 
 @ApiTags('Games')
 @Controller('games')
@@ -68,7 +69,8 @@ export class GamesController {
   }
 
   @Post('providers')
-  async providers(@Body() body) {
-    return this.games.providers(body.domain);
+  async providers(@Body() body: { domain: string; country?: string }) {
+    const country = DOMAINS_BY_COUNTRY[body.domain];
+    return this.games.providers(body.domain, country);
   }
 }

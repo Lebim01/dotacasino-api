@@ -118,6 +118,7 @@ export class AuthCommonService {
 
   async register(dto: RegisterDto) {
     if (!dto.acceptTerms) {
+      console.log('Debes aceptar los términos y condiciones');
       throw new ConflictException('Debes aceptar los términos y condiciones');
     }
 
@@ -126,31 +127,44 @@ export class AuthCommonService {
     try {
       const code = dto.referralCode || 'JWATXHKT';
       const sponsor = await this.referralService.getByCode(code);
-      const created = await this.prisma.$transaction(async () => {
-        const user = await this.usersService.createUser(
-          email,
-          dto.password,
-          dto.country,
-          sponsor!.id,
-          sponsor!.refCodeL == code ? 'left' : 'right',
-          code,
-        );
+      const created = await this.prisma.$transaction(
+        async () => {
+          const user = await this.usersService.createUser(
+            email,
+            dto.password,
+            dto.country,
+            sponsor!.id,
+            sponsor!.refCodeL == code ? 'left' : 'right',
+            code,
+          );
 
-        await this.referralService.attachByCode(user.id, code);
-        await this.walletService.createWallet(user.id);
+          await this.referralService.attachByCode(user.id, code);
+          await this.walletService.createWallet(user.id);
 
-        const resSoft: any = await this.softGaming.addUser(user.id, dto.ip, user.country, user.password_userapi!);
-        let login_userapi = '';
-        if (typeof resSoft === 'string' && resSoft.startsWith('1,')) {
-          login_userapi = resSoft.split(',')[1];
-        }
+          try {
+            const resSoft: any = await this.softGaming.addUser(
+              user.id,
+              dto.ip,
+              user.country,
+              user.password_userapi!,
+            );
+            let login_userapi = '';
+            if (typeof resSoft === 'string' && resSoft.startsWith('1,')) {
+              login_userapi = resSoft.split(',')[1];
+            }
 
-        return await this.prisma.user.update({
-          where: { id: user.id },
-          data: { login_userapi },
-          select: { id: true, email: true, country: true, createdAt: true },
-        });
-      }, { timeout: 60000 });
+            return await this.prisma.user.update({
+              where: { id: user.id },
+              data: { login_userapi },
+              select: { id: true, email: true, country: true, createdAt: true },
+            });
+          } catch (err) {
+            console.error(err);
+          }
+          return user;
+        },
+        { timeout: 60000 },
+      );
 
       return this.sanitize(created);
     } catch (error) {

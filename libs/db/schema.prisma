@@ -117,8 +117,9 @@ model GameProvider {
   apiKey        String? // si aplica
   games         Game[]
   imageUrl      String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  restrictedCountries Country[]
 }
 
 model Game {
@@ -167,6 +168,8 @@ model Country {
   id   String @id @default(uuid())
   name String
   code String
+
+  restrictedProviders GameProvider[]
 
   @@index([code])
 }

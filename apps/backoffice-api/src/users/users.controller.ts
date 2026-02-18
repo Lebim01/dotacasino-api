@@ -33,7 +33,7 @@ import {
 import { validatePageAndLimit } from '../utils/pagination';
 import { db } from '../firebase/admin';
 import { UserCommonService } from '@domain/users/users.service';
-import { DisruptiveService } from '@domain/disruptive/disruptive.service';
+import { NodePaymentsService } from '@domain/node-payments/node-payments.service';
 import { JwtAuthGuard } from '@security/jwt.guard';
 import { Roles } from '@security/roles.decorator';
 import { CurrentUser } from '@security/current-user.decorator';
@@ -47,7 +47,7 @@ export class UsersController {
     private readonly usersService: UsersService,
     private readonly commonUserService: UserCommonService,
     private readonly authService: AuthService,
-    private readonly disruptiveService: DisruptiveService,
+    private readonly nodePaymentsService: NodePaymentsService,
     private readonly walletService: WalletService,
   ) {}
 
@@ -170,7 +170,7 @@ export class UsersController {
     await this.commonUserService.createMembershipQR(
       user.userId,
       body.membership_type,
-      body.network || 'BSC',
+      body.network,
     );
 
     return this.commonUserService.getQRMembership(user.userId);
@@ -197,7 +197,7 @@ export class UsersController {
       throw new HttpException('Invalid amount', 403);
     }
 
-    await this.disruptiveService.createDeposit(userId, body.amount);
+    await this.nodePaymentsService.createDepositTransaction(userId, body.amount);
     return this.usersService.getQRDeposit(userId);
   }
 

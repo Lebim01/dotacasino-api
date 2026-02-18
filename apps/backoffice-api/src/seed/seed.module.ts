@@ -6,6 +6,7 @@ import { PrismaService } from 'libs/db/src/prisma.service';
 import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
 import { DisruptiveService } from '@domain/disruptive/disruptive.service';
 import { WalletService } from '@domain/wallet/wallet.service';
+import { NodePaymentsService } from '@domain/node-payments/node-payments.service';
 
 @Module({
   imports: [],
@@ -16,6 +17,7 @@ import { WalletService } from '@domain/wallet/wallet.service';
     AuthAcademyService,
     DisruptiveService,
     WalletService,
+    NodePaymentsService,
   ],
   exports: [SeedService],
   controllers: [SeedCotroller],

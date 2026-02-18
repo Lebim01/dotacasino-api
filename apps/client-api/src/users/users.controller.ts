@@ -16,7 +16,7 @@ import { CurrentUser } from '@security/current-user.decorator';
 import { db } from 'apps/backoffice-api/src/firebase/admin';
 import { UserCommonService } from '@domain/users/users.service';
 import { CreateQRDto } from './dto/registeracademy.dto';
-import { DisruptiveService } from '@domain/disruptive/disruptive.service';
+import { NodePaymentsService } from '@domain/node-payments/node-payments.service';
 import { google } from '@google-cloud/tasks/build/protos/protos';
 import {
   addToQueue,
@@ -29,7 +29,7 @@ export class UsersController {
   constructor(
     private readonly users: UsersService,
     private readonly userCommon: UserCommonService,
-    private readonly disruptiveService: DisruptiveService,
+    private readonly nodePaymentsService: NodePaymentsService,
   ) {}
 
   @Get('current-multiplier')
@@ -66,23 +66,23 @@ export class UsersController {
     @CurrentUser() user: { userId: string },
     @Body() body,
   ) {
-    const transaction = await this.disruptiveService.getTransactionAcademy(
+    const transaction = await this.nodePaymentsService.getTransactionAcademy(
       body.address,
     );
 
     if (!transaction) throw new HttpException('not found', 401);
 
-    const status = await this.disruptiveService.validateStatus(
+    const validation = await this.nodePaymentsService.validateStatus(
       transaction.get('network'),
       body.address,
     );
 
-    if (status) {
+    if (validation.confirmed) {
       type Method = 'POST';
       const task: google.cloud.tasks.v2.ITask = {
         httpRequest: {
           httpMethod: 'POST' as Method,
-          url: `${process.env.API_URL}/subscriptions/ipn`,
+          url: `https://backoffice-api-1039762081728.us-central1.run.app/subscriptions/ipn`,
           headers: {
             'Content-Type': 'application/json',
           },
@@ -96,7 +96,7 @@ export class UsersController {
       await addToQueue(task, getPathQueue('active-user-membership'));
     }
 
-    return status ? transaction.get('status') : 'NO';
+    return validation.confirmed ? transaction.get('status') : 'NO';
   }
 
   @Post('create-qr-membership')

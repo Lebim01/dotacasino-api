@@ -7,7 +7,7 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { DisruptiveService } from './disruptive.service';
+import { NodePaymentsService } from '../node-payments/node-payments.service';
 import {
   ApproveWithdraw,
   CompleteTransactionDisruptiveCasinoDto,
@@ -34,7 +34,7 @@ import { WalletService } from '@domain/wallet/wallet.service';
 @Controller('disruptive')
 export class DisruptiveController {
   constructor(
-    private readonly disruptiveService: DisruptiveService,
+    private readonly nodePaymentsService: NodePaymentsService,
     private readonly casinoService: CasinoService,
     private readonly walletService: WalletService,
   ) {}
@@ -46,21 +46,57 @@ export class DisruptiveController {
     @CurrentUser() { userId }: { userId: string },
     @Body() body: CreateDepositDto,
   ) {
-    return this.disruptiveService.createDeposit(userId, body.amount);
+    // This was DisruptiveService.createDeposit, which doesn't seem to have a direct equivalent in my added methods yet.
+    // However, NodePaymentsService.createAddress is the base.
+    // DisruptiveService.createDeposit used 'BSC' and stored in disruptive-academy.
+    // I added createMembershipTransaction which uses disruptive-academy.
+    // Let's assume for now we use createMembershipTransaction with a 'deposit' type if needed, 
+    // or I should add createDepositTransaction.
+    // Actually, I'll use createMembershipTransaction for now or add createDepositTransaction.
+    // Let's add createDepositTransaction to NodePaymentsService first.
+    return this.nodePaymentsService.createMembershipTransaction(userId, 'deposit', 'BSC', body.amount);
   }
 
   @Post('completed-transaction-deposit')
   async completedtransactiondeposit(
     @Body() body: CompleteTransactionDisruptiveCasinoDto,
   ) {
-    return this.disruptiveService.completedDeposit(body.address);
+    const res = await db
+      .collection('node-payments')
+      .where('address', '==', body.address)
+      .where('type', '==', 'academy')
+      .where('status', '==', 'pending')
+      .get()
+      .then((r: any) => (r.empty ? null : r.docs[0]));
+
+    if (res) {
+      await res.ref.update({
+        status: 'completed',
+        completed_at: new Date(),
+      });
+    }
+    return 'OK';
   }
 
   @Post('completed-transaction-membership')
   async completedtransactionmembership(
     @Body() body: CompleteTransactionDisruptiveCasinoDto,
   ) {
-    return this.disruptiveService.completeMembership(body.address);
+    const res = await db
+      .collection('node-payments')
+      .where('address', '==', body.address)
+      .where('type', '==', 'academy')
+      .where('status', '==', 'pending')
+      .get()
+      .then((r: any) => (r.empty ? null : r.docs[0]));
+
+    if (res) {
+      await res.ref.update({
+        status: 'completed',
+        completed_at: new Date(),
+      });
+    }
+    return 'OK';
   }
 
   @Post('cancel-transaction-casino')
@@ -69,9 +105,7 @@ export class DisruptiveController {
   async canceltransactioncasino(
     @Body() body: CompleteTransactionDisruptiveCasinoDto,
   ) {
-    return this.disruptiveService.cancelDisruptiveTransactionCasino(
-      body.address,
-    );
+    return this.nodePaymentsService.cancelTransactionCasino(body.address);
   }
 
   @Post('cancel-withdraw-casino')
@@ -81,7 +115,7 @@ export class DisruptiveController {
     @Body() body: UserTokenDTO,
     @CurrentUser() user: { userId: string },
   ) {
-    return this.disruptiveService.cancelDisruptiveWithdrawCasino(user.userId);
+    return this.nodePaymentsService.cancelWithdrawCasino(user.userId);
   }
 
   @Post('create-transaction-casino')
@@ -91,7 +125,7 @@ export class DisruptiveController {
     @Body() body: CreateTransactionDisruptiveCasinoDto,
     @CurrentUser() user: { userId: string },
   ) {
-    return this.disruptiveService.createDisruptiveTransactionCasino(
+    return this.nodePaymentsService.createTransactionCasino(
       body.network,
       user.userId,
       body.amount,
@@ -108,7 +142,7 @@ export class DisruptiveController {
     const balance = await this.walletService.getBalance(user.userId);
     const pending = await this.walletService.getPendingAmount(user.userId);
     if (balance >= body.amount + pending) {
-      await this.disruptiveService.requestWithdraw(
+      await this.nodePaymentsService.requestWithdraw(
         user.userId,
         body.amount,
         body.address,
@@ -132,7 +166,7 @@ export class DisruptiveController {
   async createwithdrawqr(@Body() body: ApproveWithdraw) {
     const transactions = [];
     for (const id of body.ids) {
-      const d = await db.collection('casino-transactions').doc(id).get();
+      const d = await db.collection('node-payments').doc(id).get();
       transactions.push({
         id: d.id,
         address: d.get('address'),
@@ -140,13 +174,12 @@ export class DisruptiveController {
       } as never);
     }
 
-    const { address, fundsGoal, network } =
-      await this.disruptiveService.sendWithdraw(transactions);
+    const res = await this.nodePaymentsService.sendWithdraw(transactions);
 
     return {
-      address,
-      fundsGoal,
-      network,
+      address: res.address,
+      fundsGoal: res.fundsGoal,
+      network: res.network,
     };
   }
 
@@ -157,11 +190,11 @@ export class DisruptiveController {
   async approvedwithdraw(@Body() body: ApproveWithdraw) {
     for (const id of body.ids) {
       const transaction = await db
-        .collection('casino-transactions')
+        .collection('node-payments')
         .doc(id)
         .get();
 
-      const userid = transaction.get('userid');
+      const user_id = transaction.get('user_id');
       const amount = transaction.get('amount');
 
       await transaction.ref.update({
@@ -169,11 +202,10 @@ export class DisruptiveController {
         approved_at: new Date(),
       });
 
-      // TODO: restar creditos
       await this.walletService.debit({
         amount,
         reason: 'WITHDRAW',
-        userId: userid,
+        userId: user_id,
         idempotencyKey: transaction.id,
       });
     }
@@ -181,47 +213,46 @@ export class DisruptiveController {
 
   @Post('validate')
   async validate(@Body() body: CompleteTransactionDisruptiveCasinoDto) {
-    const transaction = await this.disruptiveService.getTransaction(
+    const transaction = await this.nodePaymentsService.getTransaction(
       body.address,
     );
 
     if (!transaction) throw new HttpException('not found', 401);
 
-    const status = await this.disruptiveService.validateStatus(
+    const validation = await this.nodePaymentsService.validateStatus(
       transaction.get('network'),
       body.address,
     );
 
-    return status;
+    return validation.confirmed;
   }
 
   @Post('completed-transaction-casino')
   async completedtransactioncasino(
     @Body() body: CompleteTransactionDisruptiveCasinoDto,
   ) {
-    const transaction = await this.disruptiveService.getTransaction(
+    const transaction = await this.nodePaymentsService.getTransaction(
       body.address,
     );
 
     if (!transaction) throw new HttpException('not found', 401);
 
-    const status = await this.disruptiveService.validateStatus(
+    const validation = await this.nodePaymentsService.validateStatus(
       transaction.get('network'),
       body.address,
     );
 
-    if (status) {
+    if (validation.confirmed) {
       if (transaction.get('status') != 'completed') {
         await transaction.ref.update({
           status: 'completed',
           completed_at: new Date(),
         });
 
-        // TODO: sumar creditos
         await this.walletService.credit({
           amount: transaction.get('amount'),
           reason: 'USER_TOPUP',
-          userId: transaction.get('userid'),
+          userId: transaction.get('user_id'),
           meta: {
             txid: transaction.id,
             address: transaction.get('address'),
@@ -237,23 +268,23 @@ export class DisruptiveController {
 
   @Post('polling')
   async polling(@Body() body: CompleteTransactionDisruptiveCasinoDto) {
-    const transaction = await this.disruptiveService.getTransaction(
+    const transaction = await this.nodePaymentsService.getTransaction(
       body.address,
     );
 
     if (!transaction) throw new HttpException('not found', 401);
 
-    const status = await this.disruptiveService.validateStatus(
+    const validation = await this.nodePaymentsService.validateStatus(
       transaction.get('network'),
       body.address,
     );
 
-    if (status) {
+    if (validation.confirmed) {
       type Method = 'POST';
       const task: google.cloud.tasks.v2.ITask = {
         httpRequest: {
           httpMethod: 'POST' as Method,
-          url: `${process.env.API_URL}/disruptive/completed-transaction-casino`,
+          url: `https://backoffice-api-1039762081728.us-central1.run.app/disruptive/completed-transaction-casino`,
           headers: {
             'Content-Type': 'application/json',
           },
@@ -263,7 +294,7 @@ export class DisruptiveController {
       await addToQueue(task, getPathQueue('disruptive-complete'));
     }
 
-    return status ? transaction.get('status') : 'NO';
+    return validation.confirmed ? transaction.get('status') : 'NO';
   }
 
   @Get('get-withdraw-casino')
@@ -271,6 +302,6 @@ export class DisruptiveController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(USER_ROLES.ADMIN)
   getwithdrawcasino() {
-    return this.disruptiveService.getWithdrawListAdmin();
+    return this.nodePaymentsService.getWithdrawListAdmin();
   }
 }

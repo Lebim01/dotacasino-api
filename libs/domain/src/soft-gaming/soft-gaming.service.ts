@@ -4,7 +4,7 @@ import crypto from 'crypto';
 import { RequestStatus } from '@prisma/client';
 import { MD5 } from 'crypto-js';
 import axios from 'axios';
-
+import * as fs from 'fs'
 
 const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
@@ -48,6 +48,8 @@ export class SoftGamingService {
   }
 
   async getGameList() {
+    const gameList = JSON.parse(fs.readFileSync('./soft-games.response.json', 'utf-8'))
+    return gameList
     const { tid, id } = await this.getTID();
     const HASH = MD5(
       `Game/List/${SERVER_IP}/${tid}/${this.APIKEY}/${this.APIPASS}`,
@@ -168,18 +170,25 @@ export class SoftGamingService {
 
   async syncCategories() {
     const list = (await this.getCategoryList()) as Array<{
-      id: string;
-      name: string;
+      ID: string;
+      Trans: { en: string; ru?: string };
+      Tags: string[];
+      Name: { en: string; ru?: string };
+      CSort: string;
+      CSubSort: string;
+      Slug: string;
+      CustomSort: Record<string, any>;
+      IsTechnical: string;
     }>;
     if (!list || list.length === 0) return { count: 0 };
 
     for (const cat of list) {
       await (this.prisma as any).category.upsert({
-        where: { externalId: cat.id },
-        update: { name: cat.name },
+        where: { externalId: cat.ID },
+        update: { name: cat.Name.en || cat.Trans.en },
         create: {
-          externalId: cat.id,
-          name: cat.name,
+          externalId: cat.ID,
+          name: cat.Name.en || cat.Trans.en,
         },
       });
     }
@@ -230,7 +239,7 @@ export class SoftGamingService {
       UserAutoCreate: '1',
       Currency: 'USD',
     };
-    const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/User/AuthHTML?Login=${params.Login}&Password=${params.Password}&System=${params.System}&Page=${params.Page}&UserIP=${params.UserIP}&TID=${tid}&Hash=${params.Hash}&Demo=0`;
+    const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/User/AuthHTML?Login=${params.Login}&Password=${params.Password}&System=${params.System}&Page=${params.Page}&UserIP=${params.UserIP}&TID=${tid}&Hash=${params.Hash}&Demo=0&UserAutoCreate=${params.UserAutoCreate || '0'}&Currency=${params.Currency}`;
     return axios
       .get(url)
       .then(async (r) => {
@@ -247,6 +256,7 @@ export class SoftGamingService {
         });
 
         if (typeof r.data === 'string' && !r.data.startsWith("1,")) {
+          console.log(r.data);
           throw r.data
         }
         return r.data
@@ -327,42 +337,8 @@ export class SoftGamingService {
   }
 
   async getMerchantList() {
-    const { tid, id } = await this.getTID();
-    const HASH = MD5(
-      `Game/Merchants/${SERVER_IP}/${tid}/${this.APIKEY}/${this.APIPASS}`,
-    ).toString();
-    const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/Game/Merchants?TID=${tid}&Hash=${HASH}`;
-    return axios
-      .get(url)
-      .then(async (r) => {
-        await this.prisma.softGamingRecords.update({
-          data: {
-            status: RequestStatus.SUCCESS,
-            metadata: {
-              HASH,
-              tid,
-              url,
-            },
-          },
-          where: { id },
-        });
-        return r.data;
-      })
-      .catch(async (error) => {
-        await this.prisma.softGamingRecords.update({
-          data: {
-            status: RequestStatus.ERROR,
-            metadata: {
-              HASH,
-              tid,
-              url,
-              error: error.message,
-            },
-          },
-          where: { id },
-        });
-        return [];
-      });
+    const response = await this.getGameFullList().then(r => r.merchants)
+    return response
   }
 
   async syncMerchants() {
@@ -398,49 +374,35 @@ export class SoftGamingService {
   }
 
   async syncGames() {
-    // 1. Ensure categories are synced
-    const categories = (await this.getCategoryList()) as Array<{
-      id: string;
-      name: string;
-    }>;
+    // 1. Get categories from database
+    const categories = await (this.prisma as any).category.findMany({
+      select: {
+        id: true,
+        externalId: true,
+      },
+    });
 
     const categoryMap: Record<string, string> = {};
     for (const cat of categories) {
-      const dbCat = await (this.prisma as any).category.upsert({
-        where: { externalId: cat.id },
-        update: { name: cat.name },
-        create: {
-          externalId: cat.id,
-          name: cat.name,
-        },
-      });
-      categoryMap[cat.id] = dbCat.id;
+      categoryMap[cat.externalId] = cat.id;
     }
 
-    // 2. Ensure merchants (providers) are synced
-    const merchants = await this.getMerchantList();
+    // 2. Get merchants (providers) from database
+    const providers = await this.prisma.gameProvider.findMany({
+      select: {
+        id: true,
+        externalId: true,
+        name: true,
+      },
+    });
+
     const merchantMap: Record<string, string> = {};
-    if (merchants && typeof merchants === 'object') {
-      const merchantArray = Object.values(merchants) as Array<{
-        ID: string;
-        Name: string;
-        Alias: string;
-      }>;
-      for (const m of merchantArray) {
-        const code = m.Alias.toUpperCase().replace(/\s+/g, '_');
-        const provider = await this.prisma.gameProvider.upsert({
-          where: { externalId: m.ID },
-          update: { name: m.Alias, code },
-          create: {
-            externalId: m.ID,
-            name: m.Alias,
-            code,
-            platformTypes: [code],
-          },
-        });
-        merchantMap[m.ID] = provider.id;
-        merchantMap[m.Alias] = provider.id; // Also map by alias just in case
+    for (const provider of providers) {
+      if (provider.externalId) {
+        merchantMap[provider.externalId] = provider.id;
       }
+      // Also map by name for SubSystem lookups
+      merchantMap[provider.name] = provider.id;
     }
 
     // 3. Fetch and sync games
@@ -465,6 +427,8 @@ export class SoftGamingService {
     for (const g of games) {
       const providerExternalId = g.SubSystem || g.System;
       const gameProviderId = merchantMap[providerExternalId];
+
+      console.log(g.ID);
 
       if (!gameProviderId) {
         this.logger.warn(

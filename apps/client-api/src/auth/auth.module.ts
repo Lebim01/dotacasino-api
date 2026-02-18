@@ -6,7 +6,7 @@ import { ReferralService } from '../referral/referral.service';
 import { HttpModule } from '@nestjs/axios';
 import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
 import { UserCommonService } from '@domain/users/users.service';
-import { DisruptiveService } from '@domain/disruptive/disruptive.service';
+import { NodePaymentsService } from '@domain/node-payments/node-payments.service';
 import { CasinoService } from '@domain/casino/casino.service';
 import { AuthCommonService } from '@domain/auth/auth.service';
 import { PrismaService } from 'libs/db/src/prisma.service';
@@ -20,7 +20,7 @@ import { SoftGamingService } from '@domain/soft-gaming/soft-gaming.service';
     ReferralService,
     AuthAcademyService,
     UserCommonService,
-    DisruptiveService,
+    NodePaymentsService,
     CasinoService,
     AuthCommonService,
     SoftGamingService,

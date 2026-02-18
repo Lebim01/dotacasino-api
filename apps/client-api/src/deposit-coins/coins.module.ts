@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 
-import { DisruptiveService } from '@domain/disruptive/disruptive.service';
 import { CasinoService } from '@domain/casino/casino.service';
 import { DepositCoinsController } from './coins.controller';
+import { NodePaymentsService } from '@domain/node-payments/node-payments.service';
 
 @Module({
   controllers: [DepositCoinsController],
-  providers: [DisruptiveService, CasinoService],
+  providers: [CasinoService, NodePaymentsService],
 })
 export class DepositCoinsModule {}

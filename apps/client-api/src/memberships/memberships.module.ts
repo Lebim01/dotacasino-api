@@ -3,7 +3,7 @@ import { MembershipsController } from './memberships.controller';
 import { MembershipsService } from './memberships.service';
 import { UserCommonService } from '@domain/users/users.service';
 import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
-import { DisruptiveService } from '@domain/disruptive/disruptive.service';
+import { NodePaymentsService } from '@domain/node-payments/node-payments.service';
 import { WalletService } from '@domain/wallet/wallet.service';
 
 @Module({
@@ -12,7 +12,7 @@ import { WalletService } from '@domain/wallet/wallet.service';
     MembershipsService,
     UserCommonService,
     AuthAcademyService,
-    DisruptiveService,
+    NodePaymentsService,
     WalletService,
   ],
 })

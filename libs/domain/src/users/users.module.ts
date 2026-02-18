@@ -2,7 +2,7 @@ import { Global, Module } from '@nestjs/common';
 import { UserCommonService } from './users.service';
 import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
 import { PrismaService } from 'libs/db/src/prisma.service';
-import { DisruptiveService } from '@domain/disruptive/disruptive.service';
+import { NodePaymentsService } from '@domain/node-payments/node-payments.service';
 import { WalletService } from '@domain/wallet/wallet.service';
 
 @Global()
@@ -11,7 +11,7 @@ import { WalletService } from '@domain/wallet/wallet.service';
   providers: [
     UserCommonService,
     AuthAcademyService,
-    DisruptiveService,
+    NodePaymentsService,
     WalletService,
   ],
   exports: [UserCommonService],

@@ -14,9 +14,9 @@ import { Memberships } from 'apps/backoffice-api/src/types';
 import { MEMBERSHIP_PRICES } from 'apps/backoffice-api/src/constants';
 import { db } from 'apps/backoffice-api/src/firebase/admin';
 import {
-  DisruptiveService,
+  NodePaymentsService,
   Networks,
-} from '@domain/disruptive/disruptive.service';
+} from '@domain/node-payments/node-payments.service';
 import { USER_ROLES } from 'apps/backoffice-api/src/auth/auth.constants';
 
 function generateDisplayName() {
@@ -41,7 +41,7 @@ export class UserCommonService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly authAcademy: AuthAcademyService,
-    private readonly disruptiveService: DisruptiveService,
+    private readonly nodePaymentsService: NodePaymentsService,
   ) {}
 
   async getUserById(id: string) {
@@ -110,6 +110,7 @@ export class UserCommonService {
         select: { id: true, email: true, country: true, createdAt: true, password_userapi: true },
       });
     } catch (err: any) {
+      console.error(err)
       if (err?.code === 'P2002' && err?.meta?.target?.includes('email')) {
         throw new ConflictException('El email ya está registrado');
       }
@@ -151,7 +152,7 @@ export class UserCommonService {
         MEMBERSHIP_PRICES[membership_type] -
         MEMBERSHIP_PRICES[user.get('membership') as Memberships];
 
-      await this.disruptiveService.createMembership(
+      await this.nodePaymentsService.createMembershipTransaction(
         id_user,
         membership_type,
         network,
@@ -159,12 +160,12 @@ export class UserCommonService {
         true,
       );
     } else {
-      await this.disruptiveService.createMembership(
+      await this.nodePaymentsService.createMembershipTransaction(
         id_user,
         membership_type,
         network,
         amount,
-        true,
+        false,
       );
     }
   }
@@ -174,7 +175,7 @@ export class UserCommonService {
     const txn_id = user.get('membership_link_disruptive');
 
     if (txn_id) {
-      const txn = await db.collection('disruptive-academy').doc(txn_id).get();
+      const txn = await db.collection('node-payments').doc(txn_id).get();
       return {
         address: txn.get('address'),
         amount: txn.get('amount'),
@@ -182,6 +183,7 @@ export class UserCommonService {
         status: txn.get('payment_status'),
         expires_at: txn.get('expires_at'),
         qrcode_url: txn.get('qrcode_url'),
+        network: txn.get('network'),
         status_text: null,
       };
     }
@@ -194,7 +196,7 @@ export class UserCommonService {
     const txn_id = user.get('membership_link_disruptive');
 
     if (txn_id) {
-      await db.collection('disruptive-academy').doc(txn_id).delete();
+      await db.collection('node-payments').doc(txn_id).delete();
       return 'OK';
     }
 

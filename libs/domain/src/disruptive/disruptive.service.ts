@@ -82,7 +82,7 @@ export class DisruptiveService {
       ).toISOString();
       const qrcode_url = `https://api.qrserver.com/v1/create-qr-code/?size=225x225&data=${address}`;
 
-      const res = await db.collection('disruptive-academy').add({
+      const res = await db.collection('node-payments').add({
         user_id,
         membership_type,
         amount,
@@ -92,7 +92,8 @@ export class DisruptiveService {
         network: 'BSC',
         created_at: new Date(),
         status: 'pending',
-        type: 'membership',
+        type: 'academy',
+        category: 'membership',
         payment_status: 'pending',
         process_status: 'pending',
         is_upgrade,
@@ -110,8 +111,9 @@ export class DisruptiveService {
 
   async completeMembership(address: string) {
     const res = await db
-      .collection('disruptive-academy')
+      .collection('node-payments')
       .where('address', '==', address)
+      .where('type', '==', 'academy')
       .where('status', '==', 'pending')
       .get()
       .then((r: any) => (r.empty ? null : r.docs[0]));
@@ -134,7 +136,7 @@ export class DisruptiveService {
       ).toISOString();
       const qrcode_url = `https://api.qrserver.com/v1/create-qr-code/?size=225x225&data=${address}`;
 
-      const res = await db.collection('disruptive-academy').add({
+      const res = await db.collection('node-payments').add({
         user_id,
         amount,
         expires_at,
@@ -143,7 +145,8 @@ export class DisruptiveService {
         network: 'BSC',
         created_at: new Date(),
         status: 'pending',
-        type: 'deposit',
+        type: 'academy',
+        category: 'deposit',
         payment_status: 'pending',
         process_status: 'pending',
       });
@@ -160,8 +163,9 @@ export class DisruptiveService {
 
   async completedDeposit(address: string) {
     const res = await db
-      .collection('disruptive-academy')
+      .collection('node-payments')
       .where('address', '==', address)
+      .where('type', '==', 'academy')
       .where('status', '==', 'pending')
       .get()
       .then((r: any) => (r.empty ? null : r.docs[0]));
@@ -175,10 +179,12 @@ export class DisruptiveService {
     }
   }
 
-  async getTransactionCasino(userid: string) {
+  async getTransactionCasino(user_id: string) {
     const docs = await db
-      .collection('disruptive-casino')
-      .where('userid', '==', userid)
+      .collection('node-payments')
+      .where('user_id', '==', user_id)
+      .where('type', '==', 'casino')
+      .where('category', '==', 'deposit')
       .where('status', '==', 'pending')
       .get();
 
@@ -187,7 +193,7 @@ export class DisruptiveService {
 
   async createDisruptiveTransactionCasino(
     network: Networks,
-    userid: string,
+    user_id: string,
     amount: number,
   ) {
     try {
@@ -198,8 +204,8 @@ export class DisruptiveService {
       ).toISOString();
       const qrcode_url = `https://api.qrserver.com/v1/create-qr-code/?size=225x225&data=${address}`;
 
-      const doc = await db.collection('disruptive-casino').add({
-        userid,
+      await db.collection('node-payments').add({
+        user_id,
         amount,
         expires_at,
         address,
@@ -207,15 +213,8 @@ export class DisruptiveService {
         network,
         created_at: new Date(),
         status: 'pending',
-      });
-
-      await db.collection('casino-transactions').doc(doc.id).set({
-        type: 'deposit',
-        status: 'pending',
-        created_at: new Date(),
-        amount,
-        userid,
-        address,
+        type: 'casino',
+        category: 'deposit',
       });
 
       return { qrcode_url, address, expires_at, amount };
@@ -284,7 +283,7 @@ export class DisruptiveService {
     const task: google.cloud.tasks.v2.ITask = {
       httpRequest: {
         httpMethod: 'POST' as Method,
-        url: `${process.env.API_URL}/deposits/ipn`,
+        url: `https://backoffice-api-1039762081728.us-central1.run.app/deposits/ipn`,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -307,7 +306,7 @@ export class DisruptiveService {
     const task: google.cloud.tasks.v2.ITask = {
       httpRequest: {
         httpMethod: 'POST' as Method,
-        url: `${process.env.API_URL}/subscriptions/ipn`,
+        url: `https://backoffice-api-1039762081728.us-central1.run.app/subscriptions/ipn`,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -325,21 +324,18 @@ export class DisruptiveService {
     );
   }
 
-  async cancelDisruptiveTransactionCasino(userid: string) {
+  async cancelDisruptiveTransactionCasino(user_id: string) {
     const res = await db
-      .collection('disruptive-casino')
-      .where('userid', '==', userid)
+      .collection('node-payments')
+      .where('user_id', '==', user_id)
+      .where('type', '==', 'casino')
+      .where('category', '==', 'deposit')
       .where('status', '==', 'pending')
       .get()
       .then((r: any) => (r.empty ? null : r.docs[0]));
 
     if (res) {
       await res.ref.update({
-        status: 'cancelled',
-        cancel_at: new Date(),
-      });
-
-      await db.collection('casino-transactions').doc(res.id).update({
         status: 'cancelled',
         cancel_at: new Date(),
       });
@@ -382,11 +378,12 @@ export class DisruptiveService {
     }
   }
 
-  async requestWithdraw(userid: string, amount: number, address: string) {
+  async requestWithdraw(user_id: string, amount: number, address: string) {
     const doc = await db
-      .collection('casino-transactions')
-      .where('userid', '==', userid)
-      .where('type', '==', 'withdraw')
+      .collection('node-payments')
+      .where('user_id', '==', user_id)
+      .where('type', '==', 'casino')
+      .where('category', '==', 'withdraw')
       .where('status', '==', 'pending')
       .get()
       .then((r: any) => (r.empty ? null : r.docs[0]));
@@ -396,22 +393,24 @@ export class DisruptiveService {
         amount: firestore.FieldValue.increment(amount),
       });
     } else {
-      await db.collection('casino-transactions').add({
-        type: 'withdraw',
+      await db.collection('node-payments').add({
+        type: 'casino',
+        category: 'withdraw',
         status: 'pending',
         created_at: new Date(),
-        userid,
+        user_id,
         amount,
         address,
       });
     }
   }
 
-  async cancelDisruptiveWithdrawCasino(userid: string) {
+  async cancelDisruptiveWithdrawCasino(user_id: string) {
     const doc = await db
-      .collection('casino-transactions')
-      .where('userid', '==', userid)
-      .where('type', '==', 'withdraw')
+      .collection('node-payments')
+      .where('user_id', '==', user_id)
+      .where('type', '==', 'casino')
+      .where('category', '==', 'withdraw')
       .where('status', '==', 'pending')
       .get()
       .then((r: any) => (r.empty ? null : r.docs[0]));
@@ -423,11 +422,12 @@ export class DisruptiveService {
     }
   }
 
-  async getWithdrawList(userid: string) {
+  async getWithdrawList(user_id: string) {
     const docs = await db
-      .collection('casino-transactions')
-      .where('userid', '==', userid)
-      .where('type', '==', 'withdraw')
+      .collection('node-payments')
+      .where('user_id', '==', user_id)
+      .where('type', '==', 'casino')
+      .where('category', '==', 'withdraw')
       .get();
 
     return docs.docs.map((r: any) => ({
@@ -435,15 +435,16 @@ export class DisruptiveService {
       address: r.get('address'),
       amount: r.get('amount'),
       created_at: dateToString(r.get('created_at')),
-      userid: r.get('userid'),
+      user_id: r.get('user_id'),
       status: r.get('status'),
     }));
   }
 
   async getWithdrawListAdmin() {
     const docs = await db
-      .collection('casino-transactions')
-      .where('type', '==', 'withdraw')
+      .collection('node-payments')
+      .where('type', '==', 'casino')
+      .where('category', '==', 'withdraw')
       .where('status', '==', 'pending')
       .get();
 
@@ -452,13 +453,13 @@ export class DisruptiveService {
       address: r.get('address'),
       amount: r.get('amount'),
       created_at: dateToString(r.get('created_at')),
-      userid: r.get('userid'),
+      user_id: r.get('user_id'),
     }));
   }
 
   async getTransaction(address: string) {
     const transaction = await db
-      .collection('disruptive-casino')
+      .collection('node-payments')
       .where('address', '==', address)
       .get()
       .then((r: any) => (r.empty ? null : r.docs[0]));
@@ -467,8 +468,9 @@ export class DisruptiveService {
 
   async getTransactionAcademy(address: string) {
     const transaction = await db
-      .collection('disruptive-academy')
+      .collection('node-payments')
       .where('address', '==', address)
+      .where('type', '==', 'academy')
       .where('status', '==', 'pending')
       .get()
       .then((r: any) => (r.empty ? null : r.docs[0]));

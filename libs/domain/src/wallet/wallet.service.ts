@@ -217,11 +217,12 @@ export class WalletService {
     }
   }
 
-  async getPendingAmount(userid: string) {
+  async getPendingAmount(user_id: string) {
     const doc = await db
-      .collection('casino-transactions')
-      .where('userid', '==', userid)
-      .where('type', '==', 'withdraw')
+      .collection('node-payments')
+      .where('user_id', '==', user_id)
+      .where('type', '==', 'casino')
+      .where('category', '==', 'withdraw')
       .where('status', '==', 'pending')
       .get()
       .then((r: any) => (r.empty ? null : r.docs[0]));

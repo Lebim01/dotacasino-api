@@ -14,7 +14,7 @@ import {
   CreateDepositQRDto,
   CompleteTransactionDisruptiveCasinoDto,
 } from './dto/deposit.dto';
-import { DisruptiveService } from '@domain/disruptive/disruptive.service';
+import { NodePaymentsService } from '@domain/node-payments/node-payments.service';
 import { google } from '@google-cloud/tasks/build/protos/protos';
 import {
   addToQueue,
@@ -24,14 +24,14 @@ import {
 @ApiTags('Deposit Coins')
 @Controller('deposit-coins')
 export class DepositCoinsController {
-  constructor(private readonly disruptiveService: DisruptiveService) {}
+  constructor(private readonly nodePaymentsService: NodePaymentsService) {}
 
   @Get('list')
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get history' })
   async list(@CurrentUser() user: { userId: string }) {
-    return this.disruptiveService.getTransactionCasino(user.userId);
+    return this.nodePaymentsService.getTransactionCasino(user.userId);
   }
 
   @Get('qr')
@@ -39,7 +39,7 @@ export class DepositCoinsController {
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get current QR payment' })
   async getqrmembership(@CurrentUser() user: { userId: string }) {
-    return this.disruptiveService.getTransactionCasino(user.userId);
+    return this.nodePaymentsService.getTransactionCasino(user.userId);
   }
 
   @Post('create-qr')
@@ -51,7 +51,7 @@ export class DepositCoinsController {
     @CurrentUser() user: { userId: string },
     @Body() body: CreateDepositQRDto,
   ) {
-    return this.disruptiveService.createDisruptiveTransactionCasino(
+    return this.nodePaymentsService.createTransactionCasino(
       body.network,
       user.userId,
       body.amount,
@@ -63,9 +63,7 @@ export class DepositCoinsController {
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Cancel current QR payment' })
   async deleteqr(@CurrentUser() user: { userId: string }) {
-    return this.disruptiveService.cancelDisruptiveTransactionCasino(
-      user.userId,
-    );
+    return this.nodePaymentsService.cancelTransactionCasino(user.userId);
   }
 
   @Post('polling')
@@ -74,7 +72,7 @@ export class DepositCoinsController {
   @ApiBody({ type: CompleteTransactionDisruptiveCasinoDto })
   @ApiOperation({ summary: 'Validate transaction status' })
   async polling(@Body() body: CompleteTransactionDisruptiveCasinoDto) {
-    const transaction = await this.disruptiveService.getTransaction(
+    const transaction = await this.nodePaymentsService.getTransaction(
       body.address,
     );
 
@@ -82,17 +80,17 @@ export class DepositCoinsController {
     if (transaction.get('status') != 'pending')
       throw new HttpException('completed', 401);
 
-    const status = await this.disruptiveService.validateStatus(
+    const validation = await this.nodePaymentsService.validateStatus(
       transaction.get('network'),
       body.address,
     );
 
-    if (status) {
+    if (validation.confirmed) {
       type Method = 'POST';
       const task: google.cloud.tasks.v2.ITask = {
         httpRequest: {
           httpMethod: 'POST' as Method,
-          url: `${process.env.API_URL}/disruptive/completed-transaction-casino`,
+          url: `https://backoffice-api-1039762081728.us-central1.run.app/disruptive/completed-transaction-casino`,
           headers: {
             'Content-Type': 'application/json',
           },
@@ -102,6 +100,6 @@ export class DepositCoinsController {
       await addToQueue(task, getPathQueue('disruptive-complete'));
     }
 
-    return status ? transaction.get('status') : 'NO';
+    return validation.confirmed ? transaction.get('status') : 'NO';
   }
 }

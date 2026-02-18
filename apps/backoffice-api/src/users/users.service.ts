@@ -170,7 +170,7 @@ export class UsersService {
     const txn_id = user.get('deposit_link_disruptive');
 
     if (txn_id) {
-      const txn = await db.collection('disruptive-academy').doc(txn_id).get();
+      const txn = await db.collection('node-payments').doc(txn_id).get();
       return {
         qr: {
           address: txn.get('address'),
@@ -209,7 +209,7 @@ export class UsersService {
   }
 
   async cancelTxn(txn_id: string) {
-    await db.collection('disruptive-academy').doc(txn_id).update({
+    await db.collection('node-payments').doc(txn_id).update({
       payment_status: 'cancelled',
       process_status: 'cancelled',
     });

@@ -23,7 +23,8 @@ import { SeedModule } from './seed/seed.module';
 import { DisruptiveModule } from '@domain/disruptive/disruptive.module';
 import { CasinoModule } from '@domain/casino/casino.module';
 import { DisruptiveController } from '@domain/disruptive/disruptive.controller';
-import { DisruptiveService } from '@domain/disruptive/disruptive.service';
+import { NodePaymentsModule } from '@domain/node-payments/node-payments.module';
+import { NodePaymentsService } from '@domain/node-payments/node-payments.service';
 import { CasinoService } from '@domain/casino/casino.service';
 import { WalletModule } from '@domain/wallet/wallet.module';
 import { PrismaService } from 'libs/db/src/prisma.service';
@@ -57,7 +58,7 @@ import { BondsModule } from './bonds/bonds.module';
     CountriesModule,
     AcademyModule,
     SignalsModule,
-    DisruptiveModule,
+    NodePaymentsModule,
     CasinoModule,
     WalletModule,
     CasinoDashboardModule,
@@ -65,8 +66,9 @@ import { BondsModule } from './bonds/bonds.module';
     ReportsCasinoModule,
     AuthAcademyModule,
     BondsModule,
+    NodePaymentsModule
   ],
-  controllers: [AppController, DisruptiveController],
-  providers: [AppService, DisruptiveService, PrismaService, CasinoService],
+  controllers: [AppController],
+  providers: [AppService, NodePaymentsService, PrismaService, CasinoService],
 })
 export class AppModule {}

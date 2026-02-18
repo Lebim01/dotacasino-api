@@ -3,7 +3,7 @@ import { ListGamesDto } from './dto/list-games.dto';
 import { PrismaService } from 'libs/db/src/prisma.service';
 import { Prisma } from '@prisma/client';
 import { BetService } from '../bet/bet.service';
-import { DOMAINS } from 'libs/shared/src/domains';
+import { DOMAINS, DOMAINS_BY_COUNTRY } from 'libs/shared/src/domains';
 import { SoftGamingService } from 'libs/domain/src/soft-gaming/soft-gaming.service';
 
 @Injectable()
@@ -20,6 +20,10 @@ export class GamesService {
       show: true,
       hall: DOMAINS[q.domain].id,
     };
+
+    if(q.domain && DOMAINS_BY_COUNTRY[q.domain]) {
+      q.country = DOMAINS_BY_COUNTRY[q.domain];
+    }
 
     if (q.category) {
       where.categories = {
@@ -50,6 +54,16 @@ export class GamesService {
     if (q.provider) {
       where.gameProviderId = {
         equals: q.provider,
+      };
+    }
+
+    if (q.country) {
+      where.GameProvider = {
+        restrictedCountries: {
+          none: {
+            code: q.country,
+          },
+        },
       };
     }
 
@@ -84,39 +98,76 @@ export class GamesService {
     };
   }
 
-  async providers(domain: string) {
+  async providers(domain: string, country?: string) {
     const hall = DOMAINS[domain];
-    const result: any[] = await this.prisma
-      .$queryRawUnsafe(`
-        SELECT gp.id, gp.name, COUNT(g.id)::int as game_count, gp."imageUrl"
-        FROM "GameProvider" gp
-        LEFT JOIN "Game" g ON gp.id = g."gameProviderId" AND g.hall = '${hall.id}'
-        GROUP BY gp.id, gp.name, gp."imageUrl"
-        ORDER BY game_count DESC
-      `,
-      );
-    return result.filter(r => r.game_count > 0);
+    const providers = await this.prisma.gameProvider.findMany({
+      where: {
+        restrictedCountries: country
+          ? {
+            none: {
+              code: country,
+            },
+          }
+          : undefined,
+        games: {
+          some: {
+            hall: hall.id,
+          },
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        imageUrl: true,
+        _count: {
+          select: {
+            games: {
+              where: {
+                hall: hall.id,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        name: 'asc'
+      }
+    });
+
+    return providers.map((p) => ({
+      id: p.id,
+      name: p.name,
+      imageUrl: p.imageUrl,
+      game_count: p._count.games,
+    })).sort((a, b) => b.game_count - a.game_count);
   }
 
   async openGame(gameSlug: string, domain: string, userId: string, ip: string) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
     const game = await this.prisma.game.findFirst({
       where: {
         slug: {
           equals: gameSlug,
         },
         show: true,
+        GameProvider: {
+          restrictedCountries: {
+            none: {
+              code: user?.country || '',
+            },
+          },
+        },
       },
     });
 
     if (!game) {
-      throw new HttpException('Not found', 401);
+      throw new HttpException('Game not found or restricted in your country', 404);
     }
-
-    const user = await this.prisma.user.findFirst({
-      where: {
-        id: userId,
-      },
-    });
 
     const response = await this.softGaming.getAuthorizationUser(
       userId,
