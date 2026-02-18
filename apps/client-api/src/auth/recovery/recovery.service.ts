@@ -31,7 +31,7 @@ export class RecoveryService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly mailer: MailerService,
-  ) {}
+  ) { }
 
   /** Paso 1: solicitar recuperación (respuesta 200 siempre para evitar user-enum) */
   async init(emailRaw: string, host: string, ip?: string, userAgent?: string) {
@@ -60,7 +60,7 @@ export class RecoveryService {
       select: { id: true },
     });
 
-    const link = buildLink(host, rec.id, rt);
+    const link = buildLink('https://' + host, rec.id, rt);
 
     await this.mailer.send(
       user.email,
