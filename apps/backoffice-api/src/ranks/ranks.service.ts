@@ -20,7 +20,7 @@ type UserRank = {
 
 @Injectable()
 export class RanksService {
-  constructor(private readonly bondsService: BondsService) {}
+  constructor(private readonly bondsService: BondsService) { }
 
   async cutRanks() {
     /* Obtener todos los usuraios */
@@ -35,7 +35,7 @@ export class RanksService {
         const task: google.cloud.tasks.v2.ITask = {
           httpRequest: {
             httpMethod: 'POST' as Method,
-            url: `https://backoffice-api-1039762081728.us-central1.run.app/ranks/cutUserQueue/${user.id}`,
+            url: `https://backoffice-api-1039762081728.us-central1.run.app/v1/ranks/cutUserQueue/${user.id}`,
             headers: {
               'Content-Type': 'application/json',
             },
@@ -60,7 +60,7 @@ export class RanksService {
     const task: google.cloud.tasks.v2.ITask = {
       httpRequest: {
         httpMethod: 'POST' as Method,
-        url: `https://backoffice-api-1039762081728.us-central1.run.app/ranks/updateUserRank/${id_user}?is_corte=1`,
+        url: `https://backoffice-api-1039762081728.us-central1.run.app/v1/ranks/updateUserRank/${id_user}?is_corte=1`,
         headers: {
           'Content-Type': 'application/json',
         },

@@ -24,7 +24,7 @@ import {
 @ApiTags('Deposit Coins')
 @Controller('deposit-coins')
 export class DepositCoinsController {
-  constructor(private readonly nodePaymentsService: NodePaymentsService) {}
+  constructor(private readonly nodePaymentsService: NodePaymentsService) { }
 
   @Get('list')
   @ApiBearerAuth('access-token')
@@ -90,7 +90,7 @@ export class DepositCoinsController {
       const task: google.cloud.tasks.v2.ITask = {
         httpRequest: {
           httpMethod: 'POST' as Method,
-          url: `https://backoffice-api-1039762081728.us-central1.run.app/disruptive/completed-transaction-casino`,
+          url: `https://backoffice-api-1039762081728.us-central1.run.app/v1/disruptive/completed-transaction-casino`,
           headers: {
             'Content-Type': 'application/json',
           },

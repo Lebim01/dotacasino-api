@@ -18,7 +18,7 @@ export class SubscriptionsService {
   constructor(
     private readonly bondService: BondsService,
     private readonly prisma: PrismaService,
-  ) {}
+  ) { }
 
   async isActiveUser(id_user: string) {
     const user = await admin.collection('users').doc(id_user).get();
@@ -206,7 +206,7 @@ export class SubscriptionsService {
     const task: google.cloud.tasks.v2.ITask = {
       httpRequest: {
         httpMethod: 'POST' as Method,
-        url: `https://backoffice-api-1039762081728.us-central1.run.app/auth-binary/assignBinaryPosition`,
+        url: `https://backoffice-api-1039762081728.us-central1.run.app/v1/auth-binary/assignBinaryPosition`,
         body: Buffer.from(JSON.stringify(body)),
         headers: {
           'Content-Type': 'application/json',

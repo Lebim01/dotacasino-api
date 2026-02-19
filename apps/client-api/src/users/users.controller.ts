@@ -30,7 +30,7 @@ export class UsersController {
     private readonly users: UsersService,
     private readonly userCommon: UserCommonService,
     private readonly nodePaymentsService: NodePaymentsService,
-  ) {}
+  ) { }
 
   @Get('current-multiplier')
   @ApiBearerAuth('access-token')
@@ -82,7 +82,7 @@ export class UsersController {
       const task: google.cloud.tasks.v2.ITask = {
         httpRequest: {
           httpMethod: 'POST' as Method,
-          url: `https://backoffice-api-1039762081728.us-central1.run.app/subscriptions/ipn`,
+          url: `https://backoffice-api-1039762081728.us-central1.run.app/v1/subscriptions/ipn`,
           headers: {
             'Content-Type': 'application/json',
           },
@@ -133,7 +133,7 @@ export class UsersController {
   @Get('/stdmex')
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
-  stdmex(@CurrentUser() user){
+  stdmex(@CurrentUser() user) {
     return this.users.getStdMexClabe(user.userId);
   }
 }

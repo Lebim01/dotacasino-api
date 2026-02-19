@@ -49,7 +49,7 @@ export class DepositsController {
   constructor(
     private readonly stdmex: StdMexService,
     private readonly nodePayments: NodePaymentsService,
-  ) {}
+  ) { }
 
   @Post('webhook')
   webhook(
@@ -79,7 +79,7 @@ export class DepositsController {
       const task: google.cloud.tasks.v2.ITask = {
         httpRequest: {
           httpMethod: 'POST' as Method,
-          url: `https://backoffice-api-1039762081728.us-central1.run.app/disruptive/completed-transaction-casino`,
+          url: `https://backoffice-api-1039762081728.us-central1.run.app/v1/disruptive/completed-transaction-casino`,
           headers: {
             'Content-Type': 'application/json',
           },
@@ -97,24 +97,24 @@ export class DepositsController {
       await addToQueue(task, getPathQueue('disruptive-complete'));
     }
 
-    if(validation.confirmed && transaction.get('type') === 'academy') {
+    if (validation.confirmed && transaction.get('type') === 'academy') {
       type Method = 'POST';
-          const task: google.cloud.tasks.v2.ITask = {
-            httpRequest: {
-              httpMethod: 'POST' as Method,
-              url: `https://backoffice-api-1039762081728.us-central1.run.app/subscriptions/ipn`,
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: Buffer.from(
-                JSON.stringify({
-                  txn_id: transaction.id,
-                }),
-              ),
-            },
-          };
-      
-          await addToQueue(task, getPathQueue('active-user-membership'));
+      const task: google.cloud.tasks.v2.ITask = {
+        httpRequest: {
+          httpMethod: 'POST' as Method,
+          url: `https://backoffice-api-1039762081728.us-central1.run.app/v1/subscriptions/ipn`,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: Buffer.from(
+            JSON.stringify({
+              txn_id: transaction.id,
+            }),
+          ),
+        },
+      };
+
+      await addToQueue(task, getPathQueue('active-user-membership'));
     }
 
     return validation.confirmed ? transaction.get('status') : 'NO';

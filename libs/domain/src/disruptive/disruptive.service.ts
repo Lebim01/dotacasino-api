@@ -21,24 +21,24 @@ export const disruptiveUrl = axios.create({
 export type Networks = 'BSC' | 'TRX' | 'ETH' | 'POLYGON';
 
 export const NETWORKS: Record<Networks, { network: string; protocol: string }> =
-  {
-    BSC: {
-      network: 'BSC',
-      protocol: 'BEP20',
-    },
-    ETH: {
-      network: 'ETH',
-      protocol: 'ERC20',
-    },
-    POLYGON: {
-      network: 'POLYGON',
-      protocol: 'ERC20',
-    },
-    TRX: {
-      network: 'TRC',
-      protocol: 'USDT',
-    },
-  };
+{
+  BSC: {
+    network: 'BSC',
+    protocol: 'BEP20',
+  },
+  ETH: {
+    network: 'ETH',
+    protocol: 'ERC20',
+  },
+  POLYGON: {
+    network: 'POLYGON',
+    protocol: 'ERC20',
+  },
+  TRX: {
+    network: 'TRC',
+    protocol: 'USDT',
+  },
+};
 
 const NETWORKS_ADDRESS: Record<Networks, string> = {
   BSC: '0x55d398326f99059fF775485246999027B3197955',
@@ -49,7 +49,7 @@ const NETWORKS_ADDRESS: Record<Networks, string> = {
 
 @Injectable()
 export class DisruptiveService {
-  constructor(private readonly walletService: WalletService) {}
+  constructor(private readonly walletService: WalletService) { }
 
   async generateDisruptivePayment(network: Networks, amount: number) {
     const url = '/api/payments/single';
@@ -283,7 +283,7 @@ export class DisruptiveService {
     const task: google.cloud.tasks.v2.ITask = {
       httpRequest: {
         httpMethod: 'POST' as Method,
-        url: `https://backoffice-api-1039762081728.us-central1.run.app/deposits/ipn`,
+        url: `https://backoffice-api-1039762081728.us-central1.run.app/v1/deposits/ipn`,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -306,7 +306,7 @@ export class DisruptiveService {
     const task: google.cloud.tasks.v2.ITask = {
       httpRequest: {
         httpMethod: 'POST' as Method,
-        url: `https://backoffice-api-1039762081728.us-central1.run.app/subscriptions/ipn`,
+        url: `https://backoffice-api-1039762081728.us-central1.run.app/v1/subscriptions/ipn`,
         headers: {
           'Content-Type': 'application/json',
         },
