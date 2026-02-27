@@ -31,13 +31,6 @@ export class MembershipsController {
   @UseGuards(JwtAuthGuard)
   async list(@CurrentUser() _user: { userId?: string }) {
     let current_membership = 'free';
-    if (_user && _user.userId) {
-      const user = await this.users.getUserByIdFirebase(_user.userId);
-      current_membership = user?.membership ?? 'free';
-      if (user?.membershipStatus !== 'paid') {
-        current_membership = 'free';
-      }
-    }
     return [
       {
         id: 'p-100',
