@@ -258,7 +258,7 @@ model LedgerEntry {
 }
 
 model PasswordReset {
-  id        String    @id
+  id        String    @id @default(uuid())
   userId    String
   tokenHash String
   expiresAt DateTime
