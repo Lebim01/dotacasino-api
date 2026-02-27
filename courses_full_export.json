@@ -1,0 +1,2141 @@
+[
+  {
+    "id": "ADHmAjqRhS7CN7UaNhOn",
+    "created_at": "2025-06-19 00:40:45",
+    "count_views": 0,
+    "count_likes": 0,
+    "status": "in_progress",
+    "img_url": {
+      "es": "https://storage.googleapis.com/dota-dd5dd.firebasestorage.app/courses-images/curso5.png",
+      "en": "https://storage.googleapis.com/dota-dd5dd.firebasestorage.app/courses-images/curso11.png",
+      "ko": "https://storage.googleapis.com/dota-dd5dd.firebasestorage.app/courses-images/curso12.png"
+    },
+    "lang": [
+      "es",
+      "en",
+      "ko"
+    ],
+    "count_lesson": 22,
+    "name": {
+      "en": "Trading and Risk Managment",
+      "ko": "위험 관리",
+      "es": "Trading y Gestión de Riesgo"
+    },
+    "is_multi": true,
+    "count_durations": "04:14:49",
+    "updated_at": "2025-06-19 02:03:16",
+    "sections": [
+      {
+        "id": "439hrMOjbuz7EGBmUlQL",
+        "order": 2,
+        "count_lessons": 0,
+        "created_at": "2025-06-19T01:31:51.406Z",
+        "name": {
+          "es": "Plan de Trading en Acción",
+          "ko": "실행 중인 트레이딩 계획",
+          "en": "Trading Plan in Action"
+        },
+        "lessons": [
+          {
+            "id": "9OxsJtiprGFxacvCa10H",
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/980852949?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Clase 3 - Plan de Trading en Acción  - 1 Intro\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "en": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094587840?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_3_-_plan_de_trading_en_acción__-_1_intro (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1092897446?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_3_-_plan_de_trading_en_acción__-_1_intro (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 0,
+            "name": {
+              "es": "Intro",
+              "ko": "인트로",
+              "en": "Intro"
+            }
+          },
+          {
+            "id": "AwExX83JBJve055q54Ab",
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/980855889?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Clase 3 - Plan de Trading en Acción  - 3 Plan de Ejecucion\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "en": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094587889?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_3_-_plan_de_trading_en_acción__-_3_plan_de_ejecucion (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1092897713?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_3_-_plan_de_trading_en_acción__-_3_plan_de_ejecucion (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 2,
+            "name": {
+              "es": "Plan de Ejecucion",
+              "ko": "실행 계획",
+              "en": "Execution Plan"
+            }
+          },
+          {
+            "id": "C4rCOgfT8otbvgyZqtah",
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/980852949?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Clase 3 - Plan de Trading en Acción  - 1 Intro\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "en": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094587794?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_3_-_plan_de_trading_en_acción__-_2_contexto_y_confluencia (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1092897529?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_3_-_plan_de_trading_en_acción__-_2_contexto_y_confluencia (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 1,
+            "name": {
+              "es": "Contexto y Confluencia",
+              "ko": "컨텍스트와 합류점",
+              "en": "Context and Confluence"
+            }
+          },
+          {
+            "id": "VyEkF0r4f0ZsCYqto48D",
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/980857383?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Clase 3 - Plan de Trading en Acción  - 4 Plan de Contingencia\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "en": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094587850?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_3_-_plan_de_trading_en_acción__-_4_plan_de_contingencia (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1092897815?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_3_-_plan_de_trading_en_acción__-_4_plan_de_contingencia (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 3,
+            "name": {
+              "es": "Plan de Contingencia",
+              "ko": "비상 계획",
+              "en": "Contingency Plan"
+            }
+          }
+        ]
+      },
+      {
+        "id": "5f9onXRmHV4zxfJErP5q",
+        "order": 1,
+        "count_lessons": 0,
+        "created_at": "2025-06-19T01:31:51.688Z",
+        "name": {
+          "es": "Plan de trading",
+          "ko": "트레이딩 계획",
+          "en": "Trading plan"
+        },
+        "lessons": [
+          {
+            "id": "0r6SCWfpe5JSVp4Eeq57",
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/980843089?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Clase 2 - Plan de Trading  - 4 Ingredientes de un plan de Trading\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "en": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094587556?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_2_-_plan_de_trading__-_4_ingredientes_de_un_plan_de_trading (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1092862672?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_2_-_plan_de_trading__-_4_ingredientes_de_un_plan_de_trading (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 3,
+            "name": {
+              "es": "Ingredientes de un plan de Trading",
+              "ko": "트레이딩 계획의 구성 요소들",
+              "en": "Ingredients of a Trading Plan"
+            }
+          },
+          {
+            "id": "9X8WsieWka5ucU8AfFjK",
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/980838063?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Clase 2 - Plan de Trading  - 2 Que es un Plan\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "en": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094587525?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_2_-_plan_de_trading__-_2_que_es_un_plan (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1092861488?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_2_-_plan_de_trading__-_2_que_es_un_plan (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 1,
+            "name": {
+              "es": "Que es un Plan",
+              "ko": "계획이란 무엇인가요?",
+              "en": "What is a Plan"
+            }
+          },
+          {
+            "id": "GHs3L7cGT4XgdXEjCNQD",
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/980841174?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Clase 2 - Plan de Trading  - 3 Cuanto tiempo le dedico a mi Plan\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "en": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094587502?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_2_-_plan_de_trading__-_3_cuanto_tiempo_le_dedico_a_mi_plan (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1092861550?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_2_-_plan_de_trading__-_3_cuanto_tiempo_le_dedico_a_mi_plan (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 2,
+            "name": {
+              "es": "Cuanto tiempo le dedico a mi Plan",
+              "ko": "내 계획에 얼마나 시간을 투자하나요?",
+              "en": "How much time do I dedicate to my Plan?"
+            }
+          },
+          {
+            "id": "Kya0utM7xdKlHTxkEE3V",
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/980845531?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Clase 2 - Plan de Trading  - 5 La trifecta en Gestion de Riesgo\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "en": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094587545?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_2_-_plan_de_trading__-_5_la_trifecta_en_gestion_de_riesgo (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1092863182?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_2_-_plan_de_trading__-_5_la_trifecta_en_gestion_de_riesgo (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 4,
+            "name": {
+              "es": "La trifecta en Gestion de Riesgo",
+              "ko": "위험 관리의 삼위일체",
+              "en": "The Trifecta in Risk Management"
+            }
+          },
+          {
+            "id": "cOZLOjMd4rOyAnhS5gBZ",
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/980836532?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Clase 2 - Plan de Trading  - 1 Intro\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "en": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094587537?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_2_-_plan_de_trading__-_1_intro (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1092861423?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_2_-_plan_de_trading__-_1_intro (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 0,
+            "name": {
+              "es": "Intro",
+              "ko": "인트로",
+              "en": "Intro"
+            }
+          }
+        ]
+      },
+      {
+        "id": "G5Kx1CmmUpI8pgzYmaJ7",
+        "order": 3,
+        "count_lessons": 0,
+        "created_at": "2025-06-19T01:31:52.607Z",
+        "name": {
+          "es": "Capital Mental",
+          "ko": "정신적 자본",
+          "en": "Mental Capital"
+        },
+        "lessons": [
+          {
+            "id": "8bmjtKngwEkqYAWCBEQc",
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/982048182?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Clase 4 - Capital Mental  - 3 Desarrollo\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "en": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094588240?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_4_-_capital_mental__-_5_ejemplo_y_soluciones (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1092900065?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_4_-_capital_mental__-_3_desarrollo (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 2,
+            "name": {
+              "es": "Desarrollo",
+              "ko": "개발",
+              "en": "Development"
+            }
+          },
+          {
+            "id": "ZcD2dJJVJsZs4aX5F6Ri",
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/982046710?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Clase 4 - Capital Mental  - 1 Intro a Temas\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "en": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094588262?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_4_-_capital_mental__-_4_desgaste_y_como_recuperarlo (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1092900098?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_4_-_capital_mental__-_1_intro_a_temas (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 0,
+            "name": {
+              "es": "Intro",
+              "ko": "인트로",
+              "en": "Intro"
+            }
+          },
+          {
+            "id": "fSWyy1zZJgPsw4uOxU0Z",
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/982047319?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Clase 4 - Capital Mental  - 2 Que es Capital Mental\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "en": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094588272?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_4_-_capital_mental__-_4_desgaste_y_como_recuperarlo (1080p) (1)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1092900082?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_4_-_capital_mental__-_2_que_es_capital_mental (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 1,
+            "name": {
+              "es": "Que es Capital Mental",
+              "ko": "정신적 자본이란 무엇인가요?",
+              "en": "What is Mental Capital"
+            }
+          },
+          {
+            "id": "gI22wGyd8s75r9EK0Kpa",
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/982050324?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Clase 4 - Capital Mental  - 6 Firmas de Fondeo\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "en": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094588288?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_4_-_capital_mental__-_6_firmas_de_fondeo (1080p) (1)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1092900112?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_4_-_capital_mental__-_6_firmas_de_fondeo (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 5,
+            "name": {
+              "es": "Firmas de Fondeo",
+              "ko": "펀딩 회사들",
+              "en": "Funding Firms"
+            }
+          },
+          {
+            "id": "oJRq8DbIHfdhxUAblste",
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/982049603?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Clase 4 - Capital Mental  - 5 Ejemplo y Soluciones\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "en": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094588308?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_4_-_capital_mental__-_6_firmas_de_fondeo (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1092900133?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_4_-_capital_mental__-_5_ejemplo_y_soluciones (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 4,
+            "name": {
+              "es": "Ejemplo y Soluciones",
+              "ko": "예시와 해결책",
+              "en": "Example and Solutions"
+            }
+          },
+          {
+            "id": "qrPJ0qQfH9yPtXGswsSP",
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/982048943?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Clase 4 - Capital Mental  - 4 Desgaste y como Recuperarlo\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "en": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094588280?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_4_-_capital_mental__-_5_ejemplo_y_soluciones (1080p) (1)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1092900098?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_4_-_capital_mental__-_1_intro_a_temas (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 3,
+            "name": {
+              "es": "Desgaste y como Recuperarlo",
+              "ko": "소모와 회복 방법",
+              "en": "Wear and tear and how to recover it"
+            }
+          }
+        ]
+      },
+      {
+        "id": "PcMpHCMPDqFqPxEwAK5R",
+        "order": 5,
+        "count_lessons": 0,
+        "created_at": "2025-06-19T01:31:53.936Z",
+        "name": {
+          "es": "Backtesting",
+          "ko": "백테스팅",
+          "en": "Backtesting"
+        },
+        "lessons": [
+          {
+            "id": "MIrYbrkVGw0Hm4b3BgTH",
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/982055977?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Clase 6 - Backtesting  - 2 Que es Backtesting\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "en": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094588994?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_6_-_backtesting__-_2_que_es_backtesting (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 1,
+            "name": {
+              "es": "Que es Backtesting",
+              "ko": "백테스팅이란 무엇인가요?",
+              "en": "What is Backtesting"
+            }
+          },
+          {
+            "id": "N5WMQMjY5dIngkfDrHcd",
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/982056039?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Clase 6 - Backtesting  - 1 Intro\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "en": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094588957?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_6_-_backtesting__-_1_intro (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 0,
+            "name": {
+              "es": "Intro",
+              "ko": "인트로\n",
+              "en": "Intro"
+            }
+          },
+          {
+            "id": "RKKVLSzSjAeDvObKdjHI",
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<div style=\"padding:70.73% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/982055639?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Clase 6 - Backtesting  - 4 Ejemplo de Backtesting Profesional\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "en": "<div style=\"padding:70.73% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094589017?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_6_-_backtesting__-_4_ejemplo_de_backtesting_profesional (720p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 3,
+            "name": {
+              "es": "Ejemplo de Backtesting Profesional",
+              "ko": "전문적인 백테스팅 예시\n",
+              "en": "Professional Backtesting Example"
+            }
+          },
+          {
+            "id": "obip6VPJPKW1EonWMS0j",
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/982055776?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Clase 6 - Backtesting  - 3 Pon a prueba sin arriesgar dinero\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "en": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094588968?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_6_-_backtesting__-_3_pon_a_prueba_sin_arriesgar_dinero (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 2,
+            "name": {
+              "es": "Pon a prueba sin arriesgar dinero",
+              "ko": "돈을 위험에 빠뜨리지 않고 시험해보세요\n",
+              "en": "Test it without risking money"
+            }
+          }
+        ]
+      },
+      {
+        "id": "drH6uQoBJRMfR1EnUUsE",
+        "name": {
+          "es": "Intro",
+          "en": "intro",
+          "ko": "인트로"
+        },
+        "order": 0,
+        "count_lessons": 0,
+        "created_at": "2025-06-19T01:31:54.506Z",
+        "lessons": [
+          {
+            "id": "MS8AmfHKH0AQWBduQZ4v",
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/978524534?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Gestion de Riesgo aplicada al Trading\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "en": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094587289?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"gestion_de_riesgo_aplicada_al_trading (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1092859261?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"5 gestion_de_riesgo_aplicada_al_trading (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 4,
+            "name": {
+              "es": "Gestión de riesgo aplicada al trading",
+              "ko": "트레이딩에 적용된 위험 관리",
+              "en": "Risk management applied to trading"
+            }
+          },
+          {
+            "id": "NOEfo22Rm0MVP79PA8hH",
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/978522344?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Bienvenida\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>\n",
+              "en": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094587308?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"bienvenida (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1092857748?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"1 bienvenida (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 0,
+            "name": {
+              "es": "Bienvenida",
+              "ko": "환영합니다",
+              "en": "Welcome"
+            }
+          },
+          {
+            "id": "PiPtVKzOwqSTH7nEtCcR",
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/978524389?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Menos es más\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "en": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094587271?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"menos_es_más (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1092858346?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"3 menos_es_más (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 2,
+            "name": {
+              "es": "Menos es más",
+              "ko": "적을수록 더 많다",
+              "en": "Less is more"
+            }
+          },
+          {
+            "id": "QUWvzV15mD5ZxUX62tdY",
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/978524263?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Qué es gestión de riesgo\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "en": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094587223?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"qué_es_gestión_de_riesgo (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1092858144?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"2 qué_es_gestión_de_riesgo (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 1,
+            "name": {
+              "es": "Qué es gestión de riesgo",
+              "ko": "위험 관리는 무엇인가요?",
+              "en": "What is risk management?"
+            }
+          },
+          {
+            "id": "kRBtKQCfmEVnasvyBYy2",
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/978524440?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Ciclo de autosabotaje\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "en": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094587247?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"ciclo_de_autosabotaje (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1092858916?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"4 ciclo_de_autosabotaje (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 3,
+            "name": {
+              "es": "Ciclo de autosabotaje",
+              "ko": "자기 방해의 반복적인 사이클",
+              "en": "Cycle of self-sabotage"
+            }
+          }
+        ]
+      },
+      {
+        "id": "owYXSvyHnEq3Ugee50hu",
+        "order": 4,
+        "count_lessons": 0,
+        "created_at": "2025-06-19T01:31:55.394Z",
+        "name": {
+          "es": "Tradea como el Casino",
+          "ko": "카지노처럼 트레이딩하라",
+          "en": "Trade like the Casino"
+        },
+        "lessons": [
+          {
+            "id": "54kIpZKPZS3oTj8fx5XJ",
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/982053432?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Clase 5 - Tradea como el Casino  - 2 Expected Value y Edge de la Ruleta\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "en": "",
+              "ko": ""
+            },
+            "order": 1,
+            "name": {
+              "es": "Expected Value y Edge de la Ruleta",
+              "ko": "룰렛의 기대값과 하우스 엣지\n",
+              "en": "Expected Value and Roulette Edge"
+            }
+          },
+          {
+            "id": "Ta0ge5ahxDVmVxceZ7rL",
+            "order": 0,
+            "img_url": {
+              "ko": "",
+              "en": "",
+              "es": ""
+            },
+            "iframe": {
+              "ko": "",
+              "en": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094588780?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"clase_5_-_tradea_como_el_casino__-_1_intro (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "es": "<div style=\"padding:70.68% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/982052559?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Clase 5 - Tradea como el Casino  - 1 Intro\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "name": {
+              "es": "Intro",
+              "ko": "인트로\n",
+              "en": "Intro"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "CJWRoZLpQKvleaQq6NC5",
+    "created_at": "2025-06-19 00:40:41",
+    "count_views": 0,
+    "count_likes": 0,
+    "status": "in_progress",
+    "img_url": {
+      "es": "https://storage.googleapis.com/dota-dd5dd.firebasestorage.app/courses-images/curso3.png",
+      "en": "https://storage.googleapis.com/dota-dd5dd.firebasestorage.app/courses-images/curso4.png",
+      "ko": "https://storage.googleapis.com/dota-dd5dd.firebasestorage.app/courses-images/curso13.png"
+    },
+    "lang": [
+      "es",
+      "en",
+      "ko"
+    ],
+    "count_lesson": 9,
+    "is_multi": true,
+    "name": {
+      "ko": "토크노믹스",
+      "en": "Tokenomics",
+      "es": "Curso Tokenomiks"
+    },
+    "count_durations": "47:53",
+    "updated_at": "2025-06-19 02:02:58",
+    "sections": [
+      {
+        "id": "uKn5ne821xFsYEXW2Ire",
+        "order": 0,
+        "name": {
+          "es": "Básico a Experto",
+          "en": "Basic to Advanced",
+          "ko": "기초부터 전문가까지"
+        },
+        "lessons": [
+          {
+            "id": "1fIStesiFCqyXEsSHGSg",
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "order": 8,
+            "name": {
+              "es": "Utilidad",
+              "en": "Utility",
+              "ko": "유틸리티"
+            },
+            "iframe": {
+              "es": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/978474495?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Tokenomics: Utilidad\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/986542398?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"EN_Tokenomics 9\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094598903?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"en_tokenomics_9 (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            }
+          },
+          {
+            "id": "6KYvyaUZszMuoLyUL4nf",
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "order": 3,
+            "name": {
+              "es": "Oferta máxima y oferta total",
+              "en": "Maximum bid and total bid",
+              "ko": "최대 입찰가 및 총 입찰가"
+            },
+            "iframe": {
+              "es": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/978468059?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Tokenomics 4\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/986542646?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"EN_Tokenomics 4\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094598847?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"en_tokenomics_4 (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            }
+          },
+          {
+            "id": "7GXMZkCTkqkLto6056gd",
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "order": 0,
+            "name": {
+              "es": "La economia de los Tokenomics",
+              "en": "The economics of tokenomics",
+              "ko": "토크노믹스의 경제학"
+            },
+            "iframe": {
+              "es": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/978429324?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Tokenomics: La economía de los Tokens\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/986542767?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"EN_Tokenomics 1\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094598916?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"en_tokenomics_1 (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            }
+          },
+          {
+            "id": "Bf9LV0mtX3SnNIjUgmS3",
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "order": 4,
+            "name": {
+              "es": "Market Cap",
+              "en": "Market Cap",
+              "ko": "시가총액"
+            },
+            "iframe": {
+              "es": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/978468897?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Tokenomics: Market Cap\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/986542595?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"EN_Tokenomics 5\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094598862?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"en_tokenomics_5 (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            }
+          },
+          {
+            "id": "MtteVjIEg3sylCBCQeJh",
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "order": 6,
+            "name": {
+              "es": "Distribución de tokens",
+              "en": "Token distribution",
+              "ko": "토큰 분배"
+            },
+            "iframe": {
+              "es": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/978475140?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Tokenomics: Distribución de tokens\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/986542513?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"EN_Tokenomics 7\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094598884?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"en_tokenomics_7 (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            }
+          },
+          {
+            "id": "VNa4m53ZJmgGGtffgmN2",
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "order": 5,
+            "name": {
+              "es": "Valor totalmente diluido",
+              "en": "Fully diluted value",
+              "ko": "완전 희석 시가총액"
+            },
+            "iframe": {
+              "es": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/978468494?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Tokenomics: Valor totalmente diluido\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/986542550?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"EN_Tokenomics 6\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094598874?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"en_tokenomics_6 (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            }
+          },
+          {
+            "id": "hWr0Q5LF84DmP80isVQi",
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "order": 7,
+            "name": {
+              "es": "Calendario de adquisición y emision",
+              "en": "Acquisition and issuance schedule",
+              "ko": "취득 및 발행 일정"
+            },
+            "iframe": {
+              "es": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/978474948?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Tokenomics: Calendario de adquisición y emision\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/986542463?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"EN_Tokenomics 8\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094598896?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"en_tokenomics_8 (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            }
+          },
+          {
+            "id": "kwMfY7OsiYmSPyRypByg",
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "order": 2,
+            "name": {
+              "es": "Oferta circulante: Aspectos clave",
+              "en": "Circulating Supply: Key Aspects",
+              "ko": "유통 공급량: 핵심 요소들"
+            },
+            "iframe": {
+              "es": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/978441296?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Tokenomics: Oferta circulante: Aspectos clave\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/986542678?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"EN_Tokenomics 3\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094598937?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"en_tokenomics_3 (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            }
+          },
+          {
+            "id": "oiewAIqj2mkoNHyYAXeV",
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "order": 1,
+            "name": {
+              "es": "Impacto de la oferta en el valor de las Criptomonedas",
+              "en": "Impact of supply on the value of cryptocurrencies",
+              "ko": "공급이 암호화폐 가치에 미치는 영향"
+            },
+            "iframe": {
+              "es": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/978435185?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Tokenomics: Impacto de la oferta en el valor de las Criptomonedas\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/986542726?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"EN_Tokenomics 2\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094598924?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"en_tokenomics_2 (1080p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "trrRnfWoEkedzMBxZQHK",
+    "created_at": "2025-06-19 00:23:53",
+    "count_views": 0,
+    "count_likes": 0,
+    "status": "in_progress",
+    "img_url": {
+      "es": "https://storage.googleapis.com/dota-dd5dd.firebasestorage.app/courses-images/curso1.png",
+      "en": "https://storage.googleapis.com/dota-dd5dd.firebasestorage.app/courses-images/curso2.png",
+      "ko": "https://storage.googleapis.com/dota-dd5dd.firebasestorage.app/courses-images/curso10.png"
+    },
+    "lang": [
+      "es",
+      "en",
+      "ko"
+    ],
+    "count_lesson": 20,
+    "is_multi": true,
+    "name": {
+      "ko": "암호화 과정",
+      "en": "Crypto Course",
+      "es": "Curso Crypto"
+    },
+    "count_durations": "09:47:26",
+    "updated_at": "2025-06-19 02:02:46",
+    "sections": [
+      {
+        "id": "18NfJVzo2YSX6hTaWHHK",
+        "name": {
+          "es": "Avanzado",
+          "en": "Advanced",
+          "ko": "고급"
+        },
+        "order": 3,
+        "lessons": [
+          {
+            "id": "19LcMBVFGAJkQeCb58iu",
+            "name": {
+              "es": "Estrategia de oferta y demanda",
+              "en": "Trading Strategy",
+              "ko": "트레이딩 전략"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/FZAay8vLYd0?si=NQkLTjCSo1JWaSiE\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087904713?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m004_v016_estrategia_de_trading\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 16
+          },
+          {
+            "id": "1wWgD6C7ldxSJdUEM1ce",
+            "name": {
+              "es": "Soporte y resistencia",
+              "en": "Support and resistance - part 1",
+              "ko": "지지선과 저항선 - 1부"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/hAb6xVMDils?si=GND4bYpa7_yqo0Cm\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087904786?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m004_v0061_tipos_de_gráfica\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 5
+          },
+          {
+            "id": "4M0hNi9PC6iW6KEsJgXx",
+            "name": {
+              "es": "Velas japonesas",
+              "en": "Support and resistance - part 2",
+              "ko": "지지선과 저항선 - 2부"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/7g7l17qrsr4?si=RSqlkhyzEk-nLXWf\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087904745?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m004_v0062_tipos_de_gráfica\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 6
+          },
+          {
+            "id": "5NEPvgXraALuk2PorJzx",
+            "name": {
+              "es": "Tipos de indicadores",
+              "en": "Fibonacci",
+              "ko": "피보나치"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/Fhz-sOKijmw?si=R001k9bS7R8bsZ9g\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087904652?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m004_v008_fibonacci\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 8
+          },
+          {
+            "id": "7i49d9DBeIjL2XTohuXG",
+            "name": {
+              "es": "Fibonacci",
+              "en": "Japanese candles",
+              "ko": "일본 캔들"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/nNdOzRvYAaI?si=9wBG1zp02E243EMC\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087904666?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m004_v007_velas_japonesas\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 7
+          },
+          {
+            "id": "BslIWlzfydhAkUrOZtmU",
+            "name": {
+              "es": "Mercados financieros",
+              "en": "Financial markets",
+              "ko": "금융 시장"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/Ufvdl_g0EFg?si=fD5ZBbyyUCN7_7Zg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087904733?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m004_v001_mercados_financieros\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 0
+          },
+          {
+            "id": "F2yrnTYQ31y9u11IkYJk",
+            "name": {
+              "es": "Tipos de gráficas",
+              "en": "Types of graphs",
+              "ko": "그래프의 종류들"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/hnSBb5m83pY?si=8VeQXQK_6f0uCqrR\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087904684?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m004_v005_tipos_de_gráficas\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 4
+          },
+          {
+            "id": "F4gia1NPf1Qgk5nNonpN",
+            "name": {
+              "es": "Estructura wyckoff",
+              "en": "Emotional market cycle",
+              "ko": "감정적 시장 사이클"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/k6dzcYYAVuc?si=veIOEy6X-d0aNZYv\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087904639?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m004_v012_ciclo_emocional_del_mercado\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 12
+          },
+          {
+            "id": "QKQIpdGickKNAWA90UpF",
+            "name": {
+              "es": "Estrategia de Trading",
+              "en": "Liquidity",
+              "ko": "유동성"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/niZBOVK0a7Y?si=wA1J3B8I9aN9367_\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087904721?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m004_v015_liquidez\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 15
+          },
+          {
+            "id": "RMdzCmrLXsvcVYtjnpIU",
+            "name": {
+              "es": "Todo sobre tradingview",
+              "en": "All about TradingView",
+              "ko": "트레이딩뷰 완전 정복"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/1EvyxzkhjIY?si=KaA4gSn--El2BQR1\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087904904?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m004_v002_todo_sobre_tradingview\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 1
+          },
+          {
+            "id": "Zpkz64aiydbnlGPGmexJ",
+            "name": {
+              "es": "Liquidez",
+              "en": "High probability zone",
+              "ko": "고확률 구역"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/niZBOVK0a7Y?si=wA1J3B8I9aN9367_\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087904671?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m004_v014_zona_de_alta_probabilidad\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 14
+          },
+          {
+            "id": "anVSuaMZ1OcUCbaTvD51",
+            "name": {
+              "es": "Tipos de análisis",
+              "en": "Types of analysis",
+              "ko": "분석의 종류들"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/z_t5aiA3lc8?si=rwALGYTQ7Dnf8k8c\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087904610?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m004_v004_tipos_de_análisis\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 3
+          },
+          {
+            "id": "dvvXdJplVcgZnRR3M7x8",
+            "name": {
+              "es": "Horarios financieros",
+              "en": "Financial schedules",
+              "ko": "재무 일정"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/ciCieNmLxLA?si=l7iMmBJYxJfrZq5U\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087904627?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m004_v003_horarios_financieros\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 2
+          },
+          {
+            "id": "fhEQvhFkFPuBVZ8Xhk9B",
+            "name": {
+              "es": "Tipos de estrategias",
+              "en": "Psico trading",
+              "ko": "심리 트레이딩"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/Ytl_CikFxs0?si=4cq5tgqrBOcTG8x-\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087904741?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m004_v010_psico_trading\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 10
+          },
+          {
+            "id": "jUy22kuidEQWvgPFdgX3",
+            "name": {
+              "es": "Zona de alta probabilidad",
+              "en": "Wyckoff structure",
+              "ko": "와이코프 구조"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/k70Xwifut2E?si=qLTL9PFCBCfIF3Kq\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087904696?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m004_v013_estructura_wyckoff\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 13
+          },
+          {
+            "id": "jZENsH4kfXlS6Fx5Aeoa",
+            "name": {
+              "es": "",
+              "en": "Supply and demand strategy - part 1",
+              "ko": ""
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087904869?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m004_v0171_tipos_de_gráfica\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 17
+          },
+          {
+            "id": "r76842bCjxU0tM8f19Op",
+            "name": {
+              "es": "Ciclo emocional del mercado",
+              "en": "Types of strategies",
+              "ko": "전략의 종류들"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/MlZGxMpdTmE?si=jVkJ5NZe1l7IZQ9Q\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087904602?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m004_v011_tipos_de_estrategias\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 11
+          },
+          {
+            "id": "u6ocTmqQGzMokOSoNJg0",
+            "name": {
+              "es": "",
+              "en": "Supply and demand strategy - part 2",
+              "ko": ""
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087904836?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m004_v0172_tipos_de_gráfica\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 18
+          },
+          {
+            "id": "vdksGnJUCVS9GhJkac5X",
+            "name": {
+              "es": "Psico trading",
+              "en": "Types of indicators",
+              "ko": "지표의 종류들"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/xUK7tfDLGos?si=5AE2m3AamZ7UKnZL\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087904587?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m004_v009_tipos_de_indicadores\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 9
+          }
+        ]
+      },
+      {
+        "id": "DSR3CgP5enm45g8Lq1hp",
+        "name": {
+          "es": "Inicio Rápido",
+          "en": "Intro",
+          "ko": "빠른 시작"
+        },
+        "order": 0,
+        "lessons": [
+          {
+            "id": "1X60t1t9y5ctjm8v7ews",
+            "name": {
+              "es": "Smart Contract",
+              "en": "How to make money with cryptocurrencies?",
+              "ko": "스마트 계약"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/f4h5IvMkl-c?si=MnQ5hGSqGXuJMcQX\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1086931427?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m001_v008_como_ganar_dinero_con_las_criptomonedas\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1093727953?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m001_v008_como_ganar_dinero_con_las_criptomonedas (720p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 7
+          },
+          {
+            "id": "AMZbxGUvBE6lK8tB2q9T",
+            "name": {
+              "es": "¿Qué es la Blockchain?",
+              "en": "Kinds of Blockchain",
+              "ko": "블록체인이란?"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/yJ-mE-mpD5E?si=L8vhg3v4-Klp5GG7\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1086931380?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m001_v005_tipos_de_blockchain\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1093727916?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m001_v005_tipos_de_blockchain (720p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 4
+          },
+          {
+            "id": "IxkdThmwDQBvhnP4HtY1",
+            "name": {
+              "es": "Centralización vs Descentralización",
+              "en": "Smart Contract",
+              "ko": "중앙화 vs. 분산화"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/ixt4t__2bjQ?si=cScGe_6_lXlRim-O\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1086931400?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m001_v007_smart_contract\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1093728021?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m001_v007_smart_contract (720p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 6
+          },
+          {
+            "id": "SGAtg8iPxXmgQG3yWBiL",
+            "name": {
+              "es": "¿Qué es el Bitcoin?",
+              "en": "What are AltCoins?",
+              "ko": "비트코인이란 무엇인가요?"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/EO6QLS7rWsU?si=xMb7sg-bUN6g0Olm\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1086931490?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m001_v003_que_son_las_altcoins\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1093727997?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m001_v003_que_son_las_altcoins (720p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 2
+          },
+          {
+            "id": "caxvzBE0BIVk05cedlzf",
+            "name": {
+              "es": "¿Qué son las criptomonedas?",
+              "en": "What is bitcoin?",
+              "ko": "암호화폐란 무엇인가요?"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/v7OfGcXVKRE?si=FCWswc33qzKCPO7K\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1086931468?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m001_v002_que_es_bitcoin\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1093728049?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m001_v002_que_es_bitcoin (720p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 1
+          },
+          {
+            "id": "hQRx6TtcWlxQHS9taJj6",
+            "name": {
+              "es": "¿Cómo ganar dinero con las criptomonedas?",
+              "en": "What is an exchange?",
+              "ko": "암호화폐로 어떻게 돈을 벌 수 있나요?"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/7TcB28SFhPc?si=gbMpuC2PhShlvoQM\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1086931436?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m001_v009_que_es_un_exchange\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1093727887?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m001_v009_que_es_un_exchange (720p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 8
+          },
+          {
+            "id": "vZkWZjiCg2sHxp02pa9J",
+            "name": {
+              "es": "Tipos de Blockchain",
+              "en": "Centralization vs. Decentralization",
+              "ko": "블록체인의 종류"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/yJ-mE-mpD5E?si=L8vhg3v4-Klp5GG7\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1086931387?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m001_v006_centralización_vs_descentralización\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1093727935?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m001_v006_centralización_vs_descentralización (720p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 5
+          },
+          {
+            "id": "wYhkgjWLhgA4xdTphYEP",
+            "name": {
+              "es": "Introducción",
+              "en": "What are cryptocurrencies?",
+              "ko": "소개"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/YNCZ7TWgjqs?si=iRg1G0XdRGLJi6Hu\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1086931502?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m001_v001_qué_son_las_criptomonedas\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>tr",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1093727975?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m001_v001_qué_son_las_criptomonedas (720p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 0
+          },
+          {
+            "id": "yFikGPoG86xgUmocC7wt",
+            "name": {
+              "es": "¿Qué es el AltCoin?",
+              "en": "What is Blockchain?",
+              "ko": "알트코인이란?"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/D12HqrFj64w?si=v3I_lBMAJ191YDY2\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1086931515?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m001_v004_que_es_la_blockchain\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1093727898?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m001_v004_que_es_la_blockchain (720p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 3
+          }
+        ]
+      },
+      {
+        "id": "ESWrmsUrE2d3lovR1hnp",
+        "name": {
+          "es": "DEFI - NFT Metaverso",
+          "en": "DEFI - NFT Metaverse",
+          "ko": "DEFI - NFT 메타버스"
+        },
+        "order": 2,
+        "lessons": [
+          {
+            "id": "3NyrAfcxmMpmmpUTIJBl",
+            "name": {
+              "es": "¿Qué son las Defi?",
+              "en": "What are Defi?",
+              "ko": "디파이(DeFi)란 무엇인가요?"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"6315\" src=\"https://www.youtube.com/embed/zzyLToIL2bc?si=N6jInrVN2PLuff81\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087168846?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m003_v002_que_son_las_defi\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094110117?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m003_v002_que_son_las_defi (720p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 1
+          },
+          {
+            "id": "4lTLIyvfK7BzoQ3kIETa",
+            "name": {
+              "es": "Tipos de Ntfs",
+              "en": "Types of NTFS",
+              "ko": "NFT의 종류들"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/MDHezf-JJ3w?si=kMiHSE5RCyda6_zR\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087168873?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m003_v012_binance_earn\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094110171?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m003_v013_tipos_de_nfts (720p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 12
+          },
+          {
+            "id": "5vdDX1XjmOU817fDKDk7",
+            "name": {
+              "es": "Metaverso",
+              "en": "Metaverse",
+              "ko": "메타버스"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/ACLsQTqwBkc?si=B1WmL6QiUruUrCzL\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087168783?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m003_v005_metaverso\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094110058?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m003_v005_metaverso (720p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 4
+          },
+          {
+            "id": "LnYqtplNoq5ODIIqJwoW",
+            "name": {
+              "es": "Nfts",
+              "en": "Ntfs",
+              "ko": "NFTS"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/QW4--knA2us?si=8LE--N3gPDuvYJ9p\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087168809?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m003_v004_nfts\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094110156?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m003_v004_nfts (720p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 3
+          },
+          {
+            "id": "NZRikoO16c3x9IgQksOj",
+            "name": {
+              "es": "Staking",
+              "en": "Staking",
+              "ko": "스테이킹"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/_hRMQNWdDQo?si=vXU1R-MdNNxTVZJE\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087168713?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m003_v009_staking\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094109997?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m003_v009_staking (720p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 8
+          },
+          {
+            "id": "RmnaKMBtjG9Ck0EWQ3Ps",
+            "name": {
+              "es": "Tokenización de activos",
+              "en": "Asset Tokenization",
+              "ko": "자산 토큰화"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/M7MN9etjgC0?si=CnCk55Q4DDH_Z4G5\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087168764?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m003_v006_tokenización_de_activos\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094110043?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m003_v006_tokenización_de_activos (720p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 5
+          },
+          {
+            "id": "TaBgshnVA0FM26XIq94R",
+            "name": {
+              "es": "Web 1.0 al 3.0",
+              "en": "Web 1.0 to 3.0",
+              "ko": "웹 1.0에서 3.0으로"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/JvnZrF4g51I?si=bD8dm44sUxPTv9GN\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087168827?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m003_v003_web_1.0_al_3.0\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094110091?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m003_v003_web_1.0_al_3.0 (720p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 2
+          },
+          {
+            "id": "Vn9fkVmPY4LE8SqjyE4G",
+            "name": {
+              "es": "¿Qué es Yield Farming?",
+              "en": "What is Yield Farming?",
+              "ko": "일드 파밍이란 무엇인가요?"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/adwfXGwXqZA?si=RLcelj_79kbwRqtZ\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087168690?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m003_v010_que_es_yield_farming\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094109985?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m003_v010_que_es_yield_farming (720p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 9
+          },
+          {
+            "id": "XAoGzqp5tUCxHJBL7ajr",
+            "name": {
+              "es": "Casos de uso de las Defi",
+              "en": "DeFi use cases",
+              "ko": "디파이의 사용 사례들"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/FWXYGAes2n8?si=2hd47ipMTAD_c-Qb\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087168754?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m003_v007_casos_de_uso_de_las_defi\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094110034?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m003_v007_casos_de_uso_de_las_defi (720p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 6
+          },
+          {
+            "id": "izy0Wba834rV8bB6ZzBp",
+            "name": {
+              "es": "Riesgo de las Defi",
+              "en": "Defi Risk",
+              "ko": "디파이의 위험성"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/kC9YzAB4p3Q?si=7LxYRxVpgkiqbxRO\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087168738?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m003_v008_riesgos_de_las_defi\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094110016?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m003_v008_riesgos_de_las_defi (720p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 7
+          },
+          {
+            "id": "lK6DuMsvTZ0mCzg9TiVA",
+            "name": {
+              "es": "Binance Earn",
+              "en": "Binance Earn",
+              "ko": "바이낸스 번"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/5_PzUVo2qa4?si=KIZ44OBPlUiXNVx1\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087168873?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m003_v012_binance_earn\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094110187?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m003_v012_binance_earn (720p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 11
+          },
+          {
+            "id": "xrP3jI97Ha4v9tkGw5ba",
+            "name": {
+              "es": "¿Qué es Lending Borrowing?",
+              "en": "What is Lending Borrowing?",
+              "ko": "렌딩과 보로잉이란 무엇인가요?"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/RYqcu1HN7as?si=Kn3Nj56vFLyh0sHO\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087168660?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m003_v011_que_es_lending_y_borrowing\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094110208?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m003_v011_que_es_lending_y_borrowing (720p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 10
+          },
+          {
+            "id": "z5iQaTo6OdHLXB7YD85T",
+            "name": {
+              "es": "¿Qué es una Dao?",
+              "en": "What is a Dao?",
+              "ko": "도(道)란 무엇인가?"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/9t-J-BZrs3A?si=3qHFnTi0XvyrqMkO\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087169416?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m003_v001_que_es_una_dao\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094110139?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m003_v001_que_es_una_dao (720p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 0
+          }
+        ]
+      },
+      {
+        "id": "LGvDXVRcNpYliXO7LLsf",
+        "name": {
+          "es": "Básicos",
+          "en": "Basics",
+          "ko": "기초"
+        },
+        "order": 1,
+        "lessons": [
+          {
+            "id": "65hVOuXpRndJQTnJMV1f",
+            "name": {
+              "es": "Cómo almacenar las criptomonedas?",
+              "en": "How to store cryptocurrencies?",
+              "ko": "암호화폐를 어떻게 보관하나요?"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/6Hw34jqlO3Y?si=-drDlGxFpNn-2Rg1\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087904306?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m002_v002_como_almacenar_las_criptomonedas\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094109041?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m002_v002_como_almacenar_las_criptomonedas (720p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 1
+          },
+          {
+            "id": "7PHQabhLLNB2mNuRYVpp",
+            "name": {
+              "es": "¿Qué es solidity?",
+              "en": "What is solidity?",
+              "ko": "견고성이란 무엇인가?"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/CUXEukmXxSg?si=44WkW4qU00f13quH\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087904276?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m002_v005_que_es_solidity\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094108943?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m002_v005_que_es_solidity (720p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 4
+          },
+          {
+            "id": "7ep2BUwUL8rTjZ5nqpLL",
+            "name": {
+              "es": "¿Qué es el gas fee?",
+              "en": "What is the gas fee?",
+              "ko": "가스 요금은 얼마인가요?"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/xm7mqQ_f85c?si=H4bElav7etrfKDf2\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087904268?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m002_v007_que_es_el_gas_fee\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094108978?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m002_v007_que_es_el_gas_fee (720p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 6
+          },
+          {
+            "id": "8BpAiR4N4XNXXmwB6duI",
+            "name": {
+              "es": "Verifica información de las criptos",
+              "en": "Check crypto information",
+              "ko": "암호화 정보 확인"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/mvuixx8ymFI?si=rhPSV8WDdhwKxxmP\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087904285?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m002_v001_verifica_informacion_de_las_criptos\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:75% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094109075?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m002_v001_verifica_informacion_de_las_criptos (720p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 0
+          },
+          {
+            "id": "9YoVkXfQSjS5rhtAM8lQ",
+            "name": {
+              "es": "Ejemplos de Dapps",
+              "en": "Examples of Dapps",
+              "ko": "Dapp의 예"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/fY2lZyEl7zE?si=GkmfPYFPNBYRXO-x\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087904328?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m002_v009_ejemplos_de_dapps\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094108988?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m002_v009_ejemplos_de_dapps (720p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 8
+          },
+          {
+            "id": "LHyZmyYdN7RqSl9xhITt",
+            "name": {
+              "es": "¿Qué son las icos?",
+              "en": "What are ICOs?",
+              "ko": "ico란 무엇인가요?"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/3oecH02AzOk?si=SfPhFClCqwLDbQqx\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087904264?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m002_v003_que_son_las_icos\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094109058?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m002_v003_que_son_las_icos (720p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 2
+          },
+          {
+            "id": "NWyhsYwodBmCQ9IfdzDm",
+            "name": {
+              "es": "Dapps",
+              "en": "Dapps",
+              "ko": "디앱스"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/XggW3w-oQcI?si=G59xXQj9agjNa5WI\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087904328?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m002_v009_ejemplos_de_dapps\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094109003?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m002_v008_dapps (720p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 7
+          },
+          {
+            "id": "RkUH9ONnCzAKdi9jo3r6",
+            "name": {
+              "es": "¿Qué son las forks?",
+              "en": "What are forks?",
+              "ko": "포크란 무엇인가요?"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/xiXKXVqdK6s?si=NjIEZNKxJYDgaiO7\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087904318?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m002_v006_que_son_los_forks\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094108963?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m002_v006_que_son_los_forks (720p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 5
+          },
+          {
+            "id": "glhLSAg1JeVtBvxqVE9J",
+            "name": {
+              "es": "¿Qué son las idos?",
+              "en": "What are IDOs?",
+              "ko": "아이도(ido)란 무엇인가요?"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/A0DIpwFndaI?si=a_3LfoYObolfSW5E\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087904257?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m002_v004_qué_son_las_idos\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1094109020?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m002_v004_qué_son_las_idos (720p)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>"
+            },
+            "order": 3
+          }
+        ]
+      },
+      {
+        "id": "oCSrxHDl6tmqWj2yhcmX",
+        "name": {
+          "es": "AI Tools",
+          "en": "AI Tools",
+          "ko": "AI 도구"
+        },
+        "order": 5,
+        "lessons": [
+          {
+            "id": "0WoJ32sutVR0VNvfJQI7",
+            "name": {
+              "es": "Ai Tools Fakeyou",
+              "en": "Ai Tools Mixo io",
+              "ko": "AI 도구 - Mixo.io 소개"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/nh5nqIRY3qs?si=RJKBPNc2aVKBsZRD\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:75% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087912971?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m006_v002_ai_tools_-_mixo.io\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 2
+          },
+          {
+            "id": "6cax2T7cxIQ223bKeymH",
+            "name": {
+              "es": "Ai Tools Supermeme Ai",
+              "en": "Ai Tools Tome",
+              "ko": "AI 도구 - Tome 소개"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/xWXn10CgK1Y?si=2nafNsfJV3CEkOTr\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087911934?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m006_v006_ai_tools_-_tome\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 6
+          },
+          {
+            "id": "7dV7i1aOnjXNGJrWWfhz",
+            "name": {
+              "es": "Ai Tools Viralviews",
+              "en": "Ai Tools Synthesia io",
+              "ko": "AI 도구 - Synthesia.io 소개"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/YVAmjJ1Y4fA?si=dP8vJvoEJJRl2Ww-\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087911871?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m006_v008_ai_tools_-_synthesia.io\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 8
+          },
+          {
+            "id": "93KC1LPXNbbx1bHlYaNk",
+            "name": {
+              "es": "Ai Tools Tome",
+              "en": "Ai Tools Summarize Tech",
+              "ko": "AI 도구 - Summarize Tech 소개"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/dbBrvAIF7Pc?si=CJXjeFbGAWuOmDm6\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:75% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087912484?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m006_v005_ai_tools_-_summarize.tech\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 5
+          },
+          {
+            "id": "9oVGo3raH8ClXqdO0faf",
+            "name": {
+              "es": "Ai Tools Runway",
+              "en": "Ai Tools Fakeyou",
+              "ko": "AI 도구 - Fakeyou 소개"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/p8FK4xRRPOM?si=pZp79vQ8yyAbhl-g\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:75% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087913347?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m006_v003_ai_tools_-_fakeyou\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 3
+          },
+          {
+            "id": "F36c63aWFXD5Np8mrlrM",
+            "name": {
+              "es": "Ai Tools Voice",
+              "en": "Ai Tools Viralviews",
+              "ko": "AI 도구 - Viralviews 소개"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/K0FhKjDEoMw?si=HqKf-nc_DYlI6wjh\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087912011?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m006_v009_ai_tools_-_viralviews.co\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 9
+          },
+          {
+            "id": "G5GNeUfkH0NLkDf6yfQr",
+            "name": {
+              "es": "",
+              "en": "Ai Tools Voice",
+              "ko": "AI 도구 - Voice 소개"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087911991?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m006_v010_ai_tools_-_voice.ai\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 10
+          },
+          {
+            "id": "X0PTFKLJfrMvIpV89nAM",
+            "name": {
+              "es": "Ai Tools Mixo io",
+              "en": "Chatgpt 3.5 - 2/2",
+              "ko": "챗GPT 3.5 – 2부"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/HjU_IQEXnv4?si=tLP4NinbE79fZO11\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087912024?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m006_v0012_ai_tools_-_chatgpt_3.5\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 1
+          },
+          {
+            "id": "a0f4fxS7nrJI2SUuKyNM",
+            "name": {
+              "es": "Ai Tools Summarize Tech",
+              "en": "Ai Tools Runway",
+              "ko": "AI 도구 - Runway 소개"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/mYTW2-88adA?si=kO0KtZBYVkHB-R2S\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:75% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087912048?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m006_v004_ai_tools_-_runway_(runwayml.com)\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 4
+          },
+          {
+            "id": "vnJT2kWeMKExO3m9ZHmA",
+            "name": {
+              "es": "Ai Tools ChatGPT 3.5",
+              "en": "Chatgpt 3.5 - 1/2",
+              "ko": "챗GPT 3.5 - 1부 / 2부"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/C54eStOLg9s?si=SLMXJ3kOTgkAMqit\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087911949?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m006_v0011_ai_tools_-_chatgpt_3.5\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 0
+          },
+          {
+            "id": "z6b6J0dPlNWUPAUEQG1x",
+            "name": {
+              "es": "Ai Tools Synthesia io",
+              "en": "Ai Tools Supermeme Ai",
+              "ko": "AI 도구 - Supermeme AI 소개"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/rFNbWj6yYMs?si=rj9lS2w-nTU8jPw2\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087911908?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m006_v007_ai_tools_-_supermeme.ai\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 7
+          }
+        ]
+      },
+      {
+        "id": "sj39LKjHGoGvYbbz75Mc",
+        "name": {
+          "es": "Airdrop",
+          "en": "Airdrop",
+          "ko": "에어드롭"
+        },
+        "order": 4,
+        "lessons": [
+          {
+            "id": "KTaqGM98cTtnBgF578Dk",
+            "name": {
+              "es": "Seguridad e impuestos en airdrop",
+              "en": "Security and taxes in airdrop",
+              "ko": "에어드롭의 보안과 세금"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/bRx7fe2CN0Q?si=VPQeXsciM1ZEKQfg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087911264?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m005_v003_seguridad_e_impuestos_en_airdrop\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 2
+          },
+          {
+            "id": "TRRJm1WcdwQ5pZWRXYbm",
+            "name": {
+              "es": "¿Cómo participar y tips de Airdrop?",
+              "en": "How to participate and tips for Airdrop?",
+              "ko": "에어드롭 참여 방법과 꿀팁"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/0wU0-W0gzV8?si=fjGKqyF8NWe4N07z\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087911291?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m005_v002_cómo_participar_y_tipos_de_airdrop\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 1
+          },
+          {
+            "id": "d9oCZXYJWbUGk76BwQNZ",
+            "name": {
+              "es": "¿Qué es un Airdrop?",
+              "en": "What is an Airdrop?",
+              "ko": "에어드롭이란 무엇인가요?"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/0wU0-W0gzV8?si=fjGKqyF8NWe4N07z\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087911283?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m005_v001_qué_es_un_airdrop\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 0
+          },
+          {
+            "id": "nIXvK4dw3o8vTkF2MGUD",
+            "name": {
+              "es": "¿Cómo ganar drops?",
+              "en": "How to earn drops?",
+              "ko": "드롭을 받는 방법은?"
+            },
+            "img_url": {
+              "es": "",
+              "en": "",
+              "ko": ""
+            },
+            "iframe": {
+              "es": "<iframe width=\"100%\" height=\"615\" src=\"https://www.youtube.com/embed/awpLQ2xu1G0?si=oUcIfLyl9xAWrFse\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+              "en": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1087911271?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"m005_v004_cómo_ganar_drops\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+              "ko": ""
+            },
+            "order": 3
+          }
+        ]
+      }
+    ]
+  }
+]

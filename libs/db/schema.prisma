@@ -72,6 +72,7 @@ model Course {
   title        String
   description  String?
   thumbnailUrl String?
+  lang         String          @default("es")
   countLesson  Int             @default(0)
   countLikes   Int             @default(0)
   countViews   Int             @default(0)
