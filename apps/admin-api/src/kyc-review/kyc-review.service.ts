@@ -36,7 +36,7 @@ export class KycReviewService {
     const sub = await this.prisma.kycSubmission.findUnique({
       where: { id: submissionId },
       include: {
-        user: {
+        User: {
           select: {
             id: true,
             email: true,
