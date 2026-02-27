@@ -4,7 +4,6 @@ import { DepositsController } from './deposits.controller';
 import { BinaryService } from '../binary/binary.service';
 import { BondsService } from '../bonds/bonds.service';
 import { UsersService } from '../users/users.service';
-import { CoinpaymentsService } from '../coinpayments/coinpayments.service';
 import { AuthService } from '../auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { MailerService } from '../mailer/mailer.service';
@@ -19,7 +18,6 @@ import { CasinoService } from '@domain/casino/casino.service';
     BondsService,
     UsersService,
     MailerService,
-    CoinpaymentsService,
     AuthService,
     JwtService,
     DisruptiveService,

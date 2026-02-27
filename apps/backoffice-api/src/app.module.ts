@@ -9,7 +9,6 @@ import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 import { EmailModule } from './email/email.module';
-import { CoinpaymentsModule } from './coinpayments/coinpayments.module';
 import { MembershipsModule } from './memberships/memberships.module';
 import { RanksModule } from './ranks/ranks.module';
 import { AdminModule } from './admin/admin.module';
@@ -17,8 +16,6 @@ import { ReportsModule } from './reports/reports.module';
 import { CountriesModule } from './countries/countries.module';
 import { AcademyModule } from './academy/academy.module';
 import { SignalsModule } from './signals/signals.module';
-import { FirebaseAdminModule } from './firebase/firebase-admin.module';
-import { FirestoreWipeModule } from './firestore-wipe/firestore-wipe.module';
 import { SeedModule } from './seed/seed.module';
 import { DisruptiveModule } from '@domain/disruptive/disruptive.module';
 import { CasinoModule } from '@domain/casino/casino.module';
@@ -31,9 +28,11 @@ import { PrismaService } from 'libs/db/src/prisma.service';
 import { CasinoDashboardModule } from './casino-dashboard/casino-dashboard.module';
 import { GamesModule } from './games/games.module';
 import { ReportsCasinoModule } from './reports-casino/reports-casino.module';
-import { AuthAcademyController } from '@domain/auth-academy/auth-academy.controller';
 import { AuthAcademyModule } from '@domain/auth-academy/auth-academy.module';
 import { BondsModule } from './bonds/bonds.module';
+import { GameProvidersModule } from '@domain/game-providers/game-providers.module';
+import { AdminSupportModule } from './support/support.module';
+
 
 @Module({
   imports: [
@@ -41,8 +40,6 @@ import { BondsModule } from './bonds/bonds.module';
       isGlobal: true,
       envFilePath: '.env',
     }),
-    FirebaseAdminModule,
-    FirestoreWipeModule,
     SeedModule,
     BinaryModule,
     AuthModule,
@@ -50,7 +47,6 @@ import { BondsModule } from './bonds/bonds.module';
     UsersModule,
     SubscriptionsModule,
     EmailModule,
-    CoinpaymentsModule,
     MembershipsModule,
     RanksModule,
     AdminModule,
@@ -66,7 +62,8 @@ import { BondsModule } from './bonds/bonds.module';
     ReportsCasinoModule,
     AuthAcademyModule,
     BondsModule,
-    NodePaymentsModule
+    GameProvidersModule,
+    AdminSupportModule,
   ],
   controllers: [AppController],
   providers: [AppService, NodePaymentsService, PrismaService, CasinoService],

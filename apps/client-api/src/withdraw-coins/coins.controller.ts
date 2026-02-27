@@ -33,7 +33,7 @@ export class WithdrawCoinsController {
   ) {
     const balance = await this.walletService.getBalance(user.userId);
     const pending = await this.walletService.getPendingAmount(user.userId);
-    if (balance >= body.amount + pending) {
+    if (Number(balance) >= body.amount + Number(pending)) {
       await this.nodePaymentsService.requestWithdraw(
         user.userId,
         body.amount,

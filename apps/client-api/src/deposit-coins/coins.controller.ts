@@ -77,11 +77,11 @@ export class DepositCoinsController {
     );
 
     if (!transaction) throw new HttpException('not found', 401);
-    if (transaction.get('status') != 'pending')
+    if (transaction.status != 'pending')
       throw new HttpException('completed', 401);
 
     const validation = await this.nodePaymentsService.validateStatus(
-      transaction.get('network'),
+      transaction.network as any,
       body.address,
     );
 
@@ -100,6 +100,6 @@ export class DepositCoinsController {
       await addToQueue(task, getPathQueue('disruptive-complete'));
     }
 
-    return validation.confirmed ? transaction.get('status') : 'NO';
+    return validation.confirmed ? transaction.status : 'NO';
   }
 }

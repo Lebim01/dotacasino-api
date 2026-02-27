@@ -1,51 +1,42 @@
-import { google } from '@google-cloud/tasks/build/protos/protos';
 import { Injectable } from '@nestjs/common';
 import { USER_ROLES } from 'apps/backoffice-api/src/auth/auth.constants';
 import { RegisterAuthDto } from 'apps/backoffice-api/src/auth/dto/register-auth.dto';
-import { Bonds } from 'apps/backoffice-api/src/bonds/bonds';
-import { db } from 'apps/backoffice-api/src/firebase/admin';
-import {
-  addToQueue,
-  getPathQueue,
-} from 'apps/backoffice-api/src/googletask/utils';
 import { PayloadAssignBinaryPosition } from 'apps/backoffice-api/src/subscriptions/types';
 import { getLimitMembership } from 'apps/backoffice-api/src/utils/deposits';
-import { hash } from 'bcryptjs';
-import { firestore } from 'firebase-admin';
-
-function makeid(length: number) {
-  let result = '';
-  const characters =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  const charactersLength = characters.length;
-  let counter = 0;
-  while (counter < length) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    counter += 1;
-  }
-  return result;
-}
+import * as argon2 from 'argon2';
+import { PrismaService } from 'libs/db/src/prisma.service';
+import Decimal from 'decimal.js';
 
 @Injectable()
 export class AuthAcademyService {
+  constructor(private readonly prisma: PrismaService) {}
+
   async calculatePositionOfBinary(
     sponsor_id: string,
     position: 'left' | 'right',
   ) {
     let parent_id: null | string = null;
-
     let next_user_id = sponsor_id;
-    let times = {};
-    while (!parent_id) {
-      const sponsorData = await db.collection('users').doc(next_user_id).get();
+    let visited = new Set<string>();
 
-      if (sponsorData.get(`${position}_binary_user_id`)) {
-        next_user_id = sponsorData.get(`${position}_binary_user_id`);
-        if (!times[next_user_id]) times[next_user_id] = 1;
-        else {
-          console.log('REPETIDO', next_user_id);
-          break;
-        }
+    while (!parent_id) {
+      if (visited.has(next_user_id)) {
+        console.log('REPETIDO', next_user_id);
+        break;
+      }
+      visited.add(next_user_id);
+
+      const sponsorData = await this.prisma.user.findUnique({
+        where: { id: next_user_id },
+        select: { leftBinaryUserId: true, rightBinaryUserId: true }
+      });
+
+      if (!sponsorData) break;
+
+      const childId = position === 'left' ? sponsorData.leftBinaryUserId : sponsorData.rightBinaryUserId;
+
+      if (childId) {
+        next_user_id = childId;
       } else {
         parent_id = next_user_id;
       }
@@ -57,116 +48,101 @@ export class AuthAcademyService {
   }
 
   async increaseUnderlinePeople(registerUserId: string) {
-    const batch = db.batch();
+    let user = await this.prisma.user.findUnique({
+      where: { id: registerUserId },
+      select: { parentBinaryUserId: true, id: true }
+    });
 
-    let currentUser: string | null = registerUserId;
-    let user = await db.collection('users').doc(registerUserId).get();
-
-    do {
-      if (
-        !user.get('parent_binary_user_id') ||
-        registerUserId == user.get('parent_binary_user_id')
-      )
-        break;
-
-      user = await db
-        .collection('users')
-        .doc(user.get('parent_binary_user_id'))
-        .get();
-
-      if (user.exists) {
-        const side =
-          user.get('left_binary_user_id') == currentUser ? 'left' : 'right';
-
-        currentUser = user.id;
-
-        batch.update(user.ref, {
-          count_underline_people: firestore.FieldValue.increment(1),
+    while (user && user.parentBinaryUserId && user.parentBinaryUserId !== registerUserId) {
+        const parentId = user.parentBinaryUserId;
+        const parent = await this.prisma.user.findUnique({
+            where: { id: parentId },
+            select: { id: true, leftBinaryUserId: true, rightBinaryUserId: true }
         });
 
-        batch.set(
-          db
-            .collection('users')
-            .doc(user.id)
-            .collection(`${side}-people`)
-            .doc(registerUserId),
-          {
-            user_id: registerUserId,
-            created_at: new Date(),
-            membership_status: 'paid',
-            rank: 'none',
-          },
-        );
-      } else {
-        currentUser = null;
-      }
-    } while (currentUser);
+        if (parent) {
+            const side = parent.leftBinaryUserId === user.id ? 'left' : 'right';
 
-    // Commit the batch
-    await batch.commit();
+            await this.prisma.$transaction([
+                this.prisma.user.update({
+                    where: { id: parentId },
+                    data: { countUnderlinePeople: { increment: 1 } }
+                }),
+                this.prisma.binaryTreeRelation.upsert({
+                    where: { userId_ancestorId: { userId: registerUserId, ancestorId: parentId } },
+                    create: { userId: registerUserId, ancestorId: parentId, side },
+                    update: { side }
+                })
+            ]);
+
+            user = await this.prisma.user.findUnique({
+                where: { id: parentId },
+                select: { parentBinaryUserId: true, id: true }
+            });
+        } else {
+            break;
+        }
+    }
   }
 
   async assignBinaryPosition(payload: PayloadAssignBinaryPosition) {
     console.log('assignBinaryPosition', payload);
-    const user = await db.collection('users').doc(payload.id_user).get();
+    const user = await this.prisma.user.findUnique({
+      where: { id: payload.id_user }
+    });
+
+    if (!user) return;
 
     /**
      * Asignar posicion en el binario (SOLO USUARIOS NUEVOS)
      */
-    const hasBinaryPosition = !!user.get('parent_binary_user_id');
+    const hasBinaryPosition = !!user.parentBinaryUserId;
     if (!hasBinaryPosition) {
-      const finish_position = user.get('position') || 'right';
-
-      /**
-       * Las dos primeras personas de cada ciclo van al lado del derrame
-       */
+      const finish_position = user.position || 'right';
 
       let binaryPosition: { parent_id: string | null } = {
         parent_id: null,
       };
 
-      console.log('sponsor_id', user.get('sponsor_id'));
+      console.log('sponsor_id', user.sponsorId);
 
       while (!binaryPosition?.parent_id) {
         binaryPosition = await this.calculatePositionOfBinary(
-          user.get('sponsor_id') || '4h3b3ZGUXw8n3xUSZT6d', // sponsor o codigo 1
-          finish_position,
+          user.sponsorId || '4h3b3ZGUXw8n3xUSZT6d', // sponsor o codigo 1
+          finish_position as any,
         );
       }
 
       console.log(binaryPosition);
 
-      /**
-       * se setea el valor del usuario padre en el usuario que se registro
-       */
       if (!binaryPosition?.parent_id) {
         throw new Error('Error al posicionar el binario');
       }
 
-      await user.ref.update({
-        parent_binary_user_id: binaryPosition.parent_id,
-        position: finish_position,
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: {
+            parentBinaryUserId: binaryPosition.parent_id,
+            position: finish_position,
+        }
       });
 
-      if (user.get('sponsor_id')) {
-        const sponsorRef = db.collection('users').doc(user.get('sponsor_id'));
-        await sponsorRef.update({
-          count_direct_people_this_cycle: firestore.FieldValue.increment(1),
+      if (user.sponsorId) {
+        await this.prisma.user.update({
+          where: { id: user.sponsorId },
+          data: {
+              countDirectPeopleThisCycle: { increment: 1 }
+          }
         });
       }
 
       try {
-        /**
-         * se setea el valor del hijo al usuario ascendente en el binario
-         */
-        await db
-          .collection('users')
-          .doc(binaryPosition.parent_id)
-          .update(
-            finish_position == 'left'
-              ? { left_binary_user_id: user.id }
-              : { right_binary_user_id: user.id },
-          );
+        await this.prisma.user.update({
+            where: { id: binaryPosition.parent_id },
+            data: {
+                [finish_position == 'left' ? 'leftBinaryUserId' : 'rightBinaryUserId']: user.id
+            }
+        });
       } catch (err) {
         console.error(err);
       }
@@ -181,71 +157,44 @@ export class AuthAcademyService {
   }
 
   async registerUser(userObject: RegisterAuthDto) {
-    let sponsor_name = null;
-    let position: null | string = null;
+    let sponsor_name: string | null | undefined = null;
+    let position: string | null = null;
 
     if (userObject.sponsor_id) {
-      const sponsor = await db
-        .collection('users')
-        .doc(userObject.sponsor_id)
-        .get();
+      const sponsor = await this.prisma.user.findUnique({
+          where: { id: userObject.sponsor_id }
+      });
       position = userObject.side;
-      sponsor_name = sponsor.get('name');
+      sponsor_name = sponsor?.displayName ?? null;
     }
 
     const formattedUser = await this.formatNewUser(userObject);
 
-    const user = await db
-      .collection('users')
-      .add({ ...formattedUser, position, sponsor_name });
-
-    await user.update({
-      nft: {
-        status: 'pending',
+    // En Prisma creamos el usuario directamente
+    const user = await this.prisma.user.create({
         data: {
-          name: 'DotaNFT',
-          description: 'Este NFT es otorgado por adquirir tu membresia en dota',
-          image: 'https://www.dotaacademy.com/public/nft.webp',
-          attributes: [
-            {
-              trait_type: 'identifier',
-              value: user.id,
-            },
-          ],
-        },
-      },
+            ...formattedUser,
+            position,
+            sponsorName: sponsor_name,
+        }
     });
 
-    await this.addQueueBinaryPosition({
+    // En el original se llamaba a addQueueBinaryPosition, aquí lo llamamos directamente
+    await this.assignBinaryPosition({
       id_user: user.id,
       points: 0,
       txn_id: null,
     });
 
+    const { id, ...restFormatted } = formattedUser;
     return {
       id: user.id,
-      ...formattedUser,
+      ...restFormatted,
     };
-  }
-
-  async addQueueBinaryPosition(body: PayloadAssignBinaryPosition) {
-    type Method = 'POST';
-    const task: google.cloud.tasks.v2.ITask = {
-      httpRequest: {
-        httpMethod: 'POST' as Method,
-        url: `https://backoffice-api-1039762081728.us-central1.run.app/v1/auth-binary/assignBinaryPosition`,
-        body: Buffer.from(JSON.stringify(body)),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
-    };
-
-    await addToQueue(task, getPathQueue('assign-binary-position'));
   }
 
   async getPassword(pass: string) {
-    return hash(pass, 10);
+    return argon2.hash(pass);
   }
 
   async formatNewUser(userObject: RegisterAuthDto) {
@@ -253,56 +202,46 @@ export class AuthAcademyService {
     const plainToHash = await this.getPassword(plainPass);
     const roles = [USER_ROLES.USER];
 
+    // Mapeamos al formato de Prisma User
     return {
-      name,
-      password: plainToHash,
+      id: Math.random().toString(36).substring(2, 12),
+      displayName: name,
+      passwordHash: plainToHash,
       email: email.toLowerCase(),
       roles,
-      sponsor_id: userObject.sponsor_id,
-      created_at: new Date(),
-      updated_at: new Date(),
-      profits: 0,
-      balance: 0,
-      is_new: true,
-      left: userObject.refCodeL || makeid(6),
-      right: userObject.refCodeR || makeid(6),
+      sponsorId: userObject.sponsor_id,
+      createdAt: new Date(),
+      profits: new Decimal(0),
+      isNew: true,
+      refCodeL: userObject.refCodeL || Math.random().toString(36).substring(2, 8),
+      refCodeR: userObject.refCodeR || Math.random().toString(36).substring(2, 8),
       country: userObject.country,
-      whatsapp: userObject.phone,
+      phone: userObject.phone,
       username: userObject.username,
 
       membership: 'free',
-      membership_started_at: new Date(),
-      membership_expires_at: null,
-      membership_cap_limit: getLimitMembership('free'),
-      membership_status: 'paid',
-      membership_cap_current: 0,
+      membershipStartedAt: new Date(),
+      membershipExpiresAt: null,
+      membershipCapLimit: new Decimal(getLimitMembership('free')),
+      membershipStatus: 'paid',
+      membershipCapCurrent: new Decimal(0),
 
-      // CONTADORES
-      count_direct_people: 0,
-      count_underline_people: 0,
-      month_sales_volumen: 0,
-      deposits: 0,
-      compound_interest: false,
+      countDirectPeople: 0,
+      countUnderlinePeople: 0,
+      monthSalesVolumen: new Decimal(0),
+      totalDeposits: new Decimal(0),
+      compoundInterest: false,
 
-      // BONOS
-      [Bonds.DIRECT]: 0,
-      [Bonds.BINARY]: 0,
-      [Bonds.REWARD]: 0,
-      [Bonds.RANK]: 0,
-      [`pending_${Bonds.DIRECT}`]: 0,
-      [`pending_${Bonds.BINARY}`]: 0,
-      [`pending_${Bonds.REWARD}`]: 0,
-      [`pending_${Bonds.RANK}`]: 0,
+      bondDirect: new Decimal(0),
+      bondBinary: new Decimal(0),
+      bondRewards: new Decimal(0),
+      bondRank: new Decimal(0),
 
-      [`balance_${Bonds.DIRECT}`]: 0,
-      [`balance_${Bonds.BINARY}`]: 0,
-      [`balance_${Bonds.REWARD}`]: 0,
-      [`balance_${Bonds.RANK}`]: 0,
-
-      is_binary_active: false,
-
-      left_points: 0,
-      right_points: 0,
+      isBinaryActive: false,
+      leftPoints: new Decimal(0),
+      rightPoints: new Decimal(0),
+      rank: 'none',
+      maxRank: 'none',
     };
   }
 }

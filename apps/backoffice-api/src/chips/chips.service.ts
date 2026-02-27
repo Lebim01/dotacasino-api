@@ -7,6 +7,7 @@ import {
 import Decimal from 'decimal.js';
 import { AdjustChipsDto, AdjustDirection } from './dto/adjust-chips.dto';
 import { PrismaService } from 'libs/db/src/prisma.service';
+import { Currency } from '@prisma/client';
 
 @Injectable()
 export class ChipsService {
@@ -40,11 +41,11 @@ export class ChipsService {
       if (idempotencyKey) {
         const existing = await tx.ledgerEntry.findFirst({
           where: { idempotencyKey },
-          include: { wallet: true },
+          include: { Wallet: true },
         });
         if (existing) {
           return {
-            wallet: existing.wallet,
+            wallet: existing.Wallet,
             ledger: existing,
             idempotent: true,
           };
@@ -84,6 +85,7 @@ export class ChipsService {
         const ledger = await tx.ledgerEntry.create({
           data: {
             walletId,
+            currency: walletRow.currency as Currency,
             kind: 'ADMIN_ADJUST',
             amount: delta, // positivo o negativo
             balanceAfter: newBalance,

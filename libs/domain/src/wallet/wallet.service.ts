@@ -1,14 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
-import { firestore } from 'firebase-admin';
-import { db } from 'apps/backoffice-api/src/firebase/admin';
-import Decimal from 'decimal.js';
+import { Prisma, Currency } from '@prisma/client';
 import { PrismaService } from 'libs/db/src/prisma.service';
-import { CURRENCY } from 'libs/shared/src/currency';
+import { resolveCurrencyByCountry } from 'libs/shared/src/currency';
+import Decimal from 'decimal.js';
 
 export type CreditInput = {
   userId: string;
   amount: Decimal.Value; // > 0
+  currency?: Currency;
   reason: string; // 'TOPUP' | 'BET_WIN' | 'REFUND' | ...
   meta?: Record<string, any>;
   idempotencyKey?: string; // evita duplicados
@@ -17,6 +16,7 @@ export type CreditInput = {
 export type DebitInput = {
   userId: string;
   amount: Decimal.Value; // > 0
+  currency?: Currency;
   reason: string; // 'BET_PLACE' | 'WITHDRAW' | 'FEE' | ...
   meta?: Record<string, any>;
   idempotencyKey?: string; // evita duplicados
@@ -28,60 +28,85 @@ export class WalletService {
   private readonly logger = new Logger(WalletService.name, {
     timestamp: true,
   });
-  private readonly walletIdCache = new Map<string, string>(); // userId -> walletId cache
+  private readonly walletIdCache = new Map<string, string>(); // userId:currency -> walletId cache
 
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) {}
 
-  async createWallet(userId: string) {
-    try {
-      return await this.prisma.wallet.create({
-        data: { userId, currency: 'USD' },
-      });
-    } catch (err: any) {
-      throw err;
-    }
+  private cacheKey(userId: string, currency: Currency) {
+    return `${userId}:${currency}`;
+  }
+
+  async getUserWalletCurrency(
+    userId: string,
+    client: Prisma.TransactionClient | PrismaService = this.prisma,
+  ): Promise<Currency> {
+    const user = await client.user.findUnique({
+      where: { id: userId },
+      select: { country: true },
+    });
+
+    return resolveCurrencyByCountry(user?.country ?? null);
+  }
+
+  async createWallet(userId: string, country?: string) {
+    const currency = country
+      ? resolveCurrencyByCountry(country)
+      : await this.getUserWalletCurrency(userId);
+
+    return this.prisma.wallet.upsert({
+      where: { userId_currency: { userId, currency } },
+      update: {},
+      create: { userId, currency, balance: 0 },
+    });
   }
 
   /**
-   * Helper: obtiene (o crea) la wallet del usuario en la moneda CURRENCY.
+   * Helper: obtiene (o crea) la wallet del usuario en su moneda local.
    * Puede usarse dentro o fuera de una transacción.
    */
   private async getOrCreateWallet(
     userId: string,
     client: Prisma.TransactionClient | PrismaService,
+    currency?: Currency,
   ) {
-    // 1. Intentar obtener el ID desde el caché para evitar búsquedas complejas
-    const cachedId = this.walletIdCache.get(userId);
-    
+    const walletCurrency =
+      currency ?? (await this.getUserWalletCurrency(userId, client));
+    const cacheKey = this.cacheKey(userId, walletCurrency);
+
+    // 1. Intentar obtener el ID desde el cache para evitar busquedas complejas
+    const cachedId = this.walletIdCache.get(cacheKey);
+
     if (cachedId) {
-      // El findUnique por ID (Primary Key) es casi instantáneo en Postgres
+      // El findUnique por ID (Primary Key) es casi instantaneo en Postgres
       const wallet = await client.wallet.findUnique({
         where: { id: cachedId },
-        select: { id: true, balance: true },
+        select: { id: true, balance: true, currency: true },
       });
       if (wallet) return wallet;
     }
 
-    // 2. Si no hay caché o no se encontró, usar upsert atómico (1 solo round-trip a la DB)
+    // 2. Si no hay cache o no se encontro, usar upsert atomico (1 solo round-trip a la DB)
     const wallet = await client.wallet.upsert({
-      where: { userId_currency: { userId, currency: CURRENCY } },
+      where: { userId_currency: { userId, currency: walletCurrency } },
       update: {}, // No cambiamos nada si ya existe
-      create: { userId, currency: CURRENCY, balance: 0 },
-      select: { id: true, balance: true },
+      create: { userId, currency: walletCurrency, balance: 0 },
+      select: { id: true, balance: true, currency: true },
     });
 
-    // 3. Poblar caché para futuras peticiones
-    this.walletIdCache.set(userId, wallet.id);
-    
+    // 3. Poblar cache para futuras peticiones
+    this.walletIdCache.set(cacheKey, wallet.id);
+
     return wallet;
   }
 
   /**
-   * Obtiene el balance actual de la wallet USD del usuario.
+   * Obtiene el balance actual de la wallet local del usuario.
    * Si no existe, retorna 0 sin crearla (ajusta a tus necesidades).
    */
-  async getBalance(userId: string): Promise<Decimal> {
-    const cachedId = this.walletIdCache.get(userId);
+  async getBalance(userId: string, currency?: Currency): Promise<Decimal> {
+    const targetCurrency = currency ?? (await this.getUserWalletCurrency(userId));
+    const cacheKey = this.cacheKey(userId, targetCurrency);
+    const cachedId = this.walletIdCache.get(cacheKey);
 
     if (cachedId) {
       const wallet = await this.prisma.wallet.findUnique({
@@ -92,19 +117,19 @@ export class WalletService {
     }
 
     const wallet = await this.prisma.wallet.findUnique({
-      where: { userId_currency: { userId, currency: CURRENCY } },
-      select: { id: true, balance: true },
+      where: { userId_currency: { userId, currency: targetCurrency } },
+      select: { id: true, balance: true, currency: true },
     });
 
     if (wallet) {
-      this.walletIdCache.set(userId, wallet.id);
+      this.walletIdCache.set(cacheKey, wallet.id);
     }
 
     return new Decimal(wallet?.balance ?? 0);
   }
 
   /**
-   * Agrega crédito a la wallet USD del usuario (idempotente por idempotencyKey).
+   * Agrega credito a la wallet local del usuario (idempotente por idempotencyKey).
    * Retorna el saldo final.
    */
   async credit(
@@ -112,10 +137,14 @@ export class WalletService {
     tx?: Prisma.TransactionClient,
   ): Promise<Decimal> {
     const amount = new Decimal(input.amount);
-    if (amount.lte(0)) throw new Error('El monto de crédito debe ser > 0');
+    if (amount.lte(0)) throw new Error('El monto de credito debe ser > 0');
 
     const apply = async (client: Prisma.TransactionClient) => {
-      const wallet = await this.getOrCreateWallet(input.userId, client);
+      const wallet = await this.getOrCreateWallet(
+        input.userId,
+        client,
+        input.currency,
+      );
       const newBal = new Decimal(wallet.balance).plus(amount);
 
       await Promise.all([
@@ -124,17 +153,11 @@ export class WalletService {
           where: { id: wallet.id },
           data: { balance: newBal },
         }),
-        // update user balance
-        db
-          .collection('users')
-          .doc(input.userId)
-          .update({
-            balance: firestore.FieldValue.increment(amount.toNumber()),
-          }),
         // create ledger entry
         client.ledgerEntry.create({
           data: {
             walletId: wallet.id,
+            currency: wallet.currency,
             kind: input.reason,
             amount, // positivo
             meta: input.meta ?? {},
@@ -152,7 +175,7 @@ export class WalletService {
   }
 
   /**
-   * Resta saldo de la wallet USD del usuario (idempotente por idempotencyKey).
+   * Resta saldo de la wallet local del usuario (idempotente por idempotencyKey).
    * Valida fondos suficientes. Retorna el saldo final.
    */
   async debit(
@@ -160,10 +183,14 @@ export class WalletService {
     tx?: Prisma.TransactionClient,
   ): Promise<Decimal> {
     const amount = new Decimal(input.amount);
-    if (amount.lte(0)) throw new Error('El monto de débito debe ser > 0');
+    if (amount.lte(0)) throw new Error('El monto de debito debe ser > 0');
 
     const apply = async (client: Prisma.TransactionClient) => {
-      const wallet = await this.getOrCreateWallet(input.userId, client);
+      const wallet = await this.getOrCreateWallet(
+        input.userId,
+        client,
+        input.currency,
+      );
 
       const current = new Decimal(wallet.balance);
       if (current.lt(amount)) {
@@ -172,15 +199,16 @@ export class WalletService {
 
       const newBal = current.minus(amount);
 
-      // 2. Transacción de DB: Solo operaciones SQL (muy rápidas)
+      // 2. Transaccion de DB: Solo operaciones SQL (muy rapidas)
       await Promise.all([
         client.wallet.update({
           where: { id: wallet.id },
-          data: { balance: { decrement: amount } }, // Cambio a decremento atómico
+          data: { balance: { decrement: amount } },
         }),
         client.ledgerEntry.create({
           data: {
             walletId: wallet.id,
+            currency: wallet.currency,
             kind: input.reason,
             amount: amount.negated(),
             meta: input.meta ?? {},
@@ -194,38 +222,23 @@ export class WalletService {
       return newBal;
     };
 
-    const finalBal = tx ? await apply(tx) : await this.prisma.$transaction(async (client) => apply(client));
-
-    // 3. Sincronización Firestore: Fuera de la transacción de DB para máxima velocidad.
-    // Usamos 'no await' si quieres responder instantáneamente al cliente,
-    // o 'await' aquí para que la respuesta sea segura pero sin bloquear la DB.
-    this.syncFirestoreBalance(input.userId, amount.negated());
+    const finalBal = tx
+      ? await apply(tx)
+      : await this.prisma.$transaction(async (client) => apply(client));
 
     return finalBal;
   }
 
-  /**
-   * Sincroniza el balance en Firestore de forma asíncrona.
-   */
-  private async syncFirestoreBalance(userId: string, amount: Decimal) {
-    try {
-      await db.collection('users').doc(userId).update({
-        balance: firestore.FieldValue.increment(amount.toNumber()),
-      });
-    } catch (err) {
-      console.error(`[WalletService] Error syncing Firestore balance for ${userId}:`, err);
-    }
-  }
 
   async getPendingAmount(user_id: string) {
-    const doc = await db
-      .collection('node-payments')
-      .where('user_id', '==', user_id)
-      .where('type', '==', 'casino')
-      .where('category', '==', 'withdraw')
-      .where('status', '==', 'pending')
-      .get()
-      .then((r: any) => (r.empty ? null : r.docs[0]));
-    return !doc ? 0 : doc.get('amount');
+    const payment = await this.prisma.nodePayment.findFirst({
+      where: {
+        userId: user_id,
+        type: 'casino',
+        category: 'withdraw',
+        status: 'pending'
+      }
+    });
+    return payment ? Number(payment.amount) : 0;
   }
 }

@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'libs/db/src/prisma.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class ReferralService {
@@ -45,7 +46,7 @@ export class ReferralService {
     const level = parentRef ? parentRef.level + 1 : 1;
 
     await this.prisma.referral.create({
-      data: { userId, parentId: parent.id, level },
+      data: { id: uuidv4(), userId, parentId: parent.id, level },
     });
 
     await this.prisma.user.update({
@@ -89,7 +90,7 @@ export class ReferralService {
         skip: (page - 1) * pageSize,
         take: pageSize,
         include: {
-          user: {
+          User: {
             select: {
               id: true,
               email: true,
@@ -108,10 +109,10 @@ export class ReferralService {
       total,
       items: rows.map((r) => ({
         userId: r.userId,
-        email: r.user.email,
-        displayName: r.user.displayName,
+        email: r.User.email,
+        displayName: r.User.displayName,
         level: r.level,
-        joinedAt: r.user.createdAt,
+        joinedAt: r.User.createdAt,
       })),
     };
   }

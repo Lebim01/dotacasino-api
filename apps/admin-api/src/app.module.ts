@@ -15,6 +15,7 @@ import { StdMexModule } from '@domain/stdmex/stdmex.module';
 import { FxModule } from '@domain/fx/fx.module';
 import { BetModule } from './bet/bet.module';
 import { SoftGamingModule } from '@domain/soft-gaming/soft-gaming.module';
+import { GameProvidersModule } from '@domain/game-providers/game-providers.module';
 
 @Module({
   imports: [
@@ -31,7 +32,9 @@ import { SoftGamingModule } from '@domain/soft-gaming/soft-gaming.module';
     FxModule,
     BetModule,
     SoftGamingModule,
+    GameProvidersModule,
   ],
+
   controllers: [HealthController],
 })
 export class AppModule {}

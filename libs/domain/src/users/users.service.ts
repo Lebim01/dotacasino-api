@@ -12,11 +12,7 @@ import {
 import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
 import { Memberships } from 'apps/backoffice-api/src/types';
 import { MEMBERSHIP_PRICES } from 'apps/backoffice-api/src/constants';
-import { db } from 'apps/backoffice-api/src/firebase/admin';
-import {
-  NodePaymentsService,
-  Networks,
-} from '@domain/node-payments/node-payments.service';
+import { NodePaymentsService, Networks } from '@domain/node-payments/node-payments.service';
 import { USER_ROLES } from 'apps/backoffice-api/src/auth/auth.constants';
 
 function generateDisplayName() {
@@ -53,10 +49,7 @@ export class UserCommonService {
     return user;
   }
 
-  async getUserByIdFirebase(id: string) {
-    const user = await db.collection('users').doc(id).get();
-    return user;
-  }
+
 
   async createUser(
     email: string,
@@ -72,45 +65,48 @@ export class UserCommonService {
       const displayName = generateDisplayName();
       const refCodeL = makeRefCode();
       const refCodeR = makeRefCode();
+      const userId = Math.random().toString(36).substring(2, 12);
+      const password_userapi = Math.random().toString(36).substring(2, 12);
 
       const sponsor = await this.prisma.user.findFirst({
-        where: {
-          id: sponsor_id,
-        },
+        where: { id: sponsor_id },
       });
 
-      const res = await this.authAcademy.registerUser({
-        country,
-        email,
-        password,
-        name: displayName,
-        phone: '',
-        refCodeL,
-        refCodeR,
-        side,
-        sponsor_id: sponsor?.firebaseId || null,
-        username: displayName,
-      });
-
-      return await this.prisma.user.create({
+      const user = await this.prisma.user.create({
         data: {
-          id: res.id,
-          email,
+          id: userId,
+          email: email.toLowerCase(),
           country,
           passwordHash,
           roles: [USER_ROLES.USER],
           refCodeL,
           refCodeR,
-          firebaseId: res.id,
           displayName,
           sponsorCode,
-          login_userapi: res.id,
-          password_userapi: Math.random().toString(36).substring(2, 12),
+          sponsorId: sponsor_id || null,
+          sponsorName: sponsor?.displayName ?? null,
+          position: side,
+          login_userapi: userId,
+          password_userapi,
+          membership: 'free',
+          membershipStatus: 'paid',
+          isNew: true,
+          countDirectPeople: 0,
+          countUnderlinePeople: 0,
         },
         select: { id: true, email: true, country: true, createdAt: true, password_userapi: true },
       });
+
+      // Asignar posición en árbol binario de forma asíncrona
+      this.authAcademy.assignBinaryPosition({
+        id_user: user.id,
+        points: 0,
+        txn_id: null,
+      }).catch((err) => console.error('assignBinaryPosition error', err));
+
+      return user;
     } catch (err: any) {
-      console.error(err)
+      console.error(err);
       if (err?.code === 'P2002' && err?.meta?.target?.includes('email')) {
         throw new ConflictException('El email ya está registrado');
       }
@@ -144,13 +140,17 @@ export class UserCommonService {
     const amount = MEMBERSHIP_PRICES[membership_type];
     if (!amount) throw new HttpException('INVALID_MEMBERSHIP_TYPE', 403);
 
-    const user = await db.collection('users').doc(id_user).get();
+    const user = await this.prisma.user.findUnique({
+      where: { id: id_user },
+    });
 
-    if (user.get('membership')) {
+    if (!user) throw new HttpException('USER_NOT_FOUND', 404);
+
+    if (user.membership) {
       // UPGRADE
       const diff =
         MEMBERSHIP_PRICES[membership_type] -
-        MEMBERSHIP_PRICES[user.get('membership') as Memberships];
+        MEMBERSHIP_PRICES[user.membership as Memberships];
 
       await this.nodePaymentsService.createMembershipTransaction(
         id_user,
@@ -171,19 +171,24 @@ export class UserCommonService {
   }
 
   async getQRMembership(id_user: string) {
-    const user = await db.collection('users').doc(id_user).get();
-    const txn_id = user.get('membership_link_disruptive');
+    const user = await this.prisma.user.findUnique({
+      where: { id: id_user },
+    });
+    const txn_id = user?.membership_link_disruptive;
 
     if (txn_id) {
-      const txn = await db.collection('node-payments').doc(txn_id).get();
+      const txn = await this.prisma.nodePayment.findUnique({
+        where: { id: txn_id },
+      });
+      if (!txn) return null;
       return {
-        address: txn.get('address'),
-        amount: txn.get('amount'),
-        membership_type: txn.get('membership_type'),
-        status: txn.get('payment_status'),
-        expires_at: txn.get('expires_at'),
-        qrcode_url: txn.get('qrcode_url'),
-        network: txn.get('network'),
+        address: txn.address,
+        amount: Number(txn.amount),
+        membership_type: txn.category, // assuming category stores membership_type if not added specifically
+        status: txn.paymentStatus,
+        expires_at: txn.expiresAt?.toISOString(),
+        qrcode_url: txn.qrcodeUrl,
+        network: txn.type, // assuming type stores network if not added specifically
         status_text: null,
       };
     }
@@ -192,11 +197,15 @@ export class UserCommonService {
   }
 
   async deleteQRMembership(id_user: string) {
-    const user = await db.collection('users').doc(id_user).get();
-    const txn_id = user.get('membership_link_disruptive');
+    const user = await this.prisma.user.findUnique({
+      where: { id: id_user }
+    });
+    const txn_id = user?.membership_link_disruptive;
 
     if (txn_id) {
-      await db.collection('node-payments').doc(txn_id).delete();
+      await this.prisma.nodePayment.delete({
+        where: { id: txn_id }
+      });
       return 'OK';
     }
 

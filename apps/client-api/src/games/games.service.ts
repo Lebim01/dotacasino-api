@@ -26,7 +26,7 @@ export class GamesService {
     }
 
     if (q.category) {
-      where.categories = {
+      where.Category = {
         some: {
           id: q.category,
         },
@@ -34,7 +34,7 @@ export class GamesService {
     }
 
     if (q.categoryName) {
-      where.categories = {
+      where.Category = {
         some: {
           name: {
             contains: q.categoryName,
@@ -59,7 +59,7 @@ export class GamesService {
 
     if (q.country) {
       where.GameProvider = {
-        restrictedCountries: {
+        Country: {
           none: {
             code: q.country,
           },
@@ -80,7 +80,7 @@ export class GamesService {
           id: true,
           slug: true,
           title: true,
-          categories: true,
+          Category: true,
           devices: true,
           thumbnailUrl: true,
           enabled: true,
@@ -102,14 +102,14 @@ export class GamesService {
     const hall = DOMAINS[domain];
     const providers = await this.prisma.gameProvider.findMany({
       where: {
-        restrictedCountries: country
+        Country: country
           ? {
             none: {
               code: country,
             },
           }
           : undefined,
-        games: {
+        Game: {
           some: {
             hall: hall.id,
           },
@@ -121,7 +121,7 @@ export class GamesService {
         imageUrl: true,
         _count: {
           select: {
-            games: {
+            Game: {
               where: {
                 hall: hall.id,
               },
@@ -138,7 +138,7 @@ export class GamesService {
       id: p.id,
       name: p.name,
       imageUrl: p.imageUrl,
-      game_count: p._count.games,
+      game_count: p._count.Game,
     })).sort((a, b) => b.game_count - a.game_count);
   }
 
@@ -156,7 +156,7 @@ export class GamesService {
         },
         show: true,
         GameProvider: {
-          restrictedCountries: {
+          Country: {
             none: {
               code: user?.country || '',
             },

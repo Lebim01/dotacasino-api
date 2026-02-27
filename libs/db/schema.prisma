@@ -7,212 +7,274 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Currency {
-  USD
-}
-
-enum KycStatus {
-  PENDING // Registrado, sin iniciar KYC
-  SUBMITTED // Documentos subidos por el usuario
-  UNDER_REVIEW // En revisión por el equipo/compliance
-  APPROVED // Verificado
-  REJECTED // Rechazado (puede requerir reintento)
-  SUSPENDED // Cuenta/kyc bloqueado temporalmente
-}
-
-enum KycDocType {
-  PASSPORT
-  ID_CARD
-  DRIVER_LICENSE
-  ADDRESS_PROOF
-  SELFIE
-}
-
-enum KycDocStatus {
-  UPLOADED
-  VERIFIED
-  REJECTED
-}
-
-model User {
-  id               String    @id @default(uuid())
-  email            String    @unique
-  firstName        String    @default("")
-  lastName         String    @default("")
-  country          String
-  kycStatus        KycStatus @default(PENDING)
-  wallets          Wallet[]
-  createdAt        DateTime  @default(now())
-  passwordHash     String
-  roles            String[]  @default(["user"])
-  firebaseId       String    @default("")
-  sponsorId        String?
-  refCodeL         String?   @unique @db.VarChar(16)
-  refCodeR         String?   @unique @db.VarChar(16)
-  // ---- Perfil ----
-  displayName      String?
-  phone            String?
-  language         String?
-  avatarUrl        String?
-  sponsorCode      String?
-  login_userapi    String?
-  password_userapi String?
-
-  // --Pays
-  stdMexId String?
-  stdMex   StdMex? @relation(fields: [stdMexId], references: [id])
-
-  RefreshToken            RefreshToken[]
-  KycDocument             KycDocument[]
-  KycSubmission           KycSubmission[]
-  Topup                   Topup[]
-  gameSessions            BetSession[]
-  Referral                Referral[]
-  PasswordReset           PasswordReset[]
-  casinoWeeklyUserDetails CasinoWeeklyUserDetail[]
-}
-
-model StdMex {
-  id           String @id @default(uuid())
-  clabe        String
-  bank         String
-  instructions Json
-  User         User[]
-}
-
-model Wallet {
-  id       String        @id @default(uuid())
-  userId   String
-  user     User          @relation(fields: [userId], references: [id])
-  currency Currency      @default(USD)
-  balance  Decimal       @default(0)
-  ledger   LedgerEntry[]
-
-  @@unique([userId, currency])
-}
-
-model LedgerEntry {
-  id        String   @id @default(uuid())
-  walletId  String
-  wallet    Wallet   @relation(fields: [walletId], references: [id])
-  kind      String // DEPOSIT, WITHDRAWAL, BET_PLACE, BET_WIN, FEE
-  amount    Decimal // > 0 en créditos; < 0 en débitos
-  meta      Json
-  createdAt DateTime @default(now())
-
-  balanceAfter   Decimal? // snapshot de saldo post-movimiento (opcional)
-  idempotencyKey String?  @unique
-  tid            String?  @unique
-
-  @@index([tid])
-  @@index([idempotencyKey])
-}
-
-model GameProvider {
-  id            String   @id @default(uuid())
-  code          String?  @unique
-  externalId    String?  @unique
-  name          String // ej. "Asia Gaming"
-  platformTypes String[]
-  apiKey        String? // si aplica
-  games         Game[]
-  imageUrl      String?
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
-  restrictedCountries Country[]
-}
-
-model Game {
-  id                      String        @id @default(uuid())
-  hall                    String
-  betId                   String
-  slug                    String        @unique
-  title                   String
-  gameType                String? // ej. "BAC", "DT", "ROU" (Live); o vacío para lobby
-  rtp                     Decimal?      @db.Decimal(5, 2)
-  devices                 String[] // ["DESKTOP","MOBILE"]
-  tags                    String[] // ["popular","nuevo"]
-  enabled                 Boolean       @default(true)
-  order                   Int           @default(0)
-  categories              Category[]
-  thumbnailUrl            String?
-  createdAt               DateTime      @default(now())
-  updatedAt               DateTime      @updatedAt
-  GameProvider            GameProvider? @relation(fields: [gameProviderId], references: [id])
-  gameProviderId          String?
-  System                  String        @default("")
-  sessions                BetSession[]
-  allowDemo               Boolean       @default(false)
-  width                   String        @default("0")
-  show                    Boolean       @default(true)
-  priority                Int           @default(1)
-  PageCode                String?
-  LowRtpUrl               String?
-  LowRtpMobileUrl         String?
-  LowRtpUrlExternal       String?
-  LowRtpMobileUrlExternal String?
-
-  @@unique([hall, betId])
-  @@index([enabled])
-}
-
-model Category {
-  id         String  @id @default(uuid())
-  externalId String? @unique
-  name       String
-  games      Game[]
-  order      Int     @default(1)
-}
-
-model Country {
-  id   String @id @default(uuid())
-  name String
-  code String
-
-  restrictedProviders GameProvider[]
-
-  @@index([code])
-}
-
 model BetSession {
   id        String   @id @default(uuid())
-  hall      String
   userId    String
-  user      User?    @relation(fields: [userId], references: [id])
   gameId    String
-  game      Game?    @relation(fields: [gameId], references: [id])
   sessionId String
   createdAt DateTime @default(now())
+  hall      String
+  Game      Game     @relation(fields: [gameId], references: [id])
+  User      User     @relation(fields: [userId], references: [id])
 }
 
 model BetTicket {
   id             String   @id @default(uuid())
-  hall           String
   userId         String
   gameId         String
   stake          Decimal
   status         String
   payout         Decimal?
   createdAt      DateTime @default(now())
-  meta           Json
   idempotencyKey String?  @unique
+  meta           Json
+  hall           String
 }
 
-model Referral {
-  id       String  @id @default(uuid())
-  userId   String
-  user     User    @relation(fields: [userId], references: [id])
-  parentId String?
-  level    Int
+model CasinoWeeklyReport {
+  id                     String                   @id @default(cuid())
+  timezone               String
+  fromCDMX               DateTime                 @unique
+  toCDMX                 DateTime                 @unique
+  createdAt              DateTime                 @default(now())
+  CasinoWeeklyUserDetail CasinoWeeklyUserDetail[]
+}
 
-  @@index([parentId], map: "referral_parent_idx")
-  @@index([userId], map: "referral_user_idx")
+model CasinoWeeklyUserDetail {
+  id                 String             @id @default(cuid())
+  reportId           String
+  userId             String
+  level              Int
+  percent            Float
+  totalNeto          Decimal            @db.Decimal(18, 2)
+  totalBonus         Decimal            @db.Decimal(18, 2)
+  detallePorUsuario  Json
+  CasinoWeeklyReport CasinoWeeklyReport @relation(fields: [reportId], references: [id])
+  User               User               @relation(fields: [userId], references: [id])
+
+  @@index([reportId])
+  @@index([userId])
+}
+
+model Category {
+  id         String  @id @default(cuid())
+  externalId String? @unique
+  name       String
+  order      Int     @default(1)
+  Game       Game[]
+  Course     Course[]
+}
+
+model Course {
+  id           String          @id @default(cuid())
+  categoryId   String
+  category     Category        @relation(fields: [categoryId], references: [id])
+  title        String
+  description  String?
+  thumbnailUrl String?
+  countLesson  Int             @default(0)
+  countLikes   Int             @default(0)
+  countViews   Int             @default(0)
+  status       String          @default("in_progress")
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt @default(now())
+  sections     CourseSection[]
+}
+
+model CourseSection {
+  id           String   @id @default(uuid())
+  courseId     String
+  course       Course   @relation(fields: [courseId], references: [id])
+  title        String
+  order        Int      @default(0)
+  countLessons Int      @default(0)
+  createdAt    DateTime @default(now())
+  lessons      Lesson[]
+}
+
+model Lesson {
+  id          String        @id @default(uuid())
+  sectionId   String
+  section     CourseSection @relation(fields: [sectionId], references: [id])
+  title       String
+  videoUrl    String?
+  content     String?
+  countLikes  Int           @default(0)
+  countViews  Int           @default(0)
+  order       Int           @default(0)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt @default(now())
+}
+
+model SupportTicket {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id])
+  username  String
+  topic     String
+  status    String           @default("opened")
+  createdAt DateTime         @default(now())
+  messages  SupportMessage[]
+
+  @@index([userId])
+}
+
+model SupportMessage {
+  id        String        @id @default(uuid())
+  ticketId  String
+  ticket    SupportTicket @relation(fields: [ticketId], references: [id])
+  userId    String
+  username  String
+  text      String
+  images    String[]
+  unread    Boolean       @default(true)
+  createdAt DateTime      @default(now())
+
+  @@index([ticketId])
+}
+
+
+model Country {
+  id           String         @id @default(uuid())
+  name         String
+  code         String
+  GameProvider GameProvider[]
+
+  @@index([code])
+}
+
+model Game {
+  id                      String        @id @default(uuid())
+  slug                    String        @unique
+  rtp                     Decimal?      @db.Decimal(5, 2)
+  createdAt               DateTime      @default(now())
+  devices                 String[]
+  enabled                 Boolean       @default(true)
+  gameType                String?
+  order                   Int           @default(0)
+  tags                    String[]
+  thumbnailUrl            String?
+  title                   String
+  updatedAt               DateTime      @default(now())
+  gameProviderId          String?
+  betId                   String
+  allowDemo               Boolean       @default(false)
+  width                   String        @default("0")
+  show                    Boolean       @default(true)
+  priority                Int           @default(1)
+  hall                    String
+  LowRtpMobileUrl         String?
+  LowRtpMobileUrlExternal String?
+  LowRtpUrl               String?
+  LowRtpUrlExternal       String?
+  PageCode                String?
+  System                  String        @default("")
+  BetSession              BetSession[]
+  GameProvider            GameProvider? @relation(fields: [gameProviderId], references: [id])
+  Category                Category[]
+
+  @@unique([hall, betId])
+  @@index([enabled])
+}
+
+model GameProvider {
+  id            String    @id @default(uuid())
+  name          String
+  apiKey        String?
+  code          String?   @unique
+  createdAt     DateTime  @default(now())
+  platformTypes String[]
+  updatedAt     DateTime  @default(now())
+  imageUrl      String?
+  externalId    String?   @unique
+  Game          Game[]
+  Country       Country[]
+  currencies    ProviderCurrency[]
+}
+
+model ProviderCurrency {
+  id           String       @id @default(uuid())
+  providerId   String
+  provider     GameProvider @relation(fields: [providerId], references: [id])
+  currencyCode String
+  isCrypto     Boolean      @default(false)
+  disclaimer   String?
+
+  @@unique([providerId, currencyCode])
+  @@index([currencyCode])
+}
+
+
+model KycDocument {
+  id          String       @id @default(uuid())
+  userId      String
+  type        KycDocType
+  status      KycDocStatus @default(UPLOADED)
+  storageKey  String
+  mimeType    String
+  country     String?
+  expiresAt   DateTime?
+  checksum    String?
+  reviewerId  String?
+  reviewNotes String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now())
+  User        User         @relation(fields: [userId], references: [id])
+
+  @@index([userId, type])
+}
+
+model KycSubmission {
+  id           String     @id @default(uuid())
+  userId       String
+  documentIds  String[]
+  submittedAt  DateTime?
+  decidedAt    DateTime?
+  decidedBy    String?
+  decision     KycStatus?
+  decisionNote String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @default(now())
+  User         User       @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model LedgerEntry {
+  id             String   @id @default(cuid())
+  walletId       String
+  kind           String
+  amount         Decimal
+  currency       Currency?
+  meta           Json
+  createdAt      DateTime @default(now())
+  balanceAfter   Decimal?
+  idempotencyKey String?  @unique
+  tid            String?  @unique
+  Wallet         Wallet   @relation(fields: [walletId], references: [id])
+
+  @@index([idempotencyKey])
+  @@index([tid])
+}
+
+model PasswordReset {
+  id        String    @id
+  userId    String
+  tokenHash String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+  ip        String?
+  userAgent String?
+  User      User      @relation(fields: [userId], references: [id])
+
+  @@index([userId])
 }
 
 model ProviderPostTransfer {
-  id              String   @id @default(uuid())
+  id              String   @id
   provider        String
-  uniqueKey       String   @unique // "AG|<transactionID>|<billNo|->"
+  uniqueKey       String   @unique
   transactionID   String
   billNo          String?
   transactionType String
@@ -228,124 +290,414 @@ model ProviderPostTransfer {
   createdAt       DateTime @default(now())
 }
 
+model Referral {
+  id       String  @id @default(uuid())
+  userId   String
+  parentId String?
+  level    Int
+  User     User    @relation(fields: [userId], references: [id])
+
+  @@index([parentId], map: "referral_parent_idx")
+  @@index([userId], map: "referral_user_idx")
+}
+
 model RefreshToken {
-  id        String    @id // = jti del JWT (uuid)
+  id        String    @id
   userId    String
-  user      User      @relation(fields: [userId], references: [id])
-  tokenHash String // hash del RT (argon2)
-  familyId  String // agrupa una cadena de rotaciones
+  tokenHash String
+  familyId  String
   revokedAt DateTime?
   createdAt DateTime  @default(now())
   expiresAt DateTime
+  User      User      @relation(fields: [userId], references: [id])
 
-  @@index([userId])
   @@index([familyId])
-}
-
-model KycDocument {
-  id          String       @id @default(uuid())
-  userId      String
-  user        User         @relation(fields: [userId], references: [id])
-  type        KycDocType
-  status      KycDocStatus @default(UPLOADED)
-  storageKey  String // ruta/clave en tu storage (S3/GCS)
-  mimeType    String
-  country     String?
-  expiresAt   DateTime?
-  checksum    String?
-  reviewerId  String?
-  reviewNotes String? // breve razón rechazo/verificación
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-
-  @@index([userId, type])
-}
-
-model KycSubmission {
-  id     String @id @default(uuid())
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
-
-  // snapshot de doc ids incluidos en esta sumisión
-  documentIds String[] // guarda IDs al momento de "submit"
-
-  submittedAt  DateTime?
-  decidedAt    DateTime?
-  decidedBy    String?
-  decision     KycStatus? // APPROVED / REJECTED / UNDER_REVIEW
-  decisionNote String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
   @@index([userId])
+}
+
+model Server {
+  id             String   @id @default(cuid())
+  name           String
+  url            String
+  thumbnailUrl   String?
+  enabled        Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  primaryColor   String
+  secondaryColor String
+  country        String
+}
+
+model SoftGamingRecords {
+  id        String        @id @default(cuid())
+  tid       String        @unique
+  status    RequestStatus
+  createdAt DateTime      @default(now())
+  metadata  Json?
+}
+
+model SoftgamingWebhookLog {
+  id           String   @id @default(cuid())
+  requestBody  Json
+  responseBody Json
+  createdAt    DateTime @default(now())
+}
+
+model StdMex {
+  id           String @id @default(cuid())
+  clabe        String
+  bank         String
+  instructions Json
+  User         User[]
 }
 
 model Topup {
   id             String   @id @default(uuid())
   userId         String
-  user           User     @relation(fields: [userId], references: [id])
   amount         Decimal
   currency       Currency @default(USD)
-  status         String   @default("SUCCEEDED") // "PENDING"|"SUCCEEDED"|"FAILED"|"CANCELED"
-  provider       String   @default("DIRECT") // "DIRECT" (dev) / "STRIPE" / "COINBASE"...
+  status         String   @default("SUCCEEDED")
+  provider       String   @default("DIRECT")
   providerRef    String?
   idempotencyKey String?  @unique
   createdAt      DateTime @default(now())
+  User           User     @relation(fields: [userId], references: [id])
 
   @@index([userId])
 }
 
-model Server {
-  id             String   @id @default(uuid())
-  country        String
-  name           String
-  url            String
-  thumbnailUrl   String?
-  primaryColor   String
-  secondaryColor String
-  enabled        Boolean  @default(true)
-  createdAt      DateTime @default(now())
+model Deposit {
+  id                String   @id @default(uuid())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id])
+  amount            Decimal  @db.Decimal(18, 2)
+  rewardsBalance    Decimal  @default(0) @db.Decimal(18, 2)
+  rewardsPending    Decimal  @default(0) @db.Decimal(18, 2)
+  rewardsGenerated  Decimal  @default(0) @db.Decimal(18, 2)
+  rewardsWithdrawed Decimal  @default(0) @db.Decimal(18, 2)
+  compoundInterest  Boolean  @default(false)
+  nextReward        DateTime?
+  createdAt         DateTime @default(now())
+  Reward            Reward[]
+
+  @@index([userId])
 }
 
-model PasswordReset {
-  id        String    @id @default(uuid())
+model WithdrawalRequest {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  userName   String
+  amount     Decimal  @db.Decimal(18, 2)
+  fee        Decimal  @db.Decimal(18, 2)
+  total      Decimal  @db.Decimal(18, 2)
+  status     String   @default("pending")
+  walletUsdt String
+  type       String
+  depositId  String?
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+}
+
+model ProfitDetail {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  amount      Decimal  @db.Decimal(18, 2)
+  description String?
+  type        String
+  userName    String?
+  originUserId String?
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+}
+
+model NodePayment {
+  id            String   @id @default(uuid())
+  userId        String?
+  amount        Decimal? @db.Decimal(18, 2)
+  type          String?
+  category      String?
+  status        String?
+  address       String?
+  paymentStatus String?
+  processStatus String?
+  expiresAt     DateTime?
+  qrcodeUrl     String?
+  isUpgrade     Boolean  @default(false)
+  volumen       Boolean  @default(true)
+  network       String?
+  completedAt   DateTime?
+  createdAt     DateTime @default(now())
+}
+
+model LostProfit {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation("UserLostProfits", fields: [userId], references: [id])
+  originUserId String?
+  originUser   User?    @relation("OriginLostProfits", fields: [originUserId], references: [id])
+  userName     String?
+  amount       Decimal  @db.Decimal(18, 2)
+  description  String?
+  type         String
+  createdAt    DateTime @default(now())
+
+  @@index([userId])
+}
+
+
+model OTP {
+  id        String   @id @default(uuid())
+  otp       String
+  expiresAt DateTime?
+  createdAt DateTime @default(now())
+}
+
+
+model User {
+  id                     String                   @id @default(uuid())
+  email                  String                   @unique
+  country                String
+  createdAt              DateTime                 @default(now())
+  passwordHash           String
+  avatarUrl              String?
+  displayName            String?
+  language               String?
+  phone                  String?
+  roles                  String[]                 @default(["user"])
+  kycStatus              KycStatus                @default(PENDING)
+  firstName              String                   @default("")
+  lastName               String                   @default("")
+
+  refCodeL               String?                  @unique @db.VarChar(16)
+  refCodeR               String?                  @unique @db.VarChar(16)
+  stdMexId               String?
+  sponsorId              String?
+  sponsorCode            String?
+  login_userapi          String?
+  password_userapi       String?
+  membershipStatus       String?                  @default("active")
+  membership             String?
+  membership_link_disruptive String?
+  deposit_link_disruptive    String?
+  membership_link_coinpayments String?
+  deposit_link_coinpayments    String?
+  membershipLimitDeposits Decimal?               @db.Decimal(18, 2)
+  walletUsdt             String?
+  bondRank               Decimal                  @default(0) @db.Decimal(18, 2)
+  bondDirect             Decimal                  @default(0) @db.Decimal(18, 2)
+  bondBinary             Decimal                  @default(0) @db.Decimal(18, 2)
+  bondRewards            Decimal                  @default(0) @db.Decimal(18, 2)
+  bondResidual           Decimal                  @default(0) @db.Decimal(18, 2)
+  bondCasino             Decimal                  @default(0) @db.Decimal(18, 2)
+  profits                Decimal                  @default(0) @db.Decimal(18, 2)
+  membershipCapLimit     Decimal                  @default(0) @db.Decimal(18, 2)
+  membershipCapCurrent   Decimal                  @default(0) @db.Decimal(18, 2)
+  membershipExpiresAt    DateTime?
+  membershipStartedAt    DateTime?
+  isNew                  Boolean                  @default(true)
+  firstCycleStartedAt    DateTime?
+  activation             String?
+  countDirectPeople      Int                      @default(0)
+  totalDeposits          Decimal                  @default(0) @db.Decimal(18, 2)
+  compoundInterest       Boolean                  @default(false)
+  position               String?
+  parentBinaryUserId     String?
+  leftBinaryUserId       String?
+  rightBinaryUserId      String?
+  isBinaryActive         Boolean                  @default(false)
+  monthSalesVolumen      Decimal                  @default(0) @db.Decimal(18, 2)
+  leftPoints             Decimal                  @default(0) @db.Decimal(18, 2)
+  rightPoints            Decimal                  @default(0) @db.Decimal(18, 2)
+  rank                   String?                  @default("none")
+  maxRank                String?                  @default("none")
+  countUnderlinePeople   Int                      @default(0)
+  countDirectPeopleThisCycle Int                  @default(0)
+  username               String?                  @unique
+  sponsorName            String?
+  BinaryTreeRelation     BinaryTreeRelation[]     @relation("UserRelations")
+  BinaryTreeAncestor     BinaryTreeRelation[]     @relation("AncestorRelations")
+  BetSession             BetSession[]
+  CasinoWeeklyUserDetail CasinoWeeklyUserDetail[]
+  KycDocument            KycDocument[]
+  KycSubmission          KycSubmission[]
+  PasswordReset          PasswordReset[]
+  Referral               Referral[]
+  RefreshToken           RefreshToken[]
+  Topup                  Topup[]
+  StdMex                 StdMex?                  @relation(fields: [stdMexId], references: [id])
+  Wallet                 Wallet[]
+  Deposit                Deposit[]
+  WithdrawalRequest      WithdrawalRequest[]
+  ProfitDetail           ProfitDetail[]
+  SupportTicket          SupportTicket[]
+  LostProfits            LostProfit[]      @relation("UserLostProfits")
+  OriginLostProfits      LostProfit[]      @relation("OriginLostProfits")
+  UserCycle              UserCycle[]
+  BinaryPoint            BinaryPoint[]
+  RankPromotion          RankPromotion[]
+  RankHistory            RankHistory[]
+  Reward                 Reward[]
+}
+
+model UserCycle {
+  id        String   @id @default(cuid())
   userId    String
-  user      User      @relation(fields: [userId], references: [id])
-  tokenHash String
-  expiresAt DateTime
-  usedAt    DateTime?
-  createdAt DateTime  @default(now())
-  ip        String?
-  userAgent String?
+  user      User     @relation(fields: [userId], references: [id])
+  type      String
+  startAt   DateTime @default(now())
+  endsAt    DateTime
+  txnId     String?
+  isUpgrade Boolean  @default(false)
+  volumen   Boolean  @default(true)
+  createdAt DateTime @default(now())
 
   @@index([userId])
 }
 
-model CasinoWeeklyReport {
-  id          String                   @id @default(cuid())
-  timezone    String
-  fromCDMX    DateTime                 @unique
-  toCDMX      DateTime                 @unique
-  createdAt   DateTime                 @default(now())
-  userDetails CasinoWeeklyUserDetail[]
+model BinaryPoint {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  points       Decimal  @db.Decimal(18, 2)
+  side         String   // left | right
+  type         String   @default("matching") // matching | history
+  originUserId String?
+  originName   String?
+  originEmail  String?
+  concept      String?
+  txnId        String?
+  expiresAt    DateTime?
+  createdAt    DateTime @default(now())
+
+  @@index([userId, side, type])
 }
 
-model CasinoWeeklyUserDetail {
-  id                String  @id @default(cuid())
-  reportId          String
-  userId            String // usuario que recibe el bono (sponsor)
-  level             Int // nivel 1..4
-  percent           Float // 0.20, 0.07, etc.
-  totalNeto         Decimal @db.Decimal(18, 2) // suma de neto que generó su downline
-  totalBonus        Decimal @db.Decimal(18, 2) // bono teórico para ese usuario en ese nivel
-  detallePorUsuario Json // [{ login, apuestas, ganancias, neto, spins }]
+model RankPromotion {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  name      String
+  rank      String
+  createdAt DateTime @default(now())
 
-  report CasinoWeeklyReport @relation(fields: [reportId], references: [id])
-  user   User               @relation(fields: [userId], references: [id])
-
-  @@index([reportId])
   @@index([userId])
+}
+
+model RankHistory {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  rank         String
+  leftPoints   Decimal  @db.Decimal(18, 2)
+  rightPoints  Decimal  @db.Decimal(18, 2)
+  period       String   // e.g. "2024-5"
+  createdAt    DateTime @default(now())
+
+  @@index([userId])
+}
+
+model Reward {
+  id               String   @id @default(cuid())
+  depositId        String
+  deposit          Deposit  @relation(fields: [depositId], references: [id])
+  userId           String
+  user             User     @relation(fields: [userId], references: [id])
+  year             Int
+  year_week        Int
+  compoundInterest Boolean  @default(false)
+  depositAmount    Decimal  @db.Decimal(18, 2)
+  status           String   @default("pending") // pending | paid
+  amount           Decimal  @default(0) @db.Decimal(18, 2)
+  createdAt        DateTime @default(now())
+
+  @@index([year, year_week, compoundInterest, status])
+  @@index([userId])
+}
+
+model AdminLog {
+  id        String   @id @default(cuid())
+  type      String   // activation-volume | activation-no-volume | process-transaction | change-email | change-password | add-points
+  userId    String?
+  targetId  String?  // txn_id, user_id, etc
+  data      Json?
+  createdAt DateTime @default(now())
+
+  @@index([type])
+}
+
+model AdminRewardPayment {
+  id        String   @id // e.g. "2024-15" (year-week)
+  percent   Decimal  @db.Decimal(18, 4)
+  total     Decimal  @db.Decimal(18, 2)
+  status    String   @default("paid")
+  year      Int
+  week      Int
+  createdAt DateTime @default(now())
+}
+
+model Wallet {
+  id          String        @id @default(cuid())
+  userId      String
+  balance     Decimal       @default(0)
+  currency    Currency      @default(USD)
+  LedgerEntry LedgerEntry[]
+  User        User          @relation(fields: [userId], references: [id])
+
+  @@unique([userId, currency])
+}
+
+enum Currency {
+  USD
+  MXN
+  COP
+  ARS
+}
+
+enum KycDocStatus {
+  UPLOADED
+  VERIFIED
+  REJECTED
+}
+
+enum KycDocType {
+  PASSPORT
+  ID_CARD
+  DRIVER_LICENSE
+  ADDRESS_PROOF
+  SELFIE
+}
+
+enum KycStatus {
+  PENDING
+  SUBMITTED
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+  SUSPENDED
+}
+
+model SystemReport {
+  id    String @id
+  data  Json
+}
+
+model IpnLog {
+  id        String   @id @default(cuid())
+  txnId     String
+  data      Json
+  createdAt DateTime @default(now())
+}
+
+model Signal {
+  id        String   @id @default(cuid())
+  title     String?
+  content   String?
+  type      String?
+  data      Json?
+  createdAt DateTime @default(now())
 }
 
 enum RequestStatus {
@@ -354,16 +706,15 @@ enum RequestStatus {
   SUCCESS
 }
 
-model SoftGamingRecords {
-  id        String        @id @default(cuid())
-  tid       String        @unique
-  status    RequestStatus
-  metadata  Json?
-  createdAt DateTime      @default(now())
-}
-model SoftgamingWebhookLog {
-  id           String   @id @default(cuid())
-  requestBody  Json
-  responseBody Json
-  createdAt    DateTime @default(now())
+model BinaryTreeRelation {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation("UserRelations", fields: [userId], references: [id])
+  ancestorId String
+  ancestor   User     @relation("AncestorRelations", fields: [ancestorId], references: [id])
+  side       String   // "left" | "right"
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, ancestorId])
+  @@index([ancestorId, side])
 }

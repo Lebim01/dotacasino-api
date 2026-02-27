@@ -4,7 +4,6 @@ import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { PrismaService } from 'libs/db/src/prisma.service';
 import { WalletService } from '@domain/wallet/wallet.service';
-import { db } from 'apps/backoffice-api/src/firebase/admin';
 
 @Injectable()
 export class ProfileService {
@@ -36,7 +35,6 @@ export class ProfileService {
   }
 
   async updateProfile(userId: string, dto: UpdateProfileDto) {
-    // evita cambios a campos sensibles aquí (email, country, kycStatus)
     const updated = await this.prisma.user.update({
       where: { id: userId },
       data: {
@@ -61,9 +59,6 @@ export class ProfileService {
         lastName: true,
       },
     });
-    await db.collection('users').doc(userId).update({
-      name: dto.displayName,
-    });
     return updated;
   }
 
@@ -87,26 +82,17 @@ export class ProfileService {
 
   async getStats(userId: string) {
     const wallet = await this.prisma.wallet.findFirst({
-      where: {
-        userId,
-      },
+      where: { userId },
     });
 
     if (wallet) {
       const referral_bonus = await this.prisma.ledgerEntry.aggregate({
-        _sum: {
-          amount: true,
-        },
-        where: {
-          kind: 'REFERRAL_BONUS',
-          walletId: wallet.id,
-        },
+        _sum: { amount: true },
+        where: { kind: 'REFERRAL_BONUS', walletId: wallet.id },
       });
       const referral_count = await this.prisma.user.aggregate({
         _count: true,
-        where: {
-          sponsorId: userId,
-        },
+        where: { sponsorId: userId },
       });
       const balance = await this.walletService.getBalance(userId);
       return {
@@ -116,10 +102,6 @@ export class ProfileService {
       };
     }
 
-    return {
-      referral_bonus: 0,
-      referral_count: 0,
-      balance: 0,
-    };
+    return { referral_bonus: 0, referral_count: 0, balance: 0 };
   }
 }

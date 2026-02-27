@@ -57,7 +57,6 @@ export class AuthCommonService {
         phone: true,
         firstName: true,
         lastName: true,
-        firebaseId: true,
       },
     });
 
@@ -139,7 +138,7 @@ export class AuthCommonService {
           );
 
           await this.referralService.attachByCode(user.id, code);
-          await this.walletService.createWallet(user.id);
+          await this.walletService.createWallet(user.id, user.country);
 
           try {
             const resSoft: any = await this.softGaming.addUser(
@@ -226,13 +225,11 @@ export class AuthCommonService {
     id: string;
     email: string;
     roles?: string[];
-    firebaseId: string;
   }) {
     const payload: JwtPayload = {
       sub: user.id,
       email: user.email,
       roles: user.roles ?? ['user'],
-      firebaseId: user.firebaseId,
     };
     const access_token = await this.issueAccessToken(payload);
     const { token: refresh_token, familyId } = await this.issueRefreshToken(
@@ -294,7 +291,6 @@ export class AuthCommonService {
     const payload: JwtPayload = {
       sub: userId,
       email: user!.email,
-      firebaseId: user!.firebaseId,
     }; // puedes añadir email/roles si quieres
     const access_token = await this.issueAccessToken(payload);
     const { token: refresh_token } = await this.issueRefreshToken(

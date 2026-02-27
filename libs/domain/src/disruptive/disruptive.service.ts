@@ -2,13 +2,11 @@
 import { google } from '@google-cloud/tasks/build/protos/protos';
 import { HttpException, Injectable } from '@nestjs/common';
 import axios from 'axios';
-import { CasinoService } from '../casino/casino.service';
-import { firestore } from 'firebase-admin';
 import { Memberships } from 'apps/backoffice-api/src/types';
-import { db } from 'apps/backoffice-api/src/firebase/admin';
-import { dateToString } from 'apps/backoffice-api/src/utils/firebase';
-import * as googleTaskService from 'apps/backoffice-api/src/googletask/utils';
+import { PrismaService } from 'libs/db/src/prisma.service';
 import { WalletService } from '@domain/wallet/wallet.service';
+import * as googleTaskService from 'apps/backoffice-api/src/googletask/utils';
+import Decimal from 'decimal.js';
 
 export const disruptiveUrl = axios.create({
   baseURL: 'https://my.disruptivepayments.io',
@@ -49,7 +47,10 @@ const NETWORKS_ADDRESS: Record<Networks, string> = {
 
 @Injectable()
 export class DisruptiveService {
-  constructor(private readonly walletService: WalletService) { }
+  constructor(
+    private readonly walletService: WalletService,
+    private readonly prisma: PrismaService,
+  ) { }
 
   async generateDisruptivePayment(network: Networks, amount: number) {
     const url = '/api/payments/single';
@@ -79,50 +80,56 @@ export class DisruptiveService {
       const { address } = response.data;
       const expires_at = new Date(
         response.timeEnd + 15 * 60 * 1000,
-      ).toISOString();
+      );
       const qrcode_url = `https://api.qrserver.com/v1/create-qr-code/?size=225x225&data=${address}`;
 
-      const res = await db.collection('node-payments').add({
-        user_id,
-        membership_type,
-        amount,
-        expires_at,
-        address,
-        qrcode_url,
-        network: 'BSC',
-        created_at: new Date(),
-        status: 'pending',
-        type: 'academy',
-        category: 'membership',
-        payment_status: 'pending',
-        process_status: 'pending',
-        is_upgrade,
+      const res = await this.prisma.nodePayment.create({
+          data: {
+            userId: user_id,
+            amount: new Decimal(amount),
+            expiresAt: expires_at,
+            address: address,
+            qrcodeUrl: qrcode_url,
+            network: network,
+            status: 'pending',
+            type: 'academy',
+            category: 'membership',
+            paymentStatus: 'pending',
+            processStatus: 'pending',
+            isUpgrade: is_upgrade,
+          }
       });
 
-      await db.collection('users').doc(user_id).update({
-        membership_link_disruptive: res.id,
+      await this.prisma.user.update({
+        where: { id: user_id },
+        data: {
+          membership_link_disruptive: res.id,
+        },
       });
 
-      return { qrcode_url, address, expires_at, amount };
+      return { qrcode_url, address, expires_at: expires_at.toISOString(), amount };
     } catch (error) {
       console.error('error', error);
     }
   }
 
   async completeMembership(address: string) {
-    const res = await db
-      .collection('node-payments')
-      .where('address', '==', address)
-      .where('type', '==', 'academy')
-      .where('status', '==', 'pending')
-      .get()
-      .then((r: any) => (r.empty ? null : r.docs[0]));
+    const res = await this.prisma.nodePayment.findFirst({
+        where: {
+            address: address,
+            type: 'academy',
+            status: 'pending'
+        }
+    });
 
     if (res) {
       await this.sendActiveMembership(res.id);
-      await res.ref.update({
-        status: 'completed',
-        completed_at: new Date(),
+      await this.prisma.nodePayment.update({
+        where: { id: res.id },
+        data: {
+          status: 'completed',
+          completedAt: new Date(),
+        }
       });
     }
   }
@@ -133,62 +140,70 @@ export class DisruptiveService {
       const { address } = response.data;
       const expires_at = new Date(
         response.timeEnd + 15 * 60 * 1000,
-      ).toISOString();
+      );
       const qrcode_url = `https://api.qrserver.com/v1/create-qr-code/?size=225x225&data=${address}`;
 
-      const res = await db.collection('node-payments').add({
-        user_id,
-        amount,
-        expires_at,
-        address,
-        qrcode_url,
-        network: 'BSC',
-        created_at: new Date(),
-        status: 'pending',
-        type: 'academy',
-        category: 'deposit',
-        payment_status: 'pending',
-        process_status: 'pending',
+      const res = await this.prisma.nodePayment.create({
+        data: {
+          userId: user_id,
+          amount: new Decimal(amount),
+          expiresAt: expires_at,
+          address,
+          qrcodeUrl: qrcode_url,
+          network: 'BSC',
+          status: 'pending',
+          type: 'academy',
+          category: 'deposit',
+          paymentStatus: 'pending',
+          processStatus: 'pending',
+        }
       });
 
-      await db.collection('users').doc(user_id).update({
-        deposit_link_disruptive: res.id,
+      await this.prisma.user.update({
+        where: { id: user_id },
+        data: {
+          deposit_link_disruptive: res.id,
+        },
       });
 
-      return { qrcode_url, address, expires_at, amount };
+      return { qrcode_url, address, expires_at: expires_at.toISOString(), amount };
     } catch (error) {
       console.error('error', error);
     }
   }
 
   async completedDeposit(address: string) {
-    const res = await db
-      .collection('node-payments')
-      .where('address', '==', address)
-      .where('type', '==', 'academy')
-      .where('status', '==', 'pending')
-      .get()
-      .then((r: any) => (r.empty ? null : r.docs[0]));
+    const res = await this.prisma.nodePayment.findFirst({
+      where: {
+        address: address,
+        type: 'academy',
+        status: 'pending'
+      }
+    });
 
     if (res) {
       await this.sendActiveDeposit(res.id);
-      await res.ref.update({
-        status: 'completed',
-        completed_at: new Date(),
+      await this.prisma.nodePayment.update({
+        where: { id: res.id },
+        data: {
+          status: 'completed',
+          completedAt: new Date(),
+        }
       });
     }
   }
 
   async getTransactionCasino(user_id: string) {
-    const docs = await db
-      .collection('node-payments')
-      .where('user_id', '==', user_id)
-      .where('type', '==', 'casino')
-      .where('category', '==', 'deposit')
-      .where('status', '==', 'pending')
-      .get();
+    const txn = await this.prisma.nodePayment.findFirst({
+        where: {
+            userId: user_id,
+            type: 'casino',
+            category: 'deposit',
+            status: 'pending'
+        }
+    });
 
-    return docs.empty ? null : docs.docs[0].data();
+    return txn;
   }
 
   async createDisruptiveTransactionCasino(
@@ -201,23 +216,24 @@ export class DisruptiveService {
       const { address } = response.data;
       const expires_at = new Date(
         response.timeEnd + 15 * 60 * 1000,
-      ).toISOString();
+      );
       const qrcode_url = `https://api.qrserver.com/v1/create-qr-code/?size=225x225&data=${address}`;
 
-      await db.collection('node-payments').add({
-        user_id,
-        amount,
-        expires_at,
-        address,
-        qrcode_url,
-        network,
-        created_at: new Date(),
-        status: 'pending',
-        type: 'casino',
-        category: 'deposit',
+      await this.prisma.nodePayment.create({
+        data: {
+          userId: user_id,
+          amount: new Decimal(amount),
+          expiresAt: expires_at,
+          address,
+          qrcodeUrl: qrcode_url,
+          network,
+          status: 'pending',
+          type: 'casino',
+          category: 'deposit',
+        }
       });
 
-      return { qrcode_url, address, expires_at, amount };
+      return { qrcode_url, address, expires_at: expires_at.toISOString(), amount };
     } catch (error) {
       console.error('error', error);
     }
@@ -325,19 +341,22 @@ export class DisruptiveService {
   }
 
   async cancelDisruptiveTransactionCasino(user_id: string) {
-    const res = await db
-      .collection('node-payments')
-      .where('user_id', '==', user_id)
-      .where('type', '==', 'casino')
-      .where('category', '==', 'deposit')
-      .where('status', '==', 'pending')
-      .get()
-      .then((r: any) => (r.empty ? null : r.docs[0]));
+    const res = await this.prisma.nodePayment.findFirst({
+      where: {
+        userId: user_id,
+        type: 'casino',
+        category: 'deposit',
+        status: 'pending'
+      }
+    });
 
     if (res) {
-      await res.ref.update({
-        status: 'cancelled',
-        cancel_at: new Date(),
+      await this.prisma.nodePayment.update({
+        where: { id: res.id },
+        data: {
+          status: 'cancelled',
+          completedAt: new Date(),
+        }
       });
     }
   }
@@ -379,101 +398,108 @@ export class DisruptiveService {
   }
 
   async requestWithdraw(user_id: string, amount: number, address: string) {
-    const doc = await db
-      .collection('node-payments')
-      .where('user_id', '==', user_id)
-      .where('type', '==', 'casino')
-      .where('category', '==', 'withdraw')
-      .where('status', '==', 'pending')
-      .get()
-      .then((r: any) => (r.empty ? null : r.docs[0]));
-
-    if (doc) {
-      await doc.ref.update({
-        amount: firestore.FieldValue.increment(amount),
-      });
-    } else {
-      await db.collection('node-payments').add({
+    const doc = await this.prisma.nodePayment.findFirst({
+      where: {
+        userId: user_id,
         type: 'casino',
         category: 'withdraw',
-        status: 'pending',
-        created_at: new Date(),
-        user_id,
-        amount,
-        address,
+        status: 'pending'
+      }
+    });
+
+    if (doc) {
+      await this.prisma.nodePayment.update({
+        where: { id: doc.id },
+        data: {
+          amount: { increment: amount },
+        }
+      });
+    } else {
+      await this.prisma.nodePayment.create({
+        data: {
+          type: 'casino',
+          category: 'withdraw',
+          status: 'pending',
+          userId: user_id,
+          amount: new Decimal(amount),
+          address,
+        }
       });
     }
   }
 
   async cancelDisruptiveWithdrawCasino(user_id: string) {
-    const doc = await db
-      .collection('node-payments')
-      .where('user_id', '==', user_id)
-      .where('type', '==', 'casino')
-      .where('category', '==', 'withdraw')
-      .where('status', '==', 'pending')
-      .get()
-      .then((r: any) => (r.empty ? null : r.docs[0]));
+    const doc = await this.prisma.nodePayment.findFirst({
+      where: {
+        userId: user_id,
+        type: 'casino',
+        category: 'withdraw',
+        status: 'pending'
+      }
+    });
 
     if (doc) {
-      await doc.ref.update({
-        status: 'cancelled',
+      await this.prisma.nodePayment.update({
+        where: { id: doc.id },
+        data: {
+          status: 'cancelled',
+        }
       });
     }
   }
 
   async getWithdrawList(user_id: string) {
-    const docs = await db
-      .collection('node-payments')
-      .where('user_id', '==', user_id)
-      .where('type', '==', 'casino')
-      .where('category', '==', 'withdraw')
-      .get();
+    const txs = await this.prisma.nodePayment.findMany({
+      where: {
+        userId: user_id,
+        type: 'casino',
+        category: 'withdraw'
+      }
+    });
 
-    return docs.docs.map((r: any) => ({
+    return txs.map((r) => ({
       id: r.id,
-      address: r.get('address'),
-      amount: r.get('amount'),
-      created_at: dateToString(r.get('created_at')),
-      user_id: r.get('user_id'),
-      status: r.get('status'),
+      address: r.address,
+      amount: Number(r.amount),
+      created_at: r.createdAt.toISOString(),
+      user_id: r.userId,
+      status: r.status,
     }));
   }
 
   async getWithdrawListAdmin() {
-    const docs = await db
-      .collection('node-payments')
-      .where('type', '==', 'casino')
-      .where('category', '==', 'withdraw')
-      .where('status', '==', 'pending')
-      .get();
+    const txs = await this.prisma.nodePayment.findMany({
+      where: {
+        type: 'casino',
+        category: 'withdraw',
+        status: 'pending'
+      }
+    });
 
-    return docs.docs.map((r: any) => ({
+    return txs.map((r) => ({
       id: r.id,
-      address: r.get('address'),
-      amount: r.get('amount'),
-      created_at: dateToString(r.get('created_at')),
-      user_id: r.get('user_id'),
+      address: r.address,
+      amount: Number(r.amount),
+      created_at: r.createdAt.toISOString(),
+      user_id: r.userId,
     }));
   }
 
   async getTransaction(address: string) {
-    const transaction = await db
-      .collection('node-payments')
-      .where('address', '==', address)
-      .get()
-      .then((r: any) => (r.empty ? null : r.docs[0]));
+    const transaction = await this.prisma.nodePayment.findFirst({
+      where: { address: address }
+    });
     return transaction;
   }
 
   async getTransactionAcademy(address: string) {
-    const transaction = await db
-      .collection('node-payments')
-      .where('address', '==', address)
-      .where('type', '==', 'academy')
-      .where('status', '==', 'pending')
-      .get()
-      .then((r: any) => (r.empty ? null : r.docs[0]));
+    const transaction = await this.prisma.nodePayment.findFirst({
+      where: {
+        address: address,
+        type: 'academy',
+        status: 'pending'
+      }
+    });
     return transaction;
   }
 }

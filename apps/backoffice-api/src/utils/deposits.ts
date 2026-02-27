@@ -1,4 +1,4 @@
-import { db } from '../firebase/admin';
+import { PrismaClient } from '@prisma/client';
 import { Memberships } from '../types';
 
 export const getLimitDeposit = (type: Memberships) => {
@@ -27,22 +27,27 @@ export const getCapCurrentDeposits = (
     : membership_cap_current;
 };
 
-export const currentMultiplier = async (firebase_user_id: string) => {
-  const user = await db.collection('users').doc(firebase_user_id).get();
-  const limit = getLimitMembership(user.get('membership'));
-  const deposit_limit = user.get('deposit_cap_limit');
+export const currentMultiplier = async (user_id: string, prisma: PrismaClient) => {
+  const user = await prisma.user.findUnique({
+    where: { id: user_id },
+  });
+  if (!user) return null;
+
+  const limit = getLimitMembership(user.membership as Memberships);
+  const deposit_limit = Number(user.membershipCapLimit || 0);
+  const currentCap = Number(user.membershipCapCurrent || 0);
 
   return {
     membership: {
       current:
-        user.get('membership_cap_current') >= deposit_limit
-          ? user.get('membership_cap_current') - deposit_limit
+        currentCap >= deposit_limit
+          ? currentCap - deposit_limit
           : 0,
       limit,
     },
     deposit: {
       current: getCapCurrentDeposits(
-        user.get('membership_cap_current'),
+        currentCap,
         deposit_limit,
       ),
       limit: deposit_limit,

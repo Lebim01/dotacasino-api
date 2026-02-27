@@ -26,19 +26,14 @@ import {
   RecoverPassDTO,
 } from './dto/recover-pass.dto';
 import { AuthService } from '../auth/auth.service';
-import {
-  CreateTransactionDto,
-  CreateTransactionMembershipDto,
-} from '../coinpayments/dto/create-transaction.dto';
+import { CreateTransactionMembershipDto } from './dto/create-transaction.dto';
 import { validatePageAndLimit } from '../utils/pagination';
-import { db } from '../firebase/admin';
 import { UserCommonService } from '@domain/users/users.service';
 import { NodePaymentsService } from '@domain/node-payments/node-payments.service';
 import { JwtAuthGuard } from '@security/jwt.guard';
 import { Roles } from '@security/roles.decorator';
 import { CurrentUser } from '@security/current-user.decorator';
 import { WalletService } from '@domain/wallet/wallet.service';
-import { gte } from 'zod';
 
 @ApiTags('Users')
 @Controller('users')
@@ -109,10 +104,10 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Recover user password' })
   async otp(@CurrentUser() { userId }: { userId: string }) {
-    const user = await db.collection('users').doc(userId).get();
+    const user = await this.usersService.getUserById(userId, true);
     const OTP = this.authService.generateOTP();
-    await this.authService.createOTPNode(user.get('email'), OTP);
-    return await this.usersService.sendOTP(user.get('email'), OTP);
+    await this.authService.createOTPNode(user.email, OTP);
+    return await this.usersService.sendOTP(user.email, OTP);
   }
 
   @Post('recover/password')
@@ -176,45 +171,12 @@ export class UsersController {
     return this.commonUserService.getQRMembership(user.userId);
   }
 
-  @Post('create-qr-deposit')
-  @ApiBearerAuth('access-token')
-  @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Create QR payment' })
-  async createqrdeposit(
-    @CurrentUser() { userId }: { userId: string },
-    @Body()
-    body: CreateTransactionDto,
-  ) {
-    const user = await db.collection('users').doc(userId).get();
-
-    if (user.get('membership_status') != 'paid') {
-      throw new HttpException('Membership active is required', 403);
-    }
-
-    const current = await this.usersService.currentDeposit(userId);
-
-    if ((current.deposits || 0) + (body.amount || 0) > current.limit) {
-      throw new HttpException('Invalid amount', 403);
-    }
-
-    await this.nodePaymentsService.createDepositTransaction(userId, body.amount);
-    return this.usersService.getQRDeposit(userId);
-  }
-
   @Get('qr-membership')
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get QR payment' })
   async getqrmembership(@CurrentUser() { userId }: { userId: string }) {
     return this.commonUserService.getQRMembership(userId);
-  }
-
-  @Get('qr-deposit')
-  @ApiBearerAuth('access-token')
-  @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Get QR payment' })
-  async getqrdeposit(@CurrentUser() { userId }: { userId: string }) {
-    return this.usersService.getQRDeposit(userId);
   }
 
   @Delete('qr-membership')
@@ -225,36 +187,12 @@ export class UsersController {
     return this.usersService.deleteQRMembership(userId);
   }
 
-  @Delete('qr-deposit')
-  @ApiBearerAuth('access-token')
-  @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Get QR payment' })
-  async deleteqrdeposit(@CurrentUser() { userId }: { userId: string }) {
-    return this.usersService.deleteQRDeposit(userId);
-  }
-
-  @Get('current-deposit')
-  @ApiBearerAuth('access-token')
-  @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Get current deposits value' })
-  async currentDeposit(@CurrentUser() { userId }: { userId: string }) {
-    return this.usersService.currentDeposit(userId);
-  }
-
   @Get('current-multiplier')
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get current deposits value' })
   async currentMultiplier(@CurrentUser() { userId }: { userId: string }) {
     return this.usersService.currentMultiplier(userId);
-  }
-
-  @Get('deposits')
-  @ApiBearerAuth('access-token')
-  @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Get history deposits' })
-  async deposits(@CurrentUser() { userId }: { userId: string }) {
-    return this.usersService.deposits(userId);
   }
 
   @Get('my-direct-users')
@@ -317,9 +255,9 @@ export class UsersController {
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   async currentmembership(@CurrentUser() { userId }: { userId: string }) {
-    const user = await db.collection('users').doc(userId).get();
+    const user = await this.usersService.getUserById(userId, true);
     return {
-      membership: user.get('membership'),
+      membership: user.membership,
     };
   }
 

@@ -1,18 +1,5 @@
-import admin from 'firebase-admin';
-import adminCredentials from './firebaseConfigAdmin';
-
-const databaseName = process.env.DATABASE_NAME;
-
-admin.initializeApp({
-  credential: admin.credential.cert(
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    adminCredentials,
-  ),
-});
-
-export const db = admin.firestore();
-
-db.settings({
-  databaseId: databaseName,
-});
+// admin.ts - DEPRECATED
+// Firebase Admin SDK has been fully removed. All data access uses Prisma.
+// This file is kept as a stub to avoid breaking imports if any remain.
+// TODO: Remove this file once confirmed unused.
+export const db = null;

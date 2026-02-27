@@ -24,6 +24,7 @@ import { WithdrawCoinsModule } from './withdraw-coins/coins.module';
 import { StdMexModule } from '@domain/stdmex/stdmex.module';
 import { AuthAcademyModule } from '@domain/auth-academy/auth-academy.module';
 import { ReportsModule } from './reports/reports.module';
+import { SupportModule } from './support/support.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { ReportsModule } from './reports/reports.module';
     StdMexModule,
     AuthAcademyModule,
     ReportsModule,
+    SupportModule,
   ],
   controllers: [HealthController],
 })

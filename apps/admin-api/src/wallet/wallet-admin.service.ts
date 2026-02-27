@@ -5,7 +5,6 @@ import { QueryBalancesDto } from './dto/query-balances.dto';
 import { TopupDto } from './dto/topup.dto';
 import { WalletService } from '@domain/wallet/wallet.service';
 import { PrismaService } from 'libs/db/src/prisma.service';
-import { CURRENCY } from 'libs/shared/src/currency';
 
 @Injectable()
 export class WalletAdminService {
@@ -16,7 +15,6 @@ export class WalletAdminService {
 
   async listBalances(q: QueryBalancesDto) {
     const where: any = {
-      currency: CURRENCY,
       user: q.search
         ? { email: { contains: q.search, mode: 'insensitive' } }
         : undefined,
@@ -28,7 +26,7 @@ export class WalletAdminService {
       this.prisma.wallet.findMany({
         where,
         include: {
-          user: {
+          User: {
             select: {
               id: true,
               email: true,
@@ -38,7 +36,7 @@ export class WalletAdminService {
             },
           },
         },
-        orderBy: { user: { createdAt: 'desc' } },
+        orderBy: { User: { createdAt: 'desc' } },
         skip,
         take: q.pageSize,
       }),
@@ -50,26 +48,28 @@ export class WalletAdminService {
       pageSize: q.pageSize,
       total,
       items: rows.map((w) => ({
-        userId: w.user.id,
-        email: w.user.email,
-        displayName: w.user.displayName,
-        country: w.user.country,
+        userId: w.User.id,
+        email: w.User.email,
+        displayName: w.User.displayName,
+        country: w.User.country,
         balance: Number(w.balance),
         currency: w.currency,
-        createdAt: w.user.createdAt,
+        createdAt: w.User.createdAt,
       })),
     };
   }
 
   async getUserBalance(userId: string) {
+    const currency = await this.wallet.getUserWalletCurrency(userId);
     const wallet = await this.prisma.wallet.findFirst({
-      where: { userId, currency: CURRENCY },
+      where: { userId, currency },
       select: { balance: true, currency: true },
     });
+
     if (!wallet) {
-      // si no existe, lo consideramos 0 y opcionalmente lo creamos
-      return { userId, balance: 0, currency: CURRENCY };
+      return { userId, balance: 0, currency };
     }
+
     return {
       userId,
       balance: Number(wallet.balance),
@@ -95,10 +95,12 @@ export class WalletAdminService {
       meta: { note: dto.note ?? null, actor: 'admin-api' },
     });
 
+    const currency = await this.wallet.getUserWalletCurrency(userId);
+
     return {
       userId,
       balance: balance.toString(),
-      currency: CURRENCY,
+      currency,
       idempotencyKey: idk,
     };
   }

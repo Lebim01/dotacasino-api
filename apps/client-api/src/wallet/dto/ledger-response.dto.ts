@@ -1,6 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class LedgerEntryDto {
+  @ApiProperty({ example: 'MXN' })
+  currency!: string;
+
   @ApiProperty({ example: 'BET_WIN' })
   kind!: string;
 

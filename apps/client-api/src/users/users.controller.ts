@@ -10,10 +10,8 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
-import { currentMultiplier } from 'apps/backoffice-api/src/utils/deposits';
 import { JwtAuthGuard } from '@security/jwt.guard';
 import { CurrentUser } from '@security/current-user.decorator';
-import { db } from 'apps/backoffice-api/src/firebase/admin';
 import { UserCommonService } from '@domain/users/users.service';
 import { CreateQRDto } from './dto/registeracademy.dto';
 import { NodePaymentsService } from '@domain/node-payments/node-payments.service';
@@ -36,8 +34,9 @@ export class UsersController {
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   async currentMultiplier(@CurrentUser() user: { userId: string }) {
+    // currentMultiplier migrated to use Prisma via UsersService
     const userpsql = await this.users.getUserById(user.userId);
-    return currentMultiplier(userpsql!.firebaseId);
+    return { multiplier: userpsql?.membershipCapLimit ?? 1 };
   }
 
   @Get('current-membership')
@@ -45,9 +44,9 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   async currentmembership(@CurrentUser() user: { userId: string }) {
     const userpsql = await this.users.getUserById(user.userId);
-    const userfb = await db.collection('users').doc(userpsql!.firebaseId).get();
     return {
-      membership: userfb.get('membership'),
+      membership: userpsql?.membership ?? 'free',
+      membership_status: userpsql?.membershipStatus ?? 'expired',
     };
   }
 
@@ -73,7 +72,7 @@ export class UsersController {
     if (!transaction) throw new HttpException('not found', 401);
 
     const validation = await this.nodePaymentsService.validateStatus(
-      transaction.get('network'),
+      transaction.network as any,
       body.address,
     );
 
@@ -96,7 +95,7 @@ export class UsersController {
       await addToQueue(task, getPathQueue('active-user-membership'));
     }
 
-    return validation.confirmed ? transaction.get('status') : 'NO';
+    return validation.confirmed ? transaction.status : 'NO';
   }
 
   @Post('create-qr-membership')

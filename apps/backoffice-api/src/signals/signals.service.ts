@@ -1,40 +1,49 @@
 import { Injectable } from '@nestjs/common';
-import { db } from '../firebase/admin';
-import { dateToString } from '../utils/firebase';
+import { PrismaService } from 'libs/db/src/prisma.service';
 
 @Injectable()
 export class SignalsService {
+  constructor(private readonly prisma: PrismaService) {}
+
   async getAll(page: number, limit: number) {
-    const query =
-      page > 1
-        ? db
-            .collection('signals')
-            .orderBy('created_at', 'desc')
-            .offset(page * limit)
-            .limit(limit)
-        : db.collection('signals').orderBy('created_at', 'desc').limit(limit);
+    const skip = page > 1 ? (page - 1) * limit : 0;
 
-    const snap = await query.get();
-
-    const totalRecords = await db.collection('signals').count().get();
+    const [signals, totalCount] = await Promise.all([
+      this.prisma.signal.findMany({
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: limit,
+      }),
+      this.prisma.signal.count(),
+    ]);
 
     return {
-      totalRecords: totalRecords.data().count,
-      data: snap.docs.map((r) => ({
+      totalRecords: totalCount,
+      data: signals.map((r) => ({
         id: r.id,
-        ...r.data(),
-        created_at: dateToString(r.get('created_at')),
+        title: r.title,
+        content: r.content,
+        type: r.type,
+        data: r.data,
+        created_at: r.createdAt.toISOString(),
       })),
     };
   }
 
   async getOne(id: string) {
-    const r = await db.collection('signals').doc(id).get();
+    const r = await this.prisma.signal.findUnique({
+      where: { id },
+    });
+
+    if (!r) return null;
 
     return {
       id: r.id,
-      ...r.data(),
-      created_at: dateToString(r.get('created_at')),
+      title: r.title,
+      content: r.content,
+      type: r.type,
+      data: r.data,
+      created_at: r.createdAt.toISOString(),
     };
   }
 }

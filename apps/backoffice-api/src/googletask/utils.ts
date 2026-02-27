@@ -2,18 +2,16 @@ import { CloudTasksClient } from '@google-cloud/tasks';
 import { google } from '@google-cloud/tasks/build/protos/protos';
 import type { ClientOptions } from 'google-gax';
 
-import adminCredentials from '../firebase/firebaseConfigAdmin';
+const project = process.env.GCP_PROJECT_ID || 'dota-dd5dd';
+const location = 'us-central1';
 
 const options: ClientOptions = {
-  projectId: adminCredentials.project_id,
+  projectId: project,
   credentials: {
-    client_email: adminCredentials.client_email,
-    private_key: adminCredentials.private_key,
+    client_email: process.env.FIREBASE_CLIENT_EMAIL,
+    private_key: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
   },
 };
-
-const project = adminCredentials.project_id;
-const location = 'us-central1';
 
 export const getPathQueue = (queueName: string): string => {
   const tasksClient: CloudTasksClient = new CloudTasksClient(options);
