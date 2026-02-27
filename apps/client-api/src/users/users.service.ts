@@ -8,6 +8,7 @@ import {
   animals,
 } from 'unique-names-generator';
 import { UserCommonService } from '@domain/users/users.service';
+import { v4 as uuidv4 } from 'uuid';
 
 export function generateDisplayName() {
   return (
@@ -69,13 +70,14 @@ export class UsersService {
 
     const stdMex = await this.prisma.stdMex.upsert({
       create: {
+        id: uuidv4(),
         bank: data.bank || '',
         clabe: data.clabe || '',
         instructions: data.instructions || {},
       },
       update: data,
       where: {
-        id: stdMexId || "",
+        id: stdMexId || '',
       },
     });
 
@@ -96,9 +98,9 @@ export class UsersService {
           id: userId,
         },
         include: {
-          stdMex: true,
+          StdMex: true,
         },
       })
-      .then((r) => r?.stdMex);
+      .then((r) => r?.StdMex);
   }
 }

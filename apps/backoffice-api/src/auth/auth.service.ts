@@ -1,53 +1,49 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { HttpException, Injectable } from '@nestjs/common';
-import { compare } from 'bcryptjs';
+import * as argon2 from 'argon2';
 import { USER_ROLES } from './auth.constants';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import { MailerService } from '../mailer/mailer.service';
-import { db } from '../firebase/admin';
+import { PrismaService } from 'libs/db/src/prisma.service';
 
 @Injectable()
 export class AuthService {
   constructor(
+    private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
     private readonly mailerService: MailerService,
-  ) {}
+  ) { }
 
   async isExistingUser(email: string) {
     const user = await this.getUserByEmail(email);
     return !!user;
   }
 
-  async getUserByEmail(email: string): Promise<User | null> {
-    try {
-      const snap = await db
-        .collection('users')
-        .where('email', '==', email.toLowerCase())
-        .get();
-      if (snap.empty) throw new Error('not exists');
-      const user = snap.docs[0];
-      return { uid: user.id, ...user.data() } as any;
-    } catch (err) {
-      return null;
-    }
+  async getUserByEmail(email: string) {
+    return this.prisma.user.findUnique({
+      where: { email: email.toLowerCase() },
+    });
   }
 
   async verifyPassword(password: string, hashedPassword: string) {
-    const isPasswordValid = await compare(password, hashedPassword);
+    const isPasswordValid = await argon2.verify(hashedPassword, password);
     if (!isPasswordValid) throw new HttpException('INVALID_PASSWORD', 403);
   }
 
   async verifyUsername(username: string, user_id?: string) {
-    const usernames = await db
-      .collection('users')
-      .where('username', '==', username)
-      .get();
-
     if (user_id) {
-      return usernames.docs.filter((d: any) => d.id !== user_id).length == 0;
+      const user = await this.prisma.user.findFirst({
+        where: {
+          displayName: username,
+          NOT: { id: user_id },
+        },
+      });
+      return !user;
     } else {
-      return usernames.empty;
+      const user = await this.prisma.user.findFirst({
+        where: { displayName: username },
+      });
+      return !user;
     }
   }
 
@@ -56,13 +52,10 @@ export class AuthService {
     const user = await this.getUserByEmail(email.toLowerCase());
 
     if (user) {
-      if (!user.password) throw new HttpException('USER_BROKEN', 400);
+      if (!user.passwordHash) throw new HttpException('USER_BROKEN', 400);
 
-      if (!user.uid) throw new HttpException('INVALID_USER', 400);
-
-      // 3) Genera tokens
       const payload = {
-        sub: user.uid,
+        sub: user.id,
         email: user.email,
         roles: user.roles ?? ['user'],
       };
@@ -80,15 +73,16 @@ export class AuthService {
 
   async giveAdminRole(email: string) {
     if (!email) throw new HttpException('EMAIL_REQUIRED', 400);
-    const _auth = await this.getUserByEmail(email);
-    if (_auth) {
-      await db
-        .collection('users')
-        .doc(_auth.uid)
-        .update({
-          is_admin: true,
-          roles: [USER_ROLES.USER, USER_ROLES.ADMIN],
-        });
+    const user = await this.getUserByEmail(email);
+    if (user) {
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: {
+          roles: {
+            set: [USER_ROLES.USER, USER_ROLES.ADMIN],
+          },
+        },
+      });
 
       return 'OK';
     }
@@ -97,16 +91,17 @@ export class AuthService {
 
   async revokeAdminRole(email: string) {
     if (!email) throw new HttpException('EMAIL_REQUIRED', 400);
-    const _auth = await this.getUserByEmail(email);
+    const user = await this.getUserByEmail(email);
 
-    if (_auth) {
-      await db
-        .collection('users')
-        .doc(_auth.uid)
-        .update({
-          is_admin: false,
-          roles: [USER_ROLES.USER],
-        });
+    if (user) {
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: {
+          roles: {
+            set: [USER_ROLES.USER],
+          },
+        },
+      });
 
       return 'OK';
     }
@@ -123,10 +118,17 @@ export class AuthService {
     const user = await this.getUserByEmail(email);
 
     if (user) {
-      await db.collection('otp').doc(user.uid).set({
-        email: email.toLowerCase(),
-        otp: otp_code,
-        now: new Date(),
+      await this.prisma.oTP.upsert({
+        where: { id: user.id },
+        update: {
+          otp: otp_code,
+          createdAt: new Date(),
+        },
+        create: {
+          id: user.id,
+          otp: otp_code,
+          createdAt: new Date(),
+        },
       });
 
       return { success: true };
@@ -138,9 +140,11 @@ export class AuthService {
     const user = await this.getUserByEmail(email);
 
     if (user) {
-      const otp_doc = await db.collection('otp').doc(user.uid).get();
+      const otp_doc = await this.prisma.oTP.findUnique({
+        where: { id: user.id },
+      });
 
-      if (otp_doc.get('otp') == otp_code) {
+      if (otp_doc && otp_doc.otp == otp_code) {
         return { success: true };
       }
     }

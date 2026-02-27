@@ -4,6 +4,7 @@ import { PostTransferRecord } from './xml.types';
 import Decimal from 'decimal.js';
 import { CURRENCY } from 'libs/shared/src/currency';
 import { WalletService } from '@domain/wallet/wallet.service';
+import { v4 as uuidv4 } from 'uuid';
 
 type TransferResult = { code: string; balance: string };
 
@@ -68,6 +69,7 @@ export class AgWebhookService {
       // 404 INVALID_TRANSACTION según tabla de respuestas :contentReference[oaicite:15]{index=15}
       await this.prisma.providerPostTransfer.create({
         data: {
+          id: uuidv4(),
           provider: 'AG',
           uniqueKey: uk,
           transactionID: rec.transactionID,
@@ -129,6 +131,7 @@ export class AgWebhookService {
 
       await tx.providerPostTransfer.create({
         data: {
+          id: uuidv4(),
           provider: 'AG',
           uniqueKey: uk,
           transactionID: rec.transactionID,

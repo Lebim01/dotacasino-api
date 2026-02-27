@@ -24,7 +24,7 @@ import {
 @ApiTags('Deposit Coins')
 @Controller('deposit-coins')
 export class DepositCoinsController {
-  constructor(private readonly nodePaymentsService: NodePaymentsService) {}
+  constructor(private readonly nodePaymentsService: NodePaymentsService) { }
 
   @Get('list')
   @ApiBearerAuth('access-token')
@@ -77,11 +77,11 @@ export class DepositCoinsController {
     );
 
     if (!transaction) throw new HttpException('not found', 401);
-    if (transaction.get('status') != 'pending')
+    if (transaction.status != 'pending')
       throw new HttpException('completed', 401);
 
     const validation = await this.nodePaymentsService.validateStatus(
-      transaction.get('network'),
+      transaction.network as any,
       body.address,
     );
 
@@ -90,7 +90,7 @@ export class DepositCoinsController {
       const task: google.cloud.tasks.v2.ITask = {
         httpRequest: {
           httpMethod: 'POST' as Method,
-          url: `https://backoffice-api-1039762081728.us-central1.run.app/disruptive/completed-transaction-casino`,
+          url: `https://backoffice-api-1039762081728.us-central1.run.app/v1/disruptive/completed-transaction-casino`,
           headers: {
             'Content-Type': 'application/json',
           },
@@ -100,6 +100,6 @@ export class DepositCoinsController {
       await addToQueue(task, getPathQueue('disruptive-complete'));
     }
 
-    return validation.confirmed ? transaction.get('status') : 'NO';
+    return validation.confirmed ? transaction.status : 'NO';
   }
 }

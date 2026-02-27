@@ -1,10 +1,10 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import Decimal from 'decimal.js';
+import { v4 as uuidv4 } from 'uuid';
 
 import { UserTopupDto } from './dto/user-topup.dto';
 import { PrismaService } from 'libs/db/src/prisma.service';
 import { WalletService } from '@domain/wallet/wallet.service';
-import { CURRENCY } from 'libs/shared/src/currency';
 
 @Injectable()
 export class TopupService {
@@ -14,11 +14,12 @@ export class TopupService {
   ) {}
 
   async directTopup(userId: string, dto: UserTopupDto) {
-    // Gate por entorno/flag para que no sea “dinero gratis” en prod.
+    // Gate por entorno/flag para que no sea "dinero gratis" en prod.
     if (process.env.ENABLE_DIRECT_TOPUP !== 'true') {
       throw new ForbiddenException('Topup directo no habilitado');
     }
 
+    const currency = await this.wallet.getUserWalletCurrency(userId);
     const idk = dto.idempotencyKey ?? `USER_TOPUP|${userId}|${Date.now()}`;
 
     // Idempotencia: si ya registramos ese topup, devolvemos el resultado previo
@@ -29,19 +30,19 @@ export class TopupService {
 
     if (existing) {
       const bal = await this.prisma.wallet.findFirst({
-        where: { userId, currency: CURRENCY },
+        where: { userId, currency },
         select: { balance: true },
       });
       return {
         status: 'SUCCEEDED',
         amount: Number(existing.amount),
-        currency: CURRENCY,
+        currency,
         balance: bal ? Number(bal.balance) : 0,
         idempotencyKey: idk,
       };
     }
 
-    // Aplica crédito y registra Topup en una transacción atómica
+    // Aplica credito y registra Topup en una transaccion atomica
     const balance = await this.prisma.$transaction(async (tx) => {
       const newBal = await this.wallet.credit(
         {
@@ -51,14 +52,15 @@ export class TopupService {
           idempotencyKey: idk,
           meta: { note: dto.note ?? null, actor: 'client-api' },
         },
-        tx, // usa misma transacción
+        tx,
       );
 
       await tx.topup.create({
         data: {
+          id: uuidv4(),
           userId,
           amount: new Decimal(dto.amount),
-          currency: CURRENCY as any,
+          currency,
           status: 'SUCCEEDED',
           provider: 'DIRECT',
           idempotencyKey: idk,
@@ -71,7 +73,7 @@ export class TopupService {
     return {
       status: 'SUCCEEDED',
       amount: dto.amount,
-      currency: CURRENCY,
+      currency,
       balance: balance.toString(),
       idempotencyKey: idk,
     };

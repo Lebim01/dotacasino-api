@@ -1,10 +1,13 @@
 import { Controller, Get, Post } from '@nestjs/common';
 import { AppService } from './app.service';
-import { db } from './firebase/admin';
+import { PrismaService } from 'libs/db/src/prisma.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private readonly appService: AppService,
+    private readonly prisma: PrismaService,
+  ) {}
 
   @Get()
   getHello(): string {
@@ -13,9 +16,6 @@ export class AppController {
 
   @Post('')
   async remove() {
-    const docs = await db.collectionGroup('ipn').get();
-    for (const d of docs.docs) {
-      await d.ref.delete();
-    }
+    await this.prisma.ipnLog.deleteMany({});
   }
 }

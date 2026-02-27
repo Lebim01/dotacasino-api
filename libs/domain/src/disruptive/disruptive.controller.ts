@@ -18,7 +18,6 @@ import {
 } from './dto/transaction.dto';
 import { CasinoService } from '../casino/casino.service';
 import { google } from '@google-cloud/tasks/build/protos/protos';
-import { db } from 'apps/backoffice-api/src/firebase/admin';
 import {
   addToQueue,
   getPathQueue,
@@ -30,6 +29,7 @@ import { Roles } from '@security/roles.decorator';
 import { USER_ROLES } from 'apps/backoffice-api/src/auth/auth.constants';
 import { CurrentUser } from '@security/current-user.decorator';
 import { WalletService } from '@domain/wallet/wallet.service';
+import { PrismaService } from 'libs/db/src/prisma.service';
 
 @Controller('disruptive')
 export class DisruptiveController {
@@ -37,7 +37,8 @@ export class DisruptiveController {
     private readonly nodePaymentsService: NodePaymentsService,
     private readonly casinoService: CasinoService,
     private readonly walletService: WalletService,
-  ) {}
+    private readonly prisma: PrismaService,
+  ) { }
 
   @Post('create-transaction-deposit')
   @ApiBearerAuth('access-token')
@@ -46,14 +47,6 @@ export class DisruptiveController {
     @CurrentUser() { userId }: { userId: string },
     @Body() body: CreateDepositDto,
   ) {
-    // This was DisruptiveService.createDeposit, which doesn't seem to have a direct equivalent in my added methods yet.
-    // However, NodePaymentsService.createAddress is the base.
-    // DisruptiveService.createDeposit used 'BSC' and stored in disruptive-academy.
-    // I added createMembershipTransaction which uses disruptive-academy.
-    // Let's assume for now we use createMembershipTransaction with a 'deposit' type if needed, 
-    // or I should add createDepositTransaction.
-    // Actually, I'll use createMembershipTransaction for now or add createDepositTransaction.
-    // Let's add createDepositTransaction to NodePaymentsService first.
     return this.nodePaymentsService.createMembershipTransaction(userId, 'deposit', 'BSC', body.amount);
   }
 
@@ -61,18 +54,18 @@ export class DisruptiveController {
   async completedtransactiondeposit(
     @Body() body: CompleteTransactionDisruptiveCasinoDto,
   ) {
-    const res = await db
-      .collection('node-payments')
-      .where('address', '==', body.address)
-      .where('type', '==', 'academy')
-      .where('status', '==', 'pending')
-      .get()
-      .then((r: any) => (r.empty ? null : r.docs[0]));
+    const res = await this.prisma.nodePayment.findFirst({
+      where: {
+        address: body.address,
+        type: 'academy',
+        status: 'pending',
+      },
+    });
 
     if (res) {
-      await res.ref.update({
-        status: 'completed',
-        completed_at: new Date(),
+      await this.prisma.nodePayment.update({
+        where: { id: res.id },
+        data: { status: 'completed', completedAt: new Date() },
       });
     }
     return 'OK';
@@ -82,18 +75,18 @@ export class DisruptiveController {
   async completedtransactionmembership(
     @Body() body: CompleteTransactionDisruptiveCasinoDto,
   ) {
-    const res = await db
-      .collection('node-payments')
-      .where('address', '==', body.address)
-      .where('type', '==', 'academy')
-      .where('status', '==', 'pending')
-      .get()
-      .then((r: any) => (r.empty ? null : r.docs[0]));
+    const res = await this.prisma.nodePayment.findFirst({
+      where: {
+        address: body.address,
+        type: 'academy',
+        status: 'pending',
+      },
+    });
 
     if (res) {
-      await res.ref.update({
-        status: 'completed',
-        completed_at: new Date(),
+      await this.prisma.nodePayment.update({
+        where: { id: res.id },
+        data: { status: 'completed', completedAt: new Date() },
       });
     }
     return 'OK';
@@ -141,7 +134,7 @@ export class DisruptiveController {
   ) {
     const balance = await this.walletService.getBalance(user.userId);
     const pending = await this.walletService.getPendingAmount(user.userId);
-    if (balance >= body.amount + pending) {
+    if (Number(balance) >= body.amount + Number(pending)) {
       await this.nodePaymentsService.requestWithdraw(
         user.userId,
         body.amount,
@@ -164,14 +157,16 @@ export class DisruptiveController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(USER_ROLES.ADMIN)
   async createwithdrawqr(@Body() body: ApproveWithdraw) {
-    const transactions = [];
+    const transactions: { id: string; address: string; amount: number }[] = [];
     for (const id of body.ids) {
-      const d = await db.collection('node-payments').doc(id).get();
-      transactions.push({
-        id: d.id,
-        address: d.get('address'),
-        amount: d.get('amount'),
-      } as never);
+      const doc = await this.prisma.nodePayment.findUnique({ where: { id } });
+      if (doc) {
+        transactions.push({
+          id: doc.id,
+          address: doc.address ?? '',
+          amount: Number(doc.amount),
+        });
+      }
     }
 
     const res = await this.nodePaymentsService.sendWithdraw(transactions);
@@ -189,23 +184,18 @@ export class DisruptiveController {
   @Roles(USER_ROLES.ADMIN)
   async approvedwithdraw(@Body() body: ApproveWithdraw) {
     for (const id of body.ids) {
-      const transaction = await db
-        .collection('node-payments')
-        .doc(id)
-        .get();
+      const transaction = await this.prisma.nodePayment.findUnique({ where: { id } });
+      if (!transaction) continue;
 
-      const user_id = transaction.get('user_id');
-      const amount = transaction.get('amount');
-
-      await transaction.ref.update({
-        status: 'approved',
-        approved_at: new Date(),
+      await this.prisma.nodePayment.update({
+        where: { id },
+        data: { status: 'approved', completedAt: new Date() },
       });
 
       await this.walletService.debit({
-        amount,
+        amount: Number(transaction.amount),
         reason: 'WITHDRAW',
-        userId: user_id,
+        userId: transaction.userId ?? '',
         idempotencyKey: transaction.id,
       });
     }
@@ -220,7 +210,7 @@ export class DisruptiveController {
     if (!transaction) throw new HttpException('not found', 401);
 
     const validation = await this.nodePaymentsService.validateStatus(
-      transaction.get('network'),
+      transaction.network as any,
       body.address,
     );
 
@@ -238,25 +228,25 @@ export class DisruptiveController {
     if (!transaction) throw new HttpException('not found', 401);
 
     const validation = await this.nodePaymentsService.validateStatus(
-      transaction.get('network'),
+      transaction.network as any,
       body.address,
     );
 
     if (validation.confirmed) {
-      if (transaction.get('status') != 'completed') {
-        await transaction.ref.update({
-          status: 'completed',
-          completed_at: new Date(),
+      if (transaction.status !== 'completed') {
+        await this.prisma.nodePayment.update({
+          where: { id: transaction.id },
+          data: { status: 'completed', completedAt: new Date() },
         });
 
         await this.walletService.credit({
-          amount: transaction.get('amount'),
+          amount: Number(transaction.amount),
           reason: 'USER_TOPUP',
-          userId: transaction.get('user_id'),
+          userId: transaction.userId ?? '',
           meta: {
             txid: transaction.id,
-            address: transaction.get('address'),
-            network: transaction.get('network'),
+            address: transaction.address,
+            network: transaction.network,
           },
           idempotencyKey: transaction.id,
         });
@@ -275,7 +265,7 @@ export class DisruptiveController {
     if (!transaction) throw new HttpException('not found', 401);
 
     const validation = await this.nodePaymentsService.validateStatus(
-      transaction.get('network'),
+      transaction.network as any,
       body.address,
     );
 
@@ -284,7 +274,7 @@ export class DisruptiveController {
       const task: google.cloud.tasks.v2.ITask = {
         httpRequest: {
           httpMethod: 'POST' as Method,
-          url: `https://backoffice-api-1039762081728.us-central1.run.app/disruptive/completed-transaction-casino`,
+          url: `https://backoffice-api-1039762081728.us-central1.run.app/v1/disruptive/completed-transaction-casino`,
           headers: {
             'Content-Type': 'application/json',
           },
@@ -294,7 +284,7 @@ export class DisruptiveController {
       await addToQueue(task, getPathQueue('disruptive-complete'));
     }
 
-    return validation.confirmed ? transaction.get('status') : 'NO';
+    return validation.confirmed ? transaction.status : 'NO';
   }
 
   @Get('get-withdraw-casino')

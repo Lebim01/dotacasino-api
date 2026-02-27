@@ -4,7 +4,6 @@ import {
   Body,
   Get,
   UseGuards,
-  Request,
   Param,
   Delete,
 } from '@nestjs/common';
@@ -12,30 +11,40 @@ import {
   ApiBearerAuth,
   ApiExcludeEndpoint,
   ApiOperation,
+  ApiTags,
 } from '@nestjs/swagger';
 import { USER_ROLES } from '../auth/auth.constants';
 import { BinaryService } from '../binary/binary.service';
-import { db } from '../firebase/admin';
+import { PrismaService } from 'libs/db/src/prisma.service';
 import { JwtAuthGuard } from '@security/jwt.guard';
 import { Roles } from '@security/roles.decorator';
 import { CurrentUser } from '@security/current-user.decorator';
 
+@ApiTags('Binary Tree')
 @Controller('binary')
 export class BinaryController {
-  constructor(private readonly binaryService: BinaryService) {}
+  constructor(
+    private readonly binaryService: BinaryService,
+    private readonly prisma: PrismaService,
+  ) { }
 
   @ApiExcludeEndpoint()
   @Post('/corte-manual')
-  @ApiOperation({ summary: '[ADMIN]' })
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  @Roles(USER_ROLES.ADMIN)
+  @ApiOperation({ summary: '[ADMIN] Process binary matching for users with points on both sides' })
   async cortemanual() {
-    const users = await db
-      .collection('users')
-      .where('left_points', '>', 0)
-      .where('right_points', '>', 0)
-      .get();
+    const users = await this.prisma.user.findMany({
+      where: {
+        leftPoints: { gt: 0 },
+        rightPoints: { gt: 0 },
+      },
+      select: { id: true },
+    });
 
     const response = await Promise.allSettled(
-      users.docs.map((u) => this.binaryService.matchBinaryPoints(u.id)),
+      users.map((u) => this.binaryService.matchBinaryPoints(u.id)),
     );
 
     console.log('corte binario manual', response);
@@ -48,7 +57,7 @@ export class BinaryController {
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   @Roles(USER_ROLES.ADMIN)
-  @ApiOperation({ summary: '[ADMIN]' })
+  @ApiOperation({ summary: '[ADMIN] Match binary points for a specific user' })
   async matchPoints(@Body() body: { userId: string }) {
     await this.binaryService.matchBinaryPoints(body.userId);
     return { success: true, message: 'Points matched successfully.' };
@@ -59,7 +68,7 @@ export class BinaryController {
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   @Roles(USER_ROLES.ADMIN)
-  @ApiOperation({ summary: '[ADMIN]' })
+  @ApiOperation({ summary: '[ADMIN] Manually increase binary points' })
   async payBinary(@Body() body: { registerUserId: string; points: number }) {
     if (!body.registerUserId) throw new Error('registerUserId required');
     if (!body.points) throw new Error('points required');
@@ -81,6 +90,10 @@ export class BinaryController {
   }
 
   @Delete('delete-points')
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  @Roles(USER_ROLES.ADMIN)
+  @ApiOperation({ summary: '[ADMIN] Delete expired binary points' })
   deletepoints() {
     return this.binaryService.deleteExpiredPoints();
   }

@@ -68,46 +68,6 @@ export class AdminController {
     return this.adminService.payReward(body.percent / 100);
   }
 
-  @ApiOperation({ summary: 'Exec coinpyaments with volumen' })
-  @Post('coinpayments-process-transaction')
-  @ApiBearerAuth('access-token')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(USER_ROLES.ADMIN)
-  processtransaction(@Body() body: ProcessTransaction) {
-    return this.adminService.coinpaymentsProcessTransaction(body.txn_id);
-  }
-
-  @ApiOperation({ summary: 'Exec coinpyaments without volumen' })
-  @Post('coinpayments-process-transaction-without-volumen')
-  @ApiBearerAuth('access-token')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(USER_ROLES.ADMIN)
-  processtransactionwithoutvolumen(@Body() body: ProcessTransaction) {
-    return this.adminService.coinpaymentsProcessTransactionWithoutVolumen(
-      body.txn_id,
-    );
-  }
-
-  @ApiOperation({ summary: 'Exec coinpyaments with volumen' })
-  @Post('disruptive-process-transaction')
-  @ApiBearerAuth('access-token')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(USER_ROLES.ADMIN)
-  disruptiveprocesstransaction(@Body() body: ProcessTransaction) {
-    return this.adminService.disruptiveProcessTransaction(body.txn_id);
-  }
-
-  @ApiOperation({ summary: 'Exec coinpyaments without volumen' })
-  @Post('disruptive-process-transaction-without-volumen')
-  @ApiBearerAuth('access-token')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(USER_ROLES.ADMIN)
-  disruptiveprocesstransactionwithoutvolumen(@Body() body: ProcessTransaction) {
-    return this.adminService.disruptiveProcessTransactionWithoutVolumen(
-      body.txn_id,
-    );
-  }
-
   @ApiOperation({ summary: 'Get pending withdraws' })
   @Get('withdraws')
   @ApiBearerAuth('access-token')
@@ -141,7 +101,7 @@ export class AdminController {
   async addpoints(@Body() body: AddPointsDTO) {
     const user = await this.authService.getUserByEmail(body.email);
     if (user) {
-      return this.adminService.addPoints(user.uid, body.side, body.points);
+      return this.adminService.addPoints(user.id, body.side, body.points);
     }
 
     throw new HttpException('User not exists', 401);

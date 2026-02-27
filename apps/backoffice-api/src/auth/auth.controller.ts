@@ -13,7 +13,7 @@ import { Roles } from '@security/roles.decorator';
 import { AuthCommonService } from '@domain/auth/auth.service';
 import { RegisterDto } from '@domain/auth/dto/register.dto';
 import { LoginDto } from '@domain/auth/dto/login.dto';
-import { db } from '../firebase/admin';
+import { PrismaService } from 'libs/db/src/prisma.service';
 
 @ApiTags('Authentication & Authorization')
 @Controller('auth')
@@ -21,6 +21,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly authCommonService: AuthCommonService,
+    private readonly prisma: PrismaService,
   ) { }
 
   @Post('register')
@@ -61,12 +62,11 @@ export class AuthController {
 
   @Post('test')
   async test() {
-    const users = await db
-      .collection('users')
-      .orderBy('created_at', 'asc')
-      .get();
-    for (const u of users.docs) {
-      const parent_id = u.get('parent_binary_user_id');
+    const users = await this.prisma.user.findMany({
+      orderBy: { createdAt: 'asc' },
+    });
+    for (const u of users) {
+      const parent_id = u.parentBinaryUserId;
       if (!parent_id && u.id != '4h3b3ZGUXw8n3xUSZT6d') {
         console.log(u.id);
       }

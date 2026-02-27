@@ -1,60 +1,62 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import dayjs from 'dayjs';
-import { firestore } from 'firebase-admin';
-import { AuthService } from '../auth/auth.service';
 import { BondsService } from '../bonds/bonds.service';
-import { CoinpaymentsService } from '../coinpayments/coinpayments.service';
 import { ADMIN_USER } from '../constants';
-import { db } from '../firebase/admin';
-import { dateToString } from '../utils/firebase';
 import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
+import { PrismaService } from 'libs/db/src/prisma.service';
+import Decimal from 'decimal.js';
 
 @Injectable()
 export class AdminService {
   constructor(
     private readonly bondsService: BondsService,
-    private readonly coinPaymentsService: CoinpaymentsService,
     private readonly authAcademyService: AuthAcademyService,
+    private readonly prisma: PrismaService,
   ) {}
 
   async activationsWithVolumen() {
-    const snap = await db
-      .collection('admin-activations-with-volume')
-      .orderBy('created_at', 'desc')
-      .get();
+    const logs = await this.prisma.adminLog.findMany({
+      where: { type: 'activation-volume' },
+      orderBy: { createdAt: 'desc' },
+    });
 
-    return snap.docs.map((r) => ({ id: r.id, ...r.data() }));
+    return logs.map((r) => ({ 
+      id: r.id, 
+      ...(r.data as any),
+      created_at: r.createdAt 
+    }));
   }
 
   async getEstimatedPayRewards() {
     const year = dayjs().year();
     const year_week = dayjs().isoWeek();
 
-    const history = await db
-      .collection('admin-pay-rewards')
-      .doc(`${year}-${year_week}`)
-      .get();
+    const history = await this.prisma.adminRewardPayment.findUnique({
+      where: { id: `${year}-${year_week}` },
+    });
 
-    if (history.exists) {
+    if (history) {
       return {
         status: 'paid',
-        percent: history.get('percent'),
-        total: history.get('total'),
+        percent: Number(history.percent),
+        total: Number(history.total),
       };
     }
 
-    const users_to_pay = await db
-      .collectionGroup('rewards')
-      .where('year', '==', year)
-      .where('year_week', '==', year_week)
-      .where('compound_interest', '==', false)
-      .get();
+    const rewards_to_pay = await this.prisma.reward.findMany({
+      where: {
+        year,
+        year_week,
+        compoundInterest: false,
+        status: 'pending',
+      },
+    });
 
     return {
       status: 'pending',
       percent: null,
       total:
-        users_to_pay.docs.reduce((a, b) => a + b.get('deposit_amount'), 0) *
+        rewards_to_pay.reduce((a, b) => a + Number(b.depositAmount), 0) *
         0.02,
     };
   }
@@ -66,24 +68,28 @@ export class AdminService {
       const date = dayjs().add(i, 'week');
       const year = date.year();
       const year_week = date.isoWeek();
-      const users_to_pay = await db
-        .collectionGroup('rewards')
-        .where('year', '==', year)
-        .where('year_week', '==', year_week)
-        .where('compound_interest', '==', false)
-        .get();
+      
+      const rewards_to_pay = await this.prisma.reward.findMany({
+        where: {
+          year,
+          year_week,
+          compoundInterest: false,
+          status: 'pending',
+        },
+      });
+
+      const totalVolumen = rewards_to_pay.reduce(
+        (a, b) => a + Number(b.depositAmount),
+        0,
+      );
+
       data.push({
         year,
         week: year_week,
         start_at: date.startOf('week').toISOString(),
         ends_at: date.endOf('week').toISOString(),
-        volumen: users_to_pay.docs.reduce(
-          (a, b) => a + b.get('deposit_amount'),
-          0,
-        ),
-        total:
-          users_to_pay.docs.reduce((a, b) => a + b.get('deposit_amount'), 0) *
-          0.02,
+        volumen: totalVolumen,
+        total: totalVolumen * 0.02,
       } as never);
     }
 
@@ -93,24 +99,25 @@ export class AdminService {
   async getPayRewards() {
     const year = dayjs().year();
     const year_week = dayjs().isoWeek();
-    const users_to_pay = await db
-      .collectionGroup('rewards')
-      .where('year', '==', year)
-      .where('year_week', '==', year_week)
-      .where('compound_interest', '==', false)
-      .get();
+    
+    const rewards_to_pay = await this.prisma.reward.findMany({
+      where: {
+        year,
+        year_week,
+        compoundInterest: false,
+        status: 'pending',
+      },
+      include: {
+        deposit: true,
+        user: true,
+      },
+    });
 
-    return Promise.all(
-      users_to_pay.docs.map(async (r) => {
-        const deposit = await r.ref.parent.parent!.get();
-        const user = await deposit.ref.parent.parent!.get();
-        return {
-          deposits: deposit.get('amount'),
-          name: user.get('name'),
-          email: user.get('email'),
-        };
-      }),
-    );
+    return rewards_to_pay.map((r) => ({
+      deposits: Number(r.deposit.amount),
+      name: r.user.displayName,
+      email: r.user.email,
+    }));
   }
 
   async payReward(percent: number) {
@@ -119,415 +126,296 @@ export class AdminService {
     const year = dayjs().year();
     const year_week = dayjs().isoWeek();
 
-    const users_to_pay = await db
-      .collectionGroup('rewards')
-      .where('year', '==', year)
-      .where('year_week', '==', year_week)
-      .where('compound_interest', '==', false)
-      .get();
-
-    const batch = db.batch();
-
-    const rewardRef = db
-      .collection('admin-pay-rewards')
-      .doc(`${year}-${year_week}`);
+    const rewards_to_pay = await this.prisma.reward.findMany({
+      where: {
+        year,
+        year_week,
+        compoundInterest: false,
+        status: 'pending',
+      },
+      include: {
+        deposit: true,
+        user: true,
+      },
+    });
 
     let total = 0;
 
-    for (const d of users_to_pay.docs) {
-      const deposit = await d.ref.parent.parent!.get();
-      const user_id = deposit.ref.parent.parent!.id;
-      const user = await deposit.ref.parent.parent!.get();
-      const amount = deposit.get('amount') * percent;
-      total += amount;
-      batch.update(d.ref, {
-        status: 'paid',
-        amount,
-        compound_interest: false,
-      });
-      batch.update(deposit.ref, {
-        rewards_balance: firestore.FieldValue.increment(amount),
-      });
-      batch.create(rewardRef.collection('users').doc(), {
-        deposit_id: deposit.id,
-        user_id,
-        user_name: user.get('name'),
-        user_email: user.get('email'),
-        amount,
-      });
+    // Usamos una transacción para asegurar consistencia
+    await this.prisma.$transaction(async (tx) => {
+      for (const r of rewards_to_pay) {
+        const amount = Number(r.deposit.amount) * percent;
+        total += amount;
 
-      await this.bondsService.execReward(user_id, amount, {
-        percent,
-        deposit_id: deposit.id,
-        reward_id: d.id,
-      });
-    }
+        // Update reward status
+        await tx.reward.update({
+          where: { id: r.id },
+          data: {
+            status: 'paid',
+            amount: new Decimal(amount),
+            compoundInterest: false,
+          },
+        });
 
-    batch.set(rewardRef, {
-      created_at: new Date(),
-      percent,
-      total,
-      status: 'paid',
-      year,
-      week: year_week,
-    });
+        // Update deposit rewards focus
+        await tx.deposit.update({
+          where: { id: r.depositId },
+          data: {
+            rewardsPending: { increment: amount },
+          },
+        });
 
-    await batch.commit();
-  }
+        // Log the reward payment for the user
+        await tx.adminLog.create({
+          data: {
+            type: 'reward-payment-detail',
+            userId: r.userId,
+            targetId: r.depositId,
+            data: {
+              reward_id: r.id,
+              user_name: r.user.displayName,
+              user_email: r.user.email,
+              amount,
+            },
+          },
+        });
 
-  async coinpaymentsProcessTransaction(txn_id: string) {
-    const transaction = await db.collection('coinpayments').doc(txn_id).get();
-
-    if (!transaction.exists) throw new Error('not found');
-
-    await db.collection('admin-process-transaction').add({
-      txn_id,
-      created_at: new Date(),
-      volumen: true,
-    });
-
-    try {
-      await transaction.ref.update({
-        payment_status: 'admin-activation',
-        volumen: true,
-      });
-
-      /**
-       * Get document
-       */
-      if (transaction.get('type') == 'membership') {
-        // activar membresia
-        await this.coinPaymentsService.sendActiveMembership(txn_id);
-      } else if (transaction.get('type') == 'deposit') {
-        // sumar deposito
-        await this.coinPaymentsService.sendActiveDeposit(txn_id);
+        // Execute bond logic
+        await this.bondsService.execReward(r.userId, amount, {
+          percent,
+          deposit_id: r.depositId,
+          reward_id: r.id,
+        });
       }
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  }
 
-  async coinpaymentsProcessTransactionWithoutVolumen(txn_id: string) {
-    const transaction = await db.collection('coinpayments').doc(txn_id).get();
-
-    if (!transaction.exists) throw new Error('not found');
-
-    await db.collection('admin-process-transaction').add({
-      txn_id,
-      created_at: new Date(),
-      volumen: false,
-    });
-
-    try {
-      await transaction.ref.update({
-        payment_status: 'admin-activation',
-        volumen: false,
+      // Final payment log
+      await tx.adminRewardPayment.create({
+        data: {
+          id: `${year}-${year_week}`,
+          percent: new Decimal(percent),
+          total: new Decimal(total),
+          status: 'paid',
+          year,
+          week: year_week,
+        },
       });
-
-      /**
-       * Get document
-       */
-      if (transaction.get('type') == 'membership') {
-        // activar membresia
-        await this.coinPaymentsService.sendActiveMembership(txn_id);
-      } else if (transaction.get('type') == 'deposit') {
-        // sumar deposito
-        await this.coinPaymentsService.sendActiveDeposit(txn_id);
-      }
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  }
-
-  async disruptiveProcessTransaction(txn_id: string) {
-    const transaction = await db.collection('node-payments').doc(txn_id).get();
-
-    if (!transaction.exists) throw new Error('not found');
-
-    await db.collection('admin-process-transaction').add({
-      txn_id,
-      created_at: new Date(),
-      volumen: true,
     });
-
-    try {
-      await transaction.ref.update({
-        payment_status: 'admin-activation',
-        volumen: true,
-      });
-
-      /**
-       * Get document
-       */
-      if (transaction.get('type') == 'membership') {
-        // activar membresia
-        await this.coinPaymentsService.sendActiveMembership(txn_id);
-      } else if (transaction.get('type') == 'deposit') {
-        // sumar deposito
-        await this.coinPaymentsService.sendActiveDeposit(txn_id);
-      }
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  }
-
-  async disruptiveProcessTransactionWithoutVolumen(txn_id: string) {
-    const transaction = await db.collection('node-payments').doc(txn_id).get();
-
-    if (!transaction.exists) throw new Error('not found');
-
-    await db.collection('admin-process-transaction').add({
-      txn_id,
-      created_at: new Date(),
-      volumen: false,
-    });
-
-    try {
-      await transaction.ref.update({
-        payment_status: 'admin-activation',
-        volumen: false,
-      });
-
-      /**
-       * Get document
-       */
-      if (transaction.get('type') == 'membership') {
-        // activar membresia
-        await this.coinPaymentsService.sendActiveMembership(txn_id);
-      } else if (transaction.get('type') == 'deposit') {
-        // sumar deposito
-        await this.coinPaymentsService.sendActiveDeposit(txn_id);
-      }
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
   }
 
   async withdraws() {
-    const pending_withdraw = await db
-      .collection('requests-withdraw')
-      .where('status', '==', 'pending')
-      .get();
+    const pending_withdraw = await this.prisma.withdrawalRequest.findMany({
+      where: { status: 'pending' },
+      include: { user: true },
+    });
 
-    return Promise.all(
-      pending_withdraw.docs.map(async (r) => {
-        const user = await db.collection('users').doc(r.get('id_user')).get();
-        return {
-          id: r.id,
-          id_user: r.get('id_user'),
-          name: user.get('name'),
-          email: user.get('email'),
-          amount: r.get('amount'),
-          created_at: dateToString(r.get('created_at')),
-          wallet_usdt: r.get('wallet_usdt'),
-          type: r.get('type'),
-          deposit_id: r.get('deposit_id'),
-        };
-      }),
-    );
+    return pending_withdraw.map((r) => ({
+      id: r.id,
+      id_user: r.userId,
+      name: r.user.displayName,
+      email: r.user.email,
+      amount: Number(r.amount),
+      created_at: r.createdAt.toISOString(),
+      wallet_usdt: r.walletUsdt,
+      type: r.type,
+      deposit_id: r.depositId,
+    }));
   }
 
   async historyAdminActivationWithVolumen() {
-    const snap = await db
-      .collection('admin-activations-with-volume')
-      .orderBy('created_at', 'desc')
-      .get();
+    const logs = await this.prisma.adminLog.findMany({
+      where: { type: 'activation-volume' },
+      orderBy: { createdAt: 'desc' },
+    });
 
-    return snap.docs.map((r) => ({
+    return logs.map((r) => ({
       id: r.id,
-      ...r.data(),
-      created_at: dateToString(r.get('created_at')),
+      ...(r.data as any),
+      created_at: r.createdAt.toISOString(),
     }));
   }
 
   async historyAdminActivationWithoutVolumen() {
-    const snap = await db
-      .collection('admin-activations')
-      .orderBy('created_at', 'desc')
-      .get();
+    const logs = await this.prisma.adminLog.findMany({
+      where: { type: 'activation-no-volume' },
+      orderBy: { createdAt: 'desc' },
+    });
 
-    return snap.docs.map((r) => ({
+    return logs.map((r) => ({
       id: r.id,
-      ...r.data(),
-      created_at: dateToString(r.get('created_at')),
+      ...(r.data as any),
+      created_at: r.createdAt.toISOString(),
     }));
   }
 
   async addPoints(id_user: string, side: 'left' | 'right', points: number) {
-    const batch = db.batch();
-
-    const user = await db.collection('users').doc(id_user).get();
-
-    batch.create(db.collection('history-admin-add-points').doc(), {
-      created_at: new Date(),
-      points,
-      side,
-      id_user,
-      name: user.get('name'),
+    const user = await this.prisma.user.findUnique({
+      where: { id: id_user },
     });
+    if (!user) throw new Error('User not found');
 
-    batch.create(
-      db.collection('users').doc(id_user).collection('points').doc(),
-      {
-        created_at: new Date(),
-        points,
-        side,
-        added_by_admin: true,
-      },
-    );
+    await this.prisma.$transaction(async (tx) => {
+      await tx.adminLog.create({
+        data: {
+          type: 'add-points',
+          userId: id_user,
+          data: {
+            points,
+            side,
+            name: user.displayName,
+          },
+        },
+      });
 
-    batch.create(
-      db.collection('users').doc(id_user).collection(`${side}-points`).doc(),
-      {
-        user_id: ADMIN_USER,
-        email: user.get('email'),
-        starts_at: new Date(),
-        points,
-        name: 'ADMIN',
-        expires_at: dayjs().add(3, 'years').toDate(),
-        added_by_admin: true,
-      },
-    );
+      // BinaryPoint history
+      await tx.binaryPoint.create({
+        data: {
+          userId: id_user,
+          points: new Decimal(points),
+          side,
+          type: 'history',
+          concept: 'Added by Admin',
+        },
+      });
 
-    await batch.commit();
+      // BinaryPoint matching (to be used in matching logic)
+      await tx.binaryPoint.create({
+        data: {
+          userId: id_user,
+          points: new Decimal(points),
+          side,
+          type: 'matching',
+          concept: 'Added by Admin',
+          expiresAt: dayjs().add(3, 'years').toDate(),
+          originName: 'ADMIN',
+          originUserId: ADMIN_USER,
+          originEmail: user.email,
+        },
+      });
+    });
   }
 
   async getHistoryAdminAddPoints() {
-    const snap = await db.collection('history-admin-add-points').get();
+    const logs = await this.prisma.adminLog.findMany({
+      where: { type: 'add-points' },
+      orderBy: { createdAt: 'desc' },
+    });
 
-    return snap.docs.map((r) => ({
+    return logs.map((r) => ({
       id: r.id,
-      ...r.data(),
+      ...(r.data as any),
+      created_at: r.createdAt.toISOString(),
     }));
   }
 
   async blockuser(email: string) {
-    const snap = await db.collection('users').where('email', '==', email).get();
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+    });
 
-    if (snap.empty) {
+    if (!user) {
       throw new HttpException('User not exists', 401);
     }
 
-    await snap.docs[0].ref.update({
-      status: 'banned',
-      is_banned: true,
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: {
+        membershipStatus: 'banned',
+      },
     });
   }
 
   async denyWithdraw(id_withdraw: string) {
-    const withdraw = await db
-      .collection('requests-withdraw')
-      .doc(id_withdraw)
-      .get();
-    const user = await db
-      .collection('users')
-      .doc(withdraw.get('id_user'))
-      .get();
-
-    const withdraw_amount = withdraw.get('amount');
-
-    const batch = db.batch();
-
-    batch.update(withdraw.ref, {
-      status: 'deny',
+    const withdraw = await this.prisma.withdrawalRequest.findUnique({
+      where: { id: id_withdraw },
     });
+    if (!withdraw) throw new Error('Withdrawal not found');
 
-    if (withdraw.get('type') == 'deposit') {
-      const deposit_ref = user.ref
-        .collection('deposits')
-        .doc(withdraw.get('deposit_id'));
-      batch.update(deposit_ref, {
-        rewards_pending: firestore.FieldValue.increment(withdraw_amount * -1),
+    await this.prisma.$transaction(async (tx) => {
+      await tx.withdrawalRequest.update({
+        where: { id: id_withdraw },
+        data: { status: 'deny' },
       });
-    } else {
-      batch.update(user.ref, {
-        [`pending_bond_${withdraw.get('type')}`]:
-          firestore.FieldValue.increment(withdraw_amount * -1),
-      });
-    }
 
-    await batch.commit();
+      const amount = Number(withdraw.amount);
+
+      if (withdraw.type == 'deposit' && withdraw.depositId) {
+        await tx.deposit.update({
+          where: { id: withdraw.depositId },
+          data: {
+            rewardsPending: { decrement: amount },
+          },
+        });
+      } else {
+        await tx.user.update({
+          where: { id: withdraw.userId },
+          data: {
+            [fieldBaseToPrisma(withdraw.type)]: { decrement: amount },
+          } as any,
+        });
+      }
+    });
   }
 
   async paidWithdraw(id_withdraw: string) {
-    const withdraw = await db
-      .collection('requests-withdraw')
-      .doc(id_withdraw)
-      .get();
-    const user = await db
-      .collection('users')
-      .doc(withdraw.get('id_user'))
-      .get();
-
-    const withdraw_amount = withdraw.get('amount');
-
-    const batch = db.batch();
-
-    batch.update(withdraw.ref, {
-      status: 'paid',
+    const withdraw = await this.prisma.withdrawalRequest.findUnique({
+      where: { id: id_withdraw },
     });
+    if (!withdraw) throw new Error('Withdrawal not found');
 
-    if (withdraw.get('type') == 'deposit') {
-      const deposit_ref = user.ref
-        .collection('deposits')
-        .doc(withdraw.get('deposit_id'));
-      batch.update(deposit_ref, {
-        rewards_pending: firestore.FieldValue.increment(withdraw_amount * -1),
-        rewards_balance: firestore.FieldValue.increment(withdraw_amount * -1),
+    await this.prisma.$transaction(async (tx) => {
+      await tx.withdrawalRequest.update({
+        where: { id: id_withdraw },
+        data: { status: 'paid' },
       });
-    } else {
-      batch.update(user.ref, {
-        [`pending_bond_${withdraw.get('type')}`]:
-          firestore.FieldValue.increment(withdraw_amount * -1),
-        [`balance_bond_${withdraw.get('type')}`]:
-          firestore.FieldValue.increment(withdraw_amount * -1),
-      });
-    }
 
-    await batch.commit();
+      const amount = Number(withdraw.amount);
+
+      if (withdraw.type == 'deposit' && withdraw.depositId) {
+        await tx.deposit.update({
+          where: { id: withdraw.depositId },
+          data: {
+            rewardsPending: { decrement: amount },
+            rewardsBalance: { decrement: amount },
+          },
+        });
+      } else {
+        await tx.user.update({
+          where: { id: withdraw.userId },
+          data: {
+            [fieldBaseToPrisma(withdraw.type)]: { decrement: amount },
+          } as any,
+        });
+      }
+    });
   }
 
   async coinpaymentsTransactions(page: number, limit: number) {
-    const query =
-      page > 1
-        ? db
-            .collection('coinpayments')
-            .where('payment_status', '==', 'paid')
-            .orderBy('created_at', 'desc')
-            .offset((page - 1) * limit)
-            .limit(limit)
-        : db
-            .collection('coinpayments')
-            .where('payment_status', '==', 'paid')
-            .orderBy('created_at', 'desc')
-            .limit(limit);
+    const skip = (page - 1) * limit;
 
-    const snap = await query.get();
-
-    const totalRecords = await db
-      .collection('coinpayments')
-      .where('payment_status', '==', 'paid')
-      .orderBy('created_at', 'desc')
-      .count()
-      .get();
+    const [transactions, totalCount] = await Promise.all([
+      this.prisma.nodePayment.findMany({
+        where: { paymentStatus: 'paid' },
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: limit,
+      }),
+      this.prisma.nodePayment.count({
+        where: { paymentStatus: 'paid' },
+      }),
+    ]);
 
     return {
-      pageRecords: snap.size,
-      totalPages: Math.ceil(totalRecords.data().count / limit),
-      totalRecords: totalRecords.data().count,
+      pageRecords: transactions.length,
+      totalPages: Math.ceil(totalCount / limit),
+      totalRecords: totalCount,
       data: await Promise.all(
-        snap.docs.map(async (r) => {
-          const user = await db.collection('users').doc(r.get('user_id')).get();
+        transactions.map(async (r) => {
+          const user = r.userId ? await this.prisma.user.findUnique({ where: { id: r.userId } }) : null;
           return {
-            id: r.id,
-            ...r.data(),
-            created_at: dateToString(r.get('created_at')),
-            user_email: user.get('email'),
-            user_name: user.get('name'),
+            ...r,
+            created_at: r.createdAt.toISOString(),
+            user_email: user?.email,
+            user_name: user?.displayName,
           };
         }),
       ),
@@ -535,50 +423,69 @@ export class AdminService {
   }
 
   async changeEmailUser(old_email: string, new_email: string) {
-    const email_exists = await db
-      .collection('users')
-      .where('email', '==', new_email)
-      .get();
+    const email_exists = await this.prisma.user.findUnique({
+      where: { email: new_email },
+    });
 
-    if (!email_exists.empty) {
+    if (email_exists) {
       throw new HttpException('email exists', 401);
     }
 
-    const user = await db
-      .collection('users')
-      .where('email', '==', old_email)
-      .get();
+    const user = await this.prisma.user.findUnique({
+      where: { email: old_email },
+    });
 
-    if (user.empty) {
+    if (!user) {
       throw new HttpException('user not exists', 401);
     }
 
-    await db.collection('admin-change-email').add({
-      created_at: new Date(),
-      old_email,
-      new_email,
-      user_id: user.docs[0].id,
+    await this.prisma.adminLog.create({
+      data: {
+        type: 'change-email',
+        userId: user.id,
+        data: { old_email, new_email },
+      },
     });
 
-    await user.docs[0].ref.update({
-      email: new_email,
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: { email: new_email },
     });
   }
 
   async changePasswordUser(email: string, password: string) {
-    const user = await db.collection('users').where('email', '==', email).get();
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+    });
 
-    if (user.empty) {
+    if (!user) {
       throw new HttpException('user not exists', 401);
     }
 
-    await db.collection('admin-change-password').add({
-      created_at: new Date(),
-      user_id: user.docs[0].id,
+    await this.prisma.adminLog.create({
+      data: {
+        type: 'change-password',
+        userId: user.id,
+      },
     });
 
-    await user.docs[0].ref.update({
-      password: await this.authAcademyService.getPassword(password),
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: {
+        passwordHash: await this.authAcademyService.getPassword(password),
+      },
     });
+  }
+}
+
+function fieldBaseToPrisma(type: string): string {
+  switch (type) {
+    case 'rank': return 'bondRank';
+    case 'direct': return 'bondDirect';
+    case 'binary': return 'bondBinary';
+    case 'rewards': return 'bondRewards';
+    case 'residual': return 'bondResidual';
+    case 'casino': return 'bondCasino';
+    default: return 'bondRewards';
   }
 }

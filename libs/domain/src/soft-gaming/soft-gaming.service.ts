@@ -5,6 +5,8 @@ import { RequestStatus } from '@prisma/client';
 import { MD5 } from 'crypto-js';
 import axios from 'axios';
 import * as fs from 'fs'
+import { resolveCurrencyByCountry } from 'libs/shared/src/currency';
+import { v4 as uuidv4 } from 'uuid';
 
 const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
@@ -40,6 +42,7 @@ export class SoftGamingService {
   async getTID() {
     const record = await this.prisma.softGamingRecords.create({
       data: {
+        id: uuidv4(),
         tid: randomString(),
         status: RequestStatus.PENDING,
       },
@@ -211,6 +214,8 @@ export class SoftGamingService {
       return null;
     }
 
+    const userCurrency = resolveCurrencyByCountry(user.country);
+
     type Params = {
       Login: string;
       Password: string;
@@ -237,7 +242,7 @@ export class SoftGamingService {
       Login: USER_LOGIN,
       Hash: HASH,
       UserAutoCreate: '1',
-      Currency: 'USD',
+      Currency: userCurrency,
     };
     const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/User/AuthHTML?Login=${params.Login}&Password=${params.Password}&System=${params.System}&Page=${params.Page}&UserIP=${params.UserIP}&TID=${tid}&Hash=${params.Hash}&Demo=0&UserAutoCreate=${params.UserAutoCreate || '0'}&Currency=${params.Currency}`;
     return axios
@@ -277,7 +282,12 @@ export class SoftGamingService {
       });
   }
 
-  async addUser(userId: string, userIp: string, userCountry: string, userPassword: string) {
+  async addUser(
+    userId: string,
+    userIp: string,
+    userCountry: string | undefined,
+    userPassword: string,
+  ) {
     type Params = {
       Login: string;
       Password: string;
@@ -287,17 +297,27 @@ export class SoftGamingService {
       Hash: string;
       Country?: string;
     }
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { country: true },
+    });
+
+    const resolvedCountry = userCountry ?? user?.country ?? '';
+    const resolvedCurrency = resolveCurrencyByCountry(resolvedCountry);
+
     const { tid, id } = await this.getTID();
     const USER_PASSWORD = userPassword;
-    const HASH = MD5(`User/Add/${SERVER_IP}/${tid}/${this.APIKEY}/${userId}/${USER_PASSWORD}/USD/${this.APIPASS}`).toString()
+    const HASH = MD5(
+      `User/Add/${SERVER_IP}/${tid}/${this.APIKEY}/${userId}/${USER_PASSWORD}/${resolvedCurrency}/${this.APIPASS}`,
+    ).toString()
     const params: Params = {
-      Currency: 'USD',
+      Currency: resolvedCurrency,
       Language: 'es',
       Password: USER_PASSWORD,
       RegistrationIP: toIPv4(userIp),
       Login: userId,
       Hash: HASH,
-      Country: userCountry
+      Country: resolvedCountry,
     }
     const url = `https://apitest.fundist.org/System/Api/${this.APIKEY}/User/Add?Login=${params.Login}&Password=${params.Password}&Currency=${params.Currency || ''}&RegistrationIP=${params.RegistrationIP}&Language=${params.Language || ''}&TID=${tid}&Hash=${params.Hash}&Country=${params.Country}`;
     return axios
@@ -448,7 +468,7 @@ export class SoftGamingService {
           title: g.Trans.en,
           thumbnailUrl: g.ImageFullPath,
           gameProviderId,
-          categories: {
+          Category: {
             set: [],
             connect: g.Categories.map((catId) => ({ externalId: catId })).filter(
               (c) => categoryMap[c.externalId!],
@@ -467,7 +487,7 @@ export class SoftGamingService {
           tags: [],
           thumbnailUrl: g.ImageFullPath,
           order: 0,
-          categories: {
+          Category: {
             connect: g.Categories.map((catId) => ({ externalId: catId })).filter(
               (c) => categoryMap[c.externalId!],
             ),
@@ -483,6 +503,7 @@ export class SoftGamingService {
           LowRtpMobileUrl: g.LowRtpMobileUrl,
           LowRtpUrlExternal: g.LowRtpUrlExternal,
           LowRtpMobileUrlExternal: g.LowRtpMobileUrlExternal,
+
         },
       });
       syncedCount++;

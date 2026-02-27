@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { HttpException, Injectable } from '@nestjs/common';
 import axios from 'axios';
-import { db } from 'apps/backoffice-api/src/firebase/admin';
-import { dateToString } from 'apps/backoffice-api/src/utils/firebase';
 import { Networks } from '@domain/disruptive/disruptive.service';
+import { PrismaService } from 'libs/db/src/prisma.service';
 
 export const disruptiveUrl = axios.create({
   baseURL: 'https://my.disruptivepayments.io',
@@ -22,16 +21,17 @@ const NETWORKS_ADDRESS: Record<Networks, string> = {
 
 @Injectable()
 export class DisruptiveService {
-  async getTransactionCasino(user_id: string) {
-    const docs = await db
-      .collection('node-payments')
-      .where('user_id', '==', user_id)
-      .where('type', '==', 'casino')
-      .where('category', '==', 'deposit')
-      .where('status', '==', 'pending')
-      .get();
+  constructor(private readonly prisma: PrismaService) {}
 
-    return docs.empty ? null : docs.docs[0].data();
+  async getTransactionCasino(user_id: string) {
+    return this.prisma.nodePayment.findFirst({
+      where: {
+        userId: user_id,
+        type: 'casino',
+        category: 'deposit',
+        status: 'pending',
+      },
+    });
   }
 
   async validateStatus(network: Networks, address: string) {
@@ -118,29 +118,26 @@ export class DisruptiveService {
   }
 
   async getWithdrawListAdmin() {
-    const docs = await db
-      .collection('node-payments')
-      .where('type', '==', 'casino')
-      .where('category', '==', 'withdraw')
-      .where('status', '==', 'pending')
-      .get();
+    const docs = await this.prisma.nodePayment.findMany({
+      where: {
+        type: 'casino',
+        category: 'withdraw',
+        status: 'pending',
+      },
+    });
 
-    return docs.docs.map((r: any) => ({
+    return docs.map((r) => ({
       id: r.id,
-      address: r.get('address'),
-      amount: r.get('amount'),
-      created_at: dateToString(r.get('created_at')),
-      user_id: r.get('user_id'),
+      address: r.address,
+      amount: Number(r.amount),
+      created_at: r.createdAt.toISOString(),
+      user_id: r.userId,
     }));
   }
 
   async getTransaction(address: string) {
-    const transaction = await db
-      .collection('node-payments')
-      .where('address', '==', address)
-      .where('status', '==', 'pending')
-      .get()
-      .then((r: any) => (r.empty ? null : r.docs[0]));
-    return transaction;
+    return this.prisma.nodePayment.findFirst({
+      where: { address, status: 'pending' },
+    });
   }
 }

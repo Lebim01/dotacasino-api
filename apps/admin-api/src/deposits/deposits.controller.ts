@@ -2,9 +2,19 @@ import { NodePaymentsService } from '@domain/node-payments/node-payments.service
 import { StdMexWebhookDto } from '@domain/stdmex/dto/webhook.dto';
 import { StdMexService } from '@domain/stdmex/stdmex.service';
 import { google } from '@google-cloud/tasks/build/protos/protos';
-import { Controller, Headers, Post, Body, Logger, HttpException } from '@nestjs/common';
+import {
+  Controller,
+  Headers,
+  Post,
+  Body,
+  Logger,
+  HttpException,
+} from '@nestjs/common';
 import { ApiProperty, ApiTags } from '@nestjs/swagger';
-import { addToQueue, getPathQueue } from 'apps/backoffice-api/src/googletask/utils';
+import {
+  addToQueue,
+  getPathQueue,
+} from 'apps/backoffice-api/src/googletask/utils';
 import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class NodePaymentsWebhookDto {
@@ -60,29 +70,24 @@ export class DepositsController {
   }
 
   @Post('node-payments/webhook')
-  async nodePaymentsWebhook(
-    @Body() body: NodePaymentsWebhookDto,
-  ) {
-    const transaction = await this.nodePayments.getTransaction(
-      body.tokenAddress,
-    );
+  async nodePaymentsWebhook(@Body() body: NodePaymentsWebhookDto) {
+    // getTransaction devuelve un NodePayment de Prisma (acceso directo por propiedad)
+    const transaction = await this.nodePayments.getTransaction(body.tokenAddress);
 
     if (!transaction) throw new HttpException('not found', 401);
 
     const validation = await this.nodePayments.validateStatus(
-      transaction.get('network'),
+      transaction.network as any,
       body.tokenAddress,
     );
 
-    if (validation.confirmed && transaction.get('type') === 'casino') {
+    if (validation.confirmed && transaction.type === 'casino') {
       type Method = 'POST';
       const task: google.cloud.tasks.v2.ITask = {
         httpRequest: {
           httpMethod: 'POST' as Method,
-          url: `https://backoffice-api-1039762081728.us-central1.run.app/disruptive/completed-transaction-casino`,
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          url: `https://backoffice-api-1039762081728.us-central1.run.app/v1/disruptive/completed-transaction-casino`,
+          headers: { 'Content-Type': 'application/json' },
           body: Buffer.from(
             JSON.stringify({
               txHash: body.txHash,
@@ -97,26 +102,23 @@ export class DepositsController {
       await addToQueue(task, getPathQueue('disruptive-complete'));
     }
 
-    if(validation.confirmed && transaction.get('type') === 'academy') {
+    if (validation.confirmed && transaction.type === 'academy') {
       type Method = 'POST';
-          const task: google.cloud.tasks.v2.ITask = {
-            httpRequest: {
-              httpMethod: 'POST' as Method,
-              url: `https://backoffice-api-1039762081728.us-central1.run.app/subscriptions/ipn`,
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: Buffer.from(
-                JSON.stringify({
-                  txn_id: transaction.id,
-                }),
-              ),
-            },
-          };
-      
-          await addToQueue(task, getPathQueue('active-user-membership'));
+      const task: google.cloud.tasks.v2.ITask = {
+        httpRequest: {
+          httpMethod: 'POST' as Method,
+          url: `https://backoffice-api-1039762081728.us-central1.run.app/v1/subscriptions/ipn`,
+          headers: { 'Content-Type': 'application/json' },
+          body: Buffer.from(
+            JSON.stringify({
+              txn_id: transaction.id,
+            }),
+          ),
+        },
+      };
+      await addToQueue(task, getPathQueue('active-user-membership'));
     }
 
-    return validation.confirmed ? transaction.get('status') : 'NO';
+    return validation.confirmed ? transaction.status : 'NO';
   }
 }

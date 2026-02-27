@@ -9,6 +9,7 @@ import { $Enums } from '@prisma/client';
 import { PrismaService } from 'libs/db/src/prisma.service';
 import { KYC_REQUIREMENTS } from './requirements';
 import { StorageService } from 'libs/storage/src/storage.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class KycService {
@@ -76,6 +77,7 @@ export class KycService {
         createdAt: true,
       },
       data: {
+        id: uuidv4(),
         userId,
         type: dto.type,
         storageKey,
@@ -83,6 +85,7 @@ export class KycService {
         country: dto.country,
         expiresAt: dto.expiresAt ? new Date(dto.expiresAt) : undefined,
         checksum,
+        updatedAt: new Date(),
       },
     });
   }
@@ -183,6 +186,7 @@ export class KycService {
           documentIds: body.documentIds,
           submittedAt: new Date(),
           decision: 'UNDER_REVIEW',
+          updatedAt: new Date(),
         },
       });
       await tx.user.update({

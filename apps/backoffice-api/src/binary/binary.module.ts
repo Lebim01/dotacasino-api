@@ -4,7 +4,6 @@ import { BinaryController } from './binary.controller';
 import { BondsService } from '../bonds/bonds.service';
 import { UsersService } from '../users/users.service';
 import { MailerService } from '../mailer/mailer.service';
-import { CoinpaymentsService } from '../coinpayments/coinpayments.service';
 import { AuthService } from '../auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { AuthAcademyService } from '@domain/auth-academy/auth-academy.service';
@@ -19,7 +18,6 @@ import { ReportsCasinoService } from '../reports-casino/reports-casino.service';
     BondsService,
     UsersService,
     MailerService,
-    CoinpaymentsService,
     AuthService,
     JwtService,
     DisruptiveService,

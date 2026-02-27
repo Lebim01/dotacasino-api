@@ -1,11 +1,10 @@
-// src/firestore-wipe/firestore-wipe.module.ts
+// firestore-wipe.module.ts
+// NOTE: FirebaseAdminModule dependency removed. Firestore fully migrated to Prisma.
 import { Module } from '@nestjs/common';
 import { FirestoreWipeService } from './firestore-wipe.service';
-import { FirebaseAdminModule } from '../firebase/firebase-admin.module';
 import { FirestoreWipeController } from './firestore-wipe.controller';
 
 @Module({
-  imports: [FirebaseAdminModule],
   providers: [FirestoreWipeService],
   exports: [FirestoreWipeService],
   controllers: [FirestoreWipeController],

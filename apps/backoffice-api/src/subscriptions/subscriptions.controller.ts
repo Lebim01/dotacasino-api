@@ -8,8 +8,6 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { SubscriptionsService } from './subscriptions.service';
-import { db } from '../firebase/admin';
-import { firestore } from 'firebase-admin';
 import { PayloadAssignBinaryPosition } from './types';
 import {
   ApiBearerAuth,
@@ -19,14 +17,17 @@ import {
 import { USER_ROLES } from '../auth/auth.constants';
 import { HttpGoogleTaskInterceptor } from '../auth/interceptors/google-task';
 import { MEMBERSHIP_PRICES } from '../constants';
-import { sleep } from '../utils/firebase';
 import { Memberships } from '../types';
 import { Roles } from '@security/roles.decorator';
 import { JwtAuthGuard } from '@security/jwt.guard';
+import { PrismaService } from 'libs/db/src/prisma.service';
 
 @Controller('subscriptions')
 export class SubscriptionsController {
-  constructor(private readonly subscriptionService: SubscriptionsService) {}
+  constructor(
+    private readonly subscriptionService: SubscriptionsService,
+    private readonly prisma: PrismaService,
+  ) {}
 
   @ApiExcludeEndpoint()
   @Get('isActiveUser')
@@ -48,32 +49,31 @@ export class SubscriptionsController {
     if (!body.email) throw new Error('email required');
     if (!body.membership) throw new Error('membership required');
 
-    const res = await db
-      .collection('users')
-      .where('email', '==', body.email)
-      .get();
+    const user = await this.prisma.user.findUnique({
+      where: { email: body.email },
+    });
+    if (!user) throw new Error('User not found');
 
-    const user_id = res.docs[0].id;
-    const user = await db.collection('users').doc(user_id).get();
-
-    if (user.get('is_new')) {
-      await db
-        .collection('users')
-        .doc(user.get('sponsor_id'))
-        .update({
-          count_direct_people: firestore.FieldValue.increment(1),
-        });
+    if (user.isNew) {
+      await this.prisma.user.update({
+        where: { id: user.sponsorId! },
+        data: {
+          countDirectPeople: { increment: 1 },
+        },
+      });
     }
 
-    await db.collection('admin-activations').add({
-      id_user: user.id,
-      name: user.get('name'),
-      email: user.get('email'),
-      created_at: new Date(),
-      membership: body.membership,
+    await this.prisma.adminLog.create({
+      data: {
+        type: 'activation-no-volume',
+        userId: user.id,
+        data: {
+          name: user.displayName,
+          email: user.email,
+          membership: body.membership,
+        },
+      },
     });
-
-    await sleep(3000);
 
     await this.subscriptionService.assingMembership(
       user.id,
@@ -83,7 +83,7 @@ export class SubscriptionsController {
       false,
     );
 
-    if (!user.get('parent_binary_user_id')) {
+    if (!user.parentBinaryUserId) {
       await this.subscriptionService.addQueueBinaryPosition({
         id_user: user.id,
         txn_id: '',
@@ -106,20 +106,21 @@ export class SubscriptionsController {
     if (!body.email) throw new Error('email required');
     if (!body.membership) throw new Error('membership required');
 
-    const user = await db
-      .collection('users')
-      .where('email', '==', body.email)
-      .get()
-      .then((r) => (r.empty ? null : r.docs[0]));
+    const user = await this.prisma.user.findUnique({
+      where: { email: body.email },
+    });
 
-    if (user?.exists) {
-      await db.collection('admin-activations-with-volume').add({
-        id: user.id,
-        membership: body.membership,
-        email: user.get('email'),
-        name: user.get('name') || '',
-        last_name: user.get('last_name') || '',
-        created_at: new Date(),
+    if (user) {
+      await this.prisma.adminLog.create({
+        data: {
+          type: 'activation-volume',
+          userId: user.id,
+          data: {
+            membership: body.membership,
+            email: user.email,
+            name: user.displayName,
+          },
+        },
       });
 
       await this.subscriptionService.onPaymentMembership(
@@ -143,13 +144,20 @@ export class SubscriptionsController {
   async inactiveUser(@Body() body: any) {
     if (!body.user_id) throw new Error('user_id required');
 
-    await db
-      .collection('admin-inactive-user')
-      .add({ ...body, created_at: new Date() });
+    await this.prisma.adminLog.create({
+      data: {
+        type: 'inactive-user',
+        userId: body.user_id,
+        data: body,
+      },
+    });
 
-    await db.collection('users').doc(body.user_id).update({
-      membership_expires_at: new Date(),
-      membership_status: 'expired',
+    await this.prisma.user.update({
+      where: { id: body.user_id },
+      data: {
+        membershipExpiresAt: new Date(),
+        membershipStatus: 'expired',
+      },
     });
   }
 
@@ -169,30 +177,32 @@ export class SubscriptionsController {
   async ipn(@Body() body: any) {
     if (!body.txn_id) throw new Error('INVALID');
 
-    const txn = await db
-      .collection('node-payments')
-      .doc(body.txn_id)
-      .get();
+    const txn = await this.prisma.nodePayment.findUnique({
+      where: { id: body.txn_id },
+    });
 
     if (
-      !txn.exists ||
-      !['paid', 'admin-activation'].includes(txn.get('payment_status')) ||
-      txn.get('process_status') == 'completed'
+      !txn ||
+      !['paid', 'admin-activation'].includes(txn.paymentStatus!) ||
+      txn.processStatus == 'completed'
     ) {
       return 'INVALID';
     }
 
     await this.subscriptionService.onPaymentMembership(
-      txn.get('user_id'),
-      txn.get('membership_type'),
+      txn.userId!,
+      txn.type as Memberships,
       txn.id,
-      txn.get('payment_status') == 'admin-activation'
-        ? txn.get('volumen')
+      txn.paymentStatus == 'admin-activation'
+        ? (txn as any).volumen // Deberíamos asegurar que volumen existe en schema o pasarlo explícitamente
         : true,
     );
 
-    await txn.ref.update({
-      process_status: 'completed',
+    await this.prisma.nodePayment.update({
+      where: { id: txn.id },
+      data: {
+        processStatus: 'completed',
+      },
     });
   }
 }

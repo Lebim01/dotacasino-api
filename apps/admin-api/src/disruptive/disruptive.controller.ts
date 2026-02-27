@@ -4,7 +4,6 @@ import {
   Get,
   HttpException,
   Post,
-  Request,
   UseGuards,
 } from '@nestjs/common';
 import { NodePaymentsService } from '@domain/node-payments/node-payments.service';
@@ -12,19 +11,20 @@ import {
   ApproveWithdraw,
   CompleteTransactionDisruptiveCasinoDto,
 } from './dto/transaction.dto';
-import { db } from 'apps/backoffice-api/src/firebase/admin';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@security/jwt.guard';
 import { RolesGuard } from '@security/roles.guard';
 import { Roles } from '@security/roles.decorator';
 import { USER_ROLES } from 'apps/backoffice-api/src/auth/auth.constants';
 import { WalletService } from '@domain/wallet/wallet.service';
+import { PrismaService } from 'libs/db/src/prisma.service';
 
 @Controller('disruptive')
 export class DisruptiveController {
   constructor(
     private readonly nodePaymentsService: NodePaymentsService,
     private readonly walletService: WalletService,
+    private readonly prisma: PrismaService,
   ) {}
 
   @Post('approve-withdraw-casino')
@@ -33,24 +33,18 @@ export class DisruptiveController {
   @Roles(USER_ROLES.ADMIN)
   async approvedwithdraw(@Body() body: ApproveWithdraw) {
     for (const id of body.ids) {
-      const transaction = await db
-        .collection('node-payments')
-        .doc(id)
-        .get();
+      const transaction = await this.prisma.nodePayment.findUnique({ where: { id } });
+      if (!transaction) continue;
 
-      const user_id = transaction.get('user_id');
-      const amount = transaction.get('amount');
-
-      await transaction.ref.update({
-        status: 'approved',
-        approved_at: new Date(),
+      await this.prisma.nodePayment.update({
+        where: { id },
+        data: { status: 'approved', completedAt: new Date() },
       });
 
-      // restar creditos
       await this.walletService.debit({
-        amount,
+        amount: Number(transaction.amount),
         reason: 'withdraw',
-        userId: user_id,
+        userId: transaction.userId ?? '',
         idempotencyKey: transaction.id,
       });
     }
@@ -67,22 +61,21 @@ export class DisruptiveController {
     if (!transaction) throw new HttpException('not found', 401);
 
     const validation = await this.nodePaymentsService.validateStatus(
-      transaction.get('network'),
+      transaction.network as any,
       body.address,
     );
 
     if (validation.confirmed) {
-      if (transaction.get('status') != 'completed') {
-        await transaction.ref.update({
-          status: 'completed',
-          completed_at: new Date(),
+      if (transaction.status !== 'completed') {
+        await this.prisma.nodePayment.update({
+          where: { id: transaction.id },
+          data: { status: 'completed', completedAt: new Date() },
         });
 
-        // sumar creditos
         await this.walletService.credit({
-          amount: transaction.get('amount'),
+          amount: Number(transaction.amount),
           reason: 'recharge',
-          userId: transaction.get('user_id'),
+          userId: transaction.userId ?? '',
           idempotencyKey: transaction.id,
         });
       }
