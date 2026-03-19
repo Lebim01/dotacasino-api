@@ -2,6 +2,7 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'libs/db/src/prisma.service';
 import axios from 'axios';
 import Decimal from 'decimal.js';
+import * as nodemailer from 'nodemailer';
 
 const URL = 'https://node-payments-api-560114584030.us-central1.run.app';
 
@@ -162,6 +163,112 @@ export class NodePaymentsService {
       return { qrcode_url, address, expires_at: expires_at, amount };
     } catch (error) {
       console.error('error', error);
+    }
+  }
+
+  async completeTransaction(transactionId: string) {
+    return await this.prisma.nodePayment.update({
+      where: { id: transactionId },
+      data: {
+        status: 'completed',
+        completedAt: new Date(),
+      }
+    });
+  }
+
+  async notifyTokenPurchaseAdmins(transactionId: string) {
+    const tx = await this.prisma.nodePayment.findUnique({
+      where: { id: transactionId },
+    });
+    
+    if (!tx) return;
+    
+    const user = tx.userId ? await this.prisma.user.findUnique({ where: { id: tx.userId } }) : null;
+    
+    const emails = [
+      'Mentemillonaria1708@gmail.com',
+      'Allanvitalmaldonado@gmail.com',
+      'victoralvarezsaucedo@gmail.com'
+    ];
+
+    const transporter = nodemailer.createTransport({
+      host: process.env.MAILER_HOST!,
+      port: Number(process.env.MAILER_PORT ?? 587),
+      secure: false,
+      service: 'gmail',
+      auth: process.env.MAILER_USER ? { user: process.env.MAILER_USER, pass: process.env.MAILER_PASSWORD } : undefined,
+    });
+
+    const html = `
+      <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
+        <h2 style="color: #4F46E5;">¡Nueva Compra Confirmada de DOTA TOKEN! 🚀</h2>
+        <p>El sistema ha recibido y confirmado automáticamente un pago exitoso por conceptos de tokens.</p>
+        
+        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+          <tr><td style="padding: 10px; border-bottom: 1px solid #eee;"><strong>Usuario:</strong></td><td style="padding: 10px; border-bottom: 1px solid #eee;">${user?.email || 'Desconocido'}</td></tr>
+          <tr><td style="padding: 10px; border-bottom: 1px solid #eee;"><strong>Nombre:</strong></td><td style="padding: 10px; border-bottom: 1px solid #eee;">${user?.firstName || ''} ${user?.lastName || ''}</td></tr>
+          <tr><td style="padding: 10px; border-bottom: 1px solid #eee;"><strong>Inversión Cancelada:</strong></td><td style="padding: 10px; border-bottom: 1px solid #eee; color: #10B981; font-weight: bold;">${tx.amount} USDT</td></tr>
+          <tr><td style="padding: 10px; border-bottom: 1px solid #eee;"><strong>Cálculo estimado:</strong></td><td style="padding: 10px; border-bottom: 1px solid #eee;">${(Number(tx.amount) / 0.1).toFixed(0)} TOKENS</td></tr>
+          <tr><td style="padding: 10px; border-bottom: 1px solid #eee;"><strong>Billetera destino (Metamask):</strong></td><td style="padding: 10px; border-bottom: 1px solid #eee; word-break: break-all;"><code>${user?.walletUsdt || 'No registrada'}</code></td></tr>
+        </table>
+        
+        <p style="margin-top: 30px; font-size: 12px; color: #777;">Por favor, realiza la dispersión manual de los Tokens hacial la wallet destino del cliente listada arriba.</p>
+      </div>
+    `;
+
+    try {
+      if (process.env.MAILER_DISABLED === 'true') {
+         console.warn('[DEV] Email disabled naturally in env configurations, skipping sending token purchase notifications.');
+         return;
+      }
+      
+      await transporter.sendMail({
+        from: process.env.MAILER_FROM ?? 'no-reply@dotacasino.com',
+        to: emails,
+        subject: '💰 Compra Exitosa - DOTA TOKEN Recibido',
+        html,
+      });
+      console.log('Admin notification email sent successfully for DOTA TOKEN purchase.');
+    } catch (err) {
+      console.error('Failed to send admin notification email:', err);
+    }
+  }
+
+  async createTokenTransaction(
+    network: Networks,
+    user_id: string,
+    amount: number,
+    wallet: string
+  ) {
+    try {
+      const response = await this.createAddress(network, user_id, amount);
+      const { address, expires_at, qrcode_url } = response;
+
+      await this.prisma.$transaction(async (tx) => {
+        await tx.nodePayment.create({
+            data: {
+              userId: user_id,
+              amount: new Decimal(amount),
+              expiresAt: new Date(expires_at),
+              address,
+              qrcodeUrl: qrcode_url,
+              network,
+              status: 'pending',
+              type: 'dota_token',
+              category: 'purchase',
+            }
+        });
+        
+        await tx.user.update({
+          where: { id: user_id },
+          data: { walletUsdt: wallet }
+        });
+      });
+
+      return { qrcode_url, address, expires_at: expires_at, amount };
+    } catch (error) {
+      console.error('error', error);
+      throw new HttpException('Token purchase error', 500);
     }
   }
 

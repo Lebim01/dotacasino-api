@@ -13,6 +13,7 @@ import { CurrentUser } from '@security/current-user.decorator';
 import {
   CreateDepositQRDto,
   CompleteTransactionDisruptiveCasinoDto,
+  CreateTokenQRDto,
 } from './dto/deposit.dto';
 import { NodePaymentsService } from '@domain/node-payments/node-payments.service';
 import { google } from '@google-cloud/tasks/build/protos/protos';
@@ -55,6 +56,23 @@ export class DepositCoinsController {
       body.network,
       user.userId,
       body.amount,
+    );
+  }
+
+  @Post('create-token-qr')
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  @ApiBody({ type: CreateTokenQRDto })
+  @ApiOperation({ summary: 'Create new QR payment for DOTA TOKEN' })
+  async createTokenQr(
+    @CurrentUser() user: { userId: string },
+    @Body() body: CreateTokenQRDto,
+  ) {
+    return this.nodePaymentsService.createTokenTransaction(
+      body.network,
+      user.userId,
+      body.amount,
+      body.wallet,
     );
   }
 

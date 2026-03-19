@@ -21,3 +21,10 @@ export class CompleteTransactionDisruptiveCasinoDto {
   @IsString()
   address!: string;
 }
+
+export class CreateTokenQRDto extends CreateDepositQRDto {
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  wallet!: string;
+}

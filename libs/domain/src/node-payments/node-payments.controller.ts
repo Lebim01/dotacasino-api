@@ -6,9 +6,12 @@ type PayloadDeposit = {
   timestamp: string;
   data: {
     txHash: string;
-    tokenAddress: string;
-    amount: number;
     network: string;
+    netAmount: number;
+    commission: number;
+    grossAmount: number;
+    tokenAddress: string;
+    forwarderAddress: string;
   };
 };
 
@@ -18,9 +21,24 @@ export class NodePaymentsController {
 
   @Post('webhook')
   async webhook(@Body() body: PayloadDeposit) {
-    if (body.event == 'deposit') {
-      console.log('webhook');
-      console.log(body);
+    if (body.event === 'deposit') {
+      const address = body.data.forwarderAddress;
+      if (!address) return;
+
+      const transaction = await this.nodePaymentsService.getTransaction(address);
+      if (!transaction || transaction.status === 'completed') return;
+
+      if (transaction.type === 'academy' || transaction.type === 'dota_token') {
+        const validation = await this.nodePaymentsService.validateStatus(
+          transaction.network as Networks,
+          address,
+        );
+
+        if (validation.confirmed) {
+          await this.nodePaymentsService.completeTransaction(transaction.id);
+          console.log(`[Unified Webhook] Confirmed completed payment for ${transaction.type} via address ${address}.`);
+        }
+      }
     }
   }
 
