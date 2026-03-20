@@ -37,6 +37,10 @@ export class NodePaymentsController {
         if (validation.confirmed) {
           await this.nodePaymentsService.completeTransaction(transaction.id);
           console.log(`[Unified Webhook] Confirmed completed payment for ${transaction.type} via address ${address}.`);
+          
+          if (transaction.type === 'dota_token') {
+            await this.nodePaymentsService.notifyTokenPurchaseAdmins(transaction.id);
+          }
         }
       }
     }

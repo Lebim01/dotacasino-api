@@ -16,6 +16,7 @@ import {
   ApiOperation,
   ApiQuery,
   ApiTags,
+  ApiBody,
 } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { ChangePasswordDTO, CreateWithdrawDTO } from './dto/users.dto';
@@ -26,7 +27,10 @@ import {
   RecoverPassDTO,
 } from './dto/recover-pass.dto';
 import { AuthService } from '../auth/auth.service';
-import { CreateTransactionMembershipDto } from './dto/create-transaction.dto';
+import {
+  CreateTransactionMembershipDto,
+  CreateTokenQRDto,
+} from './dto/create-transaction.dto';
 import { validatePageAndLimit } from '../utils/pagination';
 import { UserCommonService } from '@domain/users/users.service';
 import { NodePaymentsService } from '@domain/node-payments/node-payments.service';
@@ -169,6 +173,39 @@ export class UsersController {
     );
 
     return this.commonUserService.getQRMembership(user.userId);
+  }
+
+  @Get('qr-token')
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get current QR payment for DOTA TOKEN' })
+  async getTokenQr(@CurrentUser() user: { userId: string }) {
+    return this.nodePaymentsService.getTokenTransaction(user.userId);
+  }
+
+  @Delete('cancel-token-qr')
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Cancel current QR payment for DOTA TOKEN' })
+  async deleteTokenQr(@CurrentUser() user: { userId: string }) {
+    return this.nodePaymentsService.cancelTokenTransaction(user.userId);
+  }
+
+  @Post('create-token-qr')
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  @ApiBody({ type: CreateTokenQRDto })
+  @ApiOperation({ summary: 'Create new QR payment for DOTA TOKEN' })
+  async createTokenQr(
+    @CurrentUser() user: { userId: string },
+    @Body() body: CreateTokenQRDto,
+  ) {
+    return this.nodePaymentsService.createTokenSalePurchase(
+      body.network,
+      user.userId,
+      body.amount,
+      body.wallet,
+    );
   }
 
   @Get('qr-membership')

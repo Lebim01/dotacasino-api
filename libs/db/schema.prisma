@@ -429,6 +429,7 @@ model NodePayment {
   isUpgrade     Boolean  @default(false)
   volumen       Boolean  @default(true)
   network       String?
+  walletUsdt    String?
   completedAt   DateTime?
   createdAt     DateTime @default(now())
 }

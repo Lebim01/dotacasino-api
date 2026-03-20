@@ -4,7 +4,7 @@ import axios from 'axios';
 import Decimal from 'decimal.js';
 import * as nodemailer from 'nodemailer';
 
-const URL = 'https://node-payments-api-560114584030.us-central1.run.app';
+const URL = 'https://api.nodepayments.io';
 
 export type Networks = 'BSC' | 'TRX' | 'ETH' | 'POLYGON';
 
@@ -195,7 +195,6 @@ export class NodePaymentsService {
       host: process.env.MAILER_HOST!,
       port: Number(process.env.MAILER_PORT ?? 587),
       secure: false,
-      service: 'gmail',
       auth: process.env.MAILER_USER ? { user: process.env.MAILER_USER, pass: process.env.MAILER_PASSWORD } : undefined,
     });
 
@@ -223,7 +222,7 @@ export class NodePaymentsService {
       }
       
       await transporter.sendMail({
-        from: process.env.MAILER_FROM ?? 'no-reply@dotacasino.com',
+        from: process.env.MAILER_FROM ?? 'noreply@dotacasino.com',
         to: emails,
         subject: '💰 Compra Exitosa - DOTA TOKEN Recibido',
         html,
@@ -234,21 +233,40 @@ export class NodePaymentsService {
     }
   }
 
-  async createTokenTransaction(
+  async createTokenSalePurchase(
     network: Networks,
     user_id: string,
     amount: number,
     wallet: string
   ) {
     try {
-      const response = await this.createAddress(network, user_id, amount);
-      const { address, expires_at, qrcode_url } = response;
+      const tokenSaleResponse = await axios.post<{
+        purchaseId: string;
+        paymentAddress: string;
+        expectedPaymentAmount: number;
+        paymentToken: string;
+        network: string;
+      }>(
+        `${URL}/api/token-sales/cmmtxlr0i0001u4ys6on4sy3w/purchase`,
+        { amountTokens: amount, buyerAddress: wallet },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': `${process.env.NODE_PAYMENTS_API_KEY}`,
+          },
+        },
+      );
+
+      const address = tokenSaleResponse.data.paymentAddress;
+      const expectedAmount = tokenSaleResponse.data.expectedPaymentAmount;
+      const expires_at = new Date(Date.now() + 1000 * 60 * 60 * 24).toISOString();
+      const qrcode_url = `https://api.qrserver.com/v1/create-qr-code/?size=225x225&data=${address}`;
 
       await this.prisma.$transaction(async (tx) => {
         await tx.nodePayment.create({
             data: {
               userId: user_id,
-              amount: new Decimal(amount),
+              amount: new Decimal(expectedAmount),
               expiresAt: new Date(expires_at),
               address,
               qrcodeUrl: qrcode_url,
@@ -256,19 +274,55 @@ export class NodePaymentsService {
               status: 'pending',
               type: 'dota_token',
               category: 'purchase',
+              walletUsdt: wallet
             }
-        });
-        
-        await tx.user.update({
-          where: { id: user_id },
-          data: { walletUsdt: wallet }
         });
       });
 
-      return { qrcode_url, address, expires_at: expires_at, amount };
-    } catch (error) {
-      console.error('error', error);
+      return { qrcode_url, address, expires_at, amount: expectedAmount };
+    } catch (error: any) {
+      console.error('error', error.response.data);
       throw new HttpException('Token purchase error', 500);
+    }
+  }
+
+  async getTokenTransaction(user_id: string) {
+    const tx = await this.prisma.nodePayment.findFirst({
+        where: {
+            userId: user_id,
+            type: 'dota_token',
+            category: 'purchase',
+            status: 'pending'
+        }
+    });
+    if (!tx) return null;
+    return {
+      qrcode_url: tx.qrcodeUrl,
+      address: tx.address,
+      expires_at: tx.expiresAt,
+      amount: Number(tx.amount),
+      wallet: tx.walletUsdt
+    };
+  }
+
+  async cancelTokenTransaction(user_id: string) {
+    const res = await this.prisma.nodePayment.findFirst({
+      where: {
+        userId: user_id,
+        type: 'dota_token',
+        category: 'purchase',
+        status: 'pending'
+      }
+    });
+
+    if (res) {
+      await this.prisma.nodePayment.update({
+        where: { id: res.id },
+        data: {
+          status: 'cancelled',
+          completedAt: new Date(),
+        }
+      });
     }
   }
 

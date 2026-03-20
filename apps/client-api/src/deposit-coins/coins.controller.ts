@@ -59,23 +59,6 @@ export class DepositCoinsController {
     );
   }
 
-  @Post('create-token-qr')
-  @ApiBearerAuth('access-token')
-  @UseGuards(JwtAuthGuard)
-  @ApiBody({ type: CreateTokenQRDto })
-  @ApiOperation({ summary: 'Create new QR payment for DOTA TOKEN' })
-  async createTokenQr(
-    @CurrentUser() user: { userId: string },
-    @Body() body: CreateTokenQRDto,
-  ) {
-    return this.nodePaymentsService.createTokenTransaction(
-      body.network,
-      user.userId,
-      body.amount,
-      body.wallet,
-    );
-  }
-
   @Delete('cancel-qr')
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)

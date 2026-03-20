@@ -14,6 +14,7 @@ import { JwtAuthGuard } from '@security/jwt.guard';
 import { CurrentUser } from '@security/current-user.decorator';
 import { UserCommonService } from '@domain/users/users.service';
 import { CreateQRDto } from './dto/registeracademy.dto';
+import { CreateTokenQRDto } from '../deposit-coins/dto/deposit.dto';
 import { NodePaymentsService } from '@domain/node-payments/node-payments.service';
 import { google } from '@google-cloud/tasks/build/protos/protos';
 import {
@@ -121,6 +122,39 @@ export class UsersController {
   @ApiOperation({ summary: 'Delete current QR payment' })
   async deleteqrmembership(@CurrentUser() user: { userId: string }) {
     return this.userCommon.deleteQRMembership(user.userId);
+  }
+
+  @Get('qr-token')
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get current QR payment for DOTA TOKEN' })
+  async getTokenQr(@CurrentUser() user: { userId: string }) {
+    return this.nodePaymentsService.getTokenTransaction(user.userId);
+  }
+
+  @Delete('cancel-token-qr')
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Cancel current QR payment for DOTA TOKEN' })
+  async deleteTokenQr(@CurrentUser() user: { userId: string }) {
+    return this.nodePaymentsService.cancelTokenTransaction(user.userId);
+  }
+
+  @Post('create-token-qr')
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  @ApiBody({ type: CreateTokenQRDto })
+  @ApiOperation({ summary: 'Create new QR payment for DOTA TOKEN' })
+  async createTokenQr(
+    @CurrentUser() user: { userId: string },
+    @Body() body: CreateTokenQRDto,
+  ) {
+    return this.nodePaymentsService.createTokenSalePurchase(
+      body.network,
+      user.userId,
+      body.amount,
+      body.wallet,
+    );
   }
 
   @Get('/:code')
