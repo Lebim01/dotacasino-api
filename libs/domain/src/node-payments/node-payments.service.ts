@@ -9,24 +9,24 @@ const URL = 'https://api.nodepayments.io';
 export type Networks = 'BSC' | 'TRX' | 'ETH' | 'POLYGON';
 
 export const NETWORKS: Record<Networks, { network: string; protocol: string }> =
-  {
-    BSC: {
-      network: 'BSC',
-      protocol: 'BEP20',
-    },
-    ETH: {
-      network: 'ETH',
-      protocol: 'ERC20',
-    },
-    POLYGON: {
-      network: 'POLYGON',
-      protocol: 'ERC20',
-    },
-    TRX: {
-      network: 'TRC',
-      protocol: 'USDT',
-    },
-  };
+{
+  BSC: {
+    network: 'BSC',
+    protocol: 'BEP20',
+  },
+  ETH: {
+    network: 'ETH',
+    protocol: 'ERC20',
+  },
+  POLYGON: {
+    network: 'POLYGON',
+    protocol: 'ERC20',
+  },
+  TRX: {
+    network: 'TRC',
+    protocol: 'USDT',
+  },
+};
 
 @Injectable()
 export class NodePaymentsService {
@@ -128,12 +128,12 @@ export class NodePaymentsService {
 
   async getTransactionCasino(user_id: string) {
     return await this.prisma.nodePayment.findFirst({
-        where: {
-            userId: user_id,
-            type: 'casino',
-            category: 'deposit',
-            status: 'pending'
-        }
+      where: {
+        userId: user_id,
+        type: 'casino',
+        category: 'deposit',
+        status: 'pending'
+      }
     });
   }
 
@@ -147,17 +147,17 @@ export class NodePaymentsService {
       const { address, expires_at, qrcode_url } = response;
 
       await this.prisma.nodePayment.create({
-          data: {
-            userId: user_id,
-            amount: new Decimal(amount),
-            expiresAt: new Date(expires_at),
-            address,
-            qrcodeUrl: qrcode_url,
-            network,
-            status: 'pending',
-            type: 'casino',
-            category: 'deposit',
-          }
+        data: {
+          userId: user_id,
+          amount: new Decimal(amount),
+          expiresAt: new Date(expires_at),
+          address,
+          qrcodeUrl: qrcode_url,
+          network,
+          status: 'pending',
+          type: 'casino',
+          category: 'deposit',
+        }
       });
 
       return { qrcode_url, address, expires_at: expires_at, amount };
@@ -180,11 +180,11 @@ export class NodePaymentsService {
     const tx = await this.prisma.nodePayment.findUnique({
       where: { id: transactionId },
     });
-    
+
     if (!tx) return;
-    
+
     const user = tx.userId ? await this.prisma.user.findUnique({ where: { id: tx.userId } }) : null;
-    
+
     const emails = [
       'Mentemillonaria1708@gmail.com',
       'Allanvitalmaldonado@gmail.com',
@@ -217,10 +217,10 @@ export class NodePaymentsService {
 
     try {
       if (process.env.MAILER_DISABLED === 'true') {
-         console.warn('[DEV] Email disabled naturally in env configurations, skipping sending token purchase notifications.');
-         return;
+        console.warn('[DEV] Email disabled naturally in env configurations, skipping sending token purchase notifications.');
+        return;
       }
-      
+
       await transporter.sendMail({
         from: process.env.MAILER_FROM ?? 'noreply@dotacasino.com',
         to: emails,
@@ -236,7 +236,7 @@ export class NodePaymentsService {
   async createTokenSalePurchase(
     network: Networks,
     user_id: string,
-    amount: number,
+    amount_usdt: number,
     wallet: string
   ) {
     try {
@@ -248,7 +248,7 @@ export class NodePaymentsService {
         network: string;
       }>(
         `${URL}/api/token-sales/cmmtxlr0i0001u4ys6on4sy3w/purchase`,
-        { amountTokens: amount, buyerAddress: wallet },
+        { amountTokens: amount_usdt * 10, buyerAddress: wallet },
         {
           headers: {
             'Content-Type': 'application/json',
@@ -264,18 +264,18 @@ export class NodePaymentsService {
 
       await this.prisma.$transaction(async (tx) => {
         await tx.nodePayment.create({
-            data: {
-              userId: user_id,
-              amount: new Decimal(expectedAmount),
-              expiresAt: new Date(expires_at),
-              address,
-              qrcodeUrl: qrcode_url,
-              network,
-              status: 'pending',
-              type: 'dota_token',
-              category: 'purchase',
-              walletUsdt: wallet
-            }
+          data: {
+            userId: user_id,
+            amount: new Decimal(expectedAmount),
+            expiresAt: new Date(expires_at),
+            address,
+            qrcodeUrl: qrcode_url,
+            network,
+            status: 'pending',
+            type: 'dota_token',
+            category: 'purchase',
+            walletUsdt: wallet
+          }
         });
       });
 
@@ -288,12 +288,12 @@ export class NodePaymentsService {
 
   async getTokenTransaction(user_id: string) {
     const tx = await this.prisma.nodePayment.findFirst({
-        where: {
-            userId: user_id,
-            type: 'dota_token',
-            category: 'purchase',
-            status: 'pending'
-        }
+      where: {
+        userId: user_id,
+        type: 'dota_token',
+        category: 'purchase',
+        status: 'pending'
+      }
     });
     if (!tx) return null;
     return {
