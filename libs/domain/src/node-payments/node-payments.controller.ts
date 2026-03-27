@@ -27,6 +27,7 @@ export class NodePaymentsController {
 
   @Post('webhook')
   async webhook(@Body() body: PayloadDeposit) {
+    console.log(body)
     if (body.event === 'deposit') {
       const address = body.data.forwarderAddress;
       if (!address) {
