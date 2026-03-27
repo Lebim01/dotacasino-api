@@ -57,7 +57,7 @@ export class NodePaymentsController {
         );
 
         if (validation.confirmed && transaction.userId) {
-          const amountUsdt = validation.amount || Number(transaction.amount);
+          const amountUsdt = Number(transaction.amount);
 
           await this.wallets.credit({
             userId: transaction.userId,
