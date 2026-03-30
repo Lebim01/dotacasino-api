@@ -370,4 +370,31 @@ export class UsersController {
   search(@Query('email') email: string) {
     return this.usersService.search(email);
   }
+
+  @Get('public/qr-token/:wallet')
+  @ApiOperation({ summary: 'Get current QR payment for DOTA TOKEN public' })
+  async getPublicTokenQr(@Param('wallet') wallet: string) {
+    return this.nodePaymentsService.getPublicTokenTransaction(wallet);
+  }
+
+  @Delete('public/cancel-token-qr/:wallet')
+  @ApiOperation({ summary: 'Cancel current QR payment for DOTA TOKEN public' })
+  async deletePublicTokenQr(@Param('wallet') wallet: string) {
+    return this.nodePaymentsService.cancelPublicTokenTransaction(wallet);
+  }
+
+  @Post('public/create-token-qr')
+  @ApiBody({ type: CreateTokenQRDto })
+  @ApiOperation({ summary: 'Create new QR payment for DOTA TOKEN public' })
+  async createPublicTokenQr(
+    @Body() body: CreateTokenQRDto,
+  ) {
+    if (!body.wallet) throw new HttpException('Wallet required', 400);
+    return this.nodePaymentsService.createTokenSalePurchase(
+      body.network,
+      null,
+      body.amount,
+      body.wallet,
+    );
+  }
 }
