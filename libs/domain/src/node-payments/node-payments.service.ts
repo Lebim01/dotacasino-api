@@ -235,7 +235,7 @@ export class NodePaymentsService {
 
   async createTokenSalePurchase(
     network: Networks,
-    user_id: string,
+    user_id: string | null,
     amount_usdt: number,
     wallet: string
   ) {
@@ -309,6 +309,46 @@ export class NodePaymentsService {
     const res = await this.prisma.nodePayment.findFirst({
       where: {
         userId: user_id,
+        type: 'dota_token',
+        category: 'purchase',
+        status: 'pending'
+      }
+    });
+
+    if (res) {
+      await this.prisma.nodePayment.update({
+        where: { id: res.id },
+        data: {
+          status: 'cancelled',
+          completedAt: new Date(),
+        }
+      });
+    }
+  }
+
+  async getPublicTokenTransaction(wallet: string) {
+    const tx = await this.prisma.nodePayment.findFirst({
+      where: {
+        walletUsdt: wallet,
+        type: 'dota_token',
+        category: 'purchase',
+        status: 'pending'
+      }
+    });
+    if (!tx) return null;
+    return {
+      qrcode_url: tx.qrcodeUrl,
+      address: tx.address,
+      expires_at: tx.expiresAt,
+      amount: Number(tx.amount),
+      wallet: tx.walletUsdt
+    };
+  }
+
+  async cancelPublicTokenTransaction(wallet: string) {
+    const res = await this.prisma.nodePayment.findFirst({
+      where: {
+        walletUsdt: wallet,
         type: 'dota_token',
         category: 'purchase',
         status: 'pending'
